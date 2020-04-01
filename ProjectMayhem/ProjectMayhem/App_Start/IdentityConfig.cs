@@ -34,7 +34,6 @@ namespace ProjectMayhem
             var plainTextContent = message.Body;
             var htmlContent = message.Body;
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            Console.WriteLine("Works up to here");
             var response = await client.SendEmailAsync(msg);
         }
     }
