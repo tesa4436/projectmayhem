@@ -11,15 +11,31 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using ProjectMayhem.Models;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace ProjectMayhem
 {
     public class EmailService : IIdentityMessageService
     {
-        public Task SendAsync(IdentityMessage message)
+        public async Task SendAsync(IdentityMessage message)
         {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            await configSendGridasync(message);
+        }
+
+        // Use NuGet to install SendGrid (Basic C# client lib) 
+        private async Task configSendGridasync(IdentityMessage message)
+        {
+            var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");//"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"; //ConfigurationManager.AppSettings.Get("SendGridAPI");//Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+            var client = new SendGridClient(apiKey);
+            var from = new EmailAddress("ProjectMayhem@gmail.com");
+            var subject = message.Subject;
+            var to = new EmailAddress(message.Destination);
+            var plainTextContent = message.Body;
+            var htmlContent = message.Body;
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            Console.WriteLine("Works up to here");
+            var response = await client.SendEmailAsync(msg);
         }
     }
 
