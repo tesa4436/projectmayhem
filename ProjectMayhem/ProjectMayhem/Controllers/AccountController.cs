@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -72,6 +73,15 @@ namespace ProjectMayhem.Controllers
             {
                 return View(model);
             }
+            /*var user = await UserManager.FindByNameAsync(model.Email);
+            if (user != null)
+            {
+                if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+                {
+                    ViewBag.errorMessage = "You must have a confirmed email to log on.";
+                    return View("Error");
+                }
+            }*/
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
@@ -152,7 +162,8 @@ namespace ProjectMayhem.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
+                var RandPassword = Membership.GeneratePassword(12, 1);
+                var result = await UserManager.CreateAsync(user, RandPassword);
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
@@ -162,7 +173,7 @@ namespace ProjectMayhem.Controllers
                        new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id,
                        "Confirm your account", "Please confirm your account by clicking <a href=\""
-                       + callbackUrl + "\">here</a>");
+                       + callbackUrl + "\">here</a><br> <br> Credentials: <br> Username: " + user.UserName + " <br> Password: " + RandPassword);
 
                     return RedirectToAction("Index", "Home");
                 }
