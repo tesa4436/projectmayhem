@@ -144,6 +144,39 @@ namespace ProjectMayhem.Controllers
             }
         }
 
+        [AllowAnonymous]
+        public async Task<ActionResult> AcceptInvite(string userId, string InviteToken)
+        {
+            var result = await UserManager.VerifyUserTokenAsync(userId, "Invite", InviteToken);
+            return View(result ? "AcceptInvite" : "Error");
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> UpdateAfterInvitation(InvitationViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await UserManager.FindByIdAsync(Request.QueryString["userId"]);
+                var token = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                await UserManager.ResetPasswordAsync(user.Id, token, model.Password);
+                user.UserName = model.Username;
+                var request = await UserManager.UpdateAsync(user);
+                if (request.Succeeded)
+                {
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account",
+                     new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id,
+                       "Confirm Email", "You can confirm the email by clicking <a href=\""
+                       + callbackUrl + "\">here</a><br> <br> Credentials: <br> Username: " + user.UserName + " <br> Password: " + model.Password);
+                    return RedirectToAction("Index", "Home");
+                }
+                AddErrors(request);
+            }
+            return View(model);
+        }
         //
         // GET: /Account/Register
         [AllowAnonymous]
@@ -166,14 +199,15 @@ namespace ProjectMayhem.Controllers
                 var result = await UserManager.CreateAsync(user, RandPassword);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
-                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Account",
-                       new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    
+                    string code = await UserManager.GenerateUserTokenAsync("Invite", user.Id);//await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var InviteUrl = Url.Action("AcceptInvite", "Account", new {userId = user.Id, InviteToken = code }, Request.Url.Scheme);
+                    //var callbackUrl = Url.Action("ConfirmEmail", "Account",
+                      // new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id,
-                       "Confirm your account", "Please confirm your account by clicking <a href=\""
-                       + callbackUrl + "\">here</a><br> <br> Credentials: <br> Username: " + user.UserName + " <br> Password: " + RandPassword);
+                       "Invitation", "You can accept the invitation by clicking <a href=\""
+                       + InviteUrl + "\">here</a>");
 
                     return RedirectToAction("Index", "Home");
                 }

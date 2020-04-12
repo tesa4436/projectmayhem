@@ -26,7 +26,7 @@ namespace ProjectMayhem
         // Use NuGet to install SendGrid (Basic C# client lib) 
         private async Task configSendGridasync(IdentityMessage message)
         {
-            var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");//"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"; //ConfigurationManager.AppSettings.Get("SendGridAPI");//Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+            var apiKey =  Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("ProjectMayhem@gmail.com");
             var subject = message.Subject;
