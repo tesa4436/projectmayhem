@@ -85,7 +85,7 @@ namespace ProjectMayhem.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -148,6 +148,7 @@ namespace ProjectMayhem.Controllers
         public async Task<ActionResult> AcceptInvite(string userId, string InviteToken)
         {
             var result = await UserManager.VerifyUserTokenAsync(userId, "Invite", InviteToken);
+            
             return View(result ? "AcceptInvite" : "Error");
         }
 
@@ -171,12 +172,13 @@ namespace ProjectMayhem.Controllers
                     await UserManager.SendEmailAsync(user.Id,
                        "Confirm Email", "You can confirm the email by clicking <a href=\""
                        + callbackUrl + "\">here</a><br> <br> Credentials: <br> Username: " + user.UserName + " <br> Password: " + model.Password);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Account");
                 }
                 AddErrors(request);
             }
             return View(model);
         }
+
         //
         // GET: /Account/Register
         [AllowAnonymous]
@@ -195,16 +197,12 @@ namespace ProjectMayhem.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var RandPassword = Membership.GeneratePassword(12, 1);
+                var RandPassword = Membership.GeneratePassword(20, 5);
                 var result = await UserManager.CreateAsync(user, RandPassword);
                 if (result.Succeeded)
                 {
-                    //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                    
-                    string code = await UserManager.GenerateUserTokenAsync("Invite", user.Id);//await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    string code = await UserManager.GenerateUserTokenAsync("Invite", user.Id);
                     var InviteUrl = Url.Action("AcceptInvite", "Account", new {userId = user.Id, InviteToken = code }, Request.Url.Scheme);
-                    //var callbackUrl = Url.Action("ConfirmEmail", "Account",
-                      // new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id,
                        "Invitation", "You can accept the invitation by clicking <a href=\""
                        + InviteUrl + "\">here</a>");
