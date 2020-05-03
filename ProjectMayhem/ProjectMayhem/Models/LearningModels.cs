@@ -7,7 +7,7 @@ namespace ProjectMayhem.Models
 {
     public class Topic
     {
-        public string name;
+        public string name { get; set; }
         public List<SubTopic> subTopics;
     }
 
