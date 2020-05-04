@@ -11,7 +11,7 @@
 <h2>@ViewBag.Title.</h2>
 <p>Current year: @Model.Year, quarter: @Model.Quarter</p>
 
-<!-- This holds the generated Learning Schedule element.-->
+<!-- This holds the generated FullCalendar element for the Learning Schedule.-->
 <div id="schedule">
 
 </div>
@@ -46,9 +46,10 @@
     <script>
         $(document).ready(function () {
             var events = [];
+            // Getting events for the calendar. Need Javascript objects with specific fields for FullCalendar to work.
             $.ajax({
                 type: "GET",
-                url: "/Learning/GetLearningDays", // Change to learning days endpoint.
+                url: "/Learning/GetLearningDays",
                 success: function (data) {
                     $.each(data, function (i, v) {
                         events.push({
@@ -57,7 +58,7 @@
                             start: moment(v.Date),
                             end: null,
                             color: 'Blue', // Could store the color inside learning days.
-                            allDay: true
+                            allDay: true // Learning days are events that last a full day.
                         })
                     });
 
@@ -68,6 +69,8 @@
                 }
             })
 
+            // Sets correct properties to the calendar, event handlers and events for display and interaction.
+            // Destroys the calendar in case it was created earlier. This avoids some issues.
             function GenerateCalendar(events) {
                 $('#schedule').fullCalendar('destroy');
                 $('#schedule').fullCalendar({
@@ -82,6 +85,7 @@
                     eventLimit: true,
                     eventColor: '#378006',
                     events: events,
+                    // What happens when you click on an event -> display modal with event info.
                     eventClick: function (learningEvent, jsEvent, view) {
                         $('#myModal #topicName').text(learningEvent.title);
                         var $description = $('<div/>');
