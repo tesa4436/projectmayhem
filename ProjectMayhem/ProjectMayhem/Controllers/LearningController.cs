@@ -26,18 +26,22 @@ namespace ProjectMayhem.Controllers
             return View();
         }
 
-        // GET: Learning/Calendar
-        public ActionResult Calendar()
-        {
-            return View();
-        }
-
         // GET: Learning/Create
         public ActionResult AddLearningDay()
         {
             AddLearningDayViewModel addLearningDayViewModel = new AddLearningDayViewModel();
             return View(addLearningDayViewModel);
         }
+
+        public JsonResult GetLearningDays()
+        {
+            List<LearningDay> days = new List<LearningDay>();
+            days.Add(new LearningDay { Date = DateTime.Now, Topic = new Topic { Name = "Some body touched my baguette!" } });
+            days.Add(new LearningDay { Date = DateTime.Now.AddDays(1), Topic = new Topic { Name = "MSSQL basics" } });
+            days.Add(new LearningDay { Date = DateTime.Now.AddDays(3), Topic = new Topic { Name = "Yeah, aha, you know what it is." } });
+            return new JsonResult { Data = days, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+
 
         // POST: Learning/Create
         [HttpPost]
@@ -48,8 +52,8 @@ namespace ProjectMayhem.Controllers
                 // TODO: Add insert logic here
                 LearningDay newDay = new LearningDay
                 {
-                    date = viewModel.NewDate,
-                    topic = new Topic { name = viewModel.Topic }
+                    Date = viewModel.NewDate,
+                    Topic = new Topic { Name = viewModel.Topic }
                 };
 
                 return RedirectToAction("Index");

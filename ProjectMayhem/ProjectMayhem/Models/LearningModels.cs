@@ -8,18 +8,18 @@ namespace ProjectMayhem.Models
     // End goal - DB entities and using code-first approach.
     public class Topic
     {
-        public string name { get; set; }
-        public List<SubTopic> subTopics;
+        public string Name { get; set; }
+        public List<SubTopic> SubTopics;
     }
 
     public class SubTopic
     {
-        public string name;
+        public string Name;
     }
 
     public class LearningDay
     {
-        public DateTime date;
-        public Topic topic;
+        public DateTime Date;
+        public Topic Topic;
     }
 }

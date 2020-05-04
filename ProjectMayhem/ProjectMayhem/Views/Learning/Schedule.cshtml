@@ -1,69 +1,99 @@
-﻿@model ProjectMayhem.Models.ScheduleViewModel
+﻿@using ProjectMayhem.Models
+
+@model ScheduleViewModel
 
 @{
     ViewBag.Title = "Learning schedule";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-    <script runat="server">
-        protected void Calendar1_DayRender(object sender, DayRenderEventArgs e)
-        {
-            DateTime stratDate = new DateTime(2011,12,15);;
-            DateTime endDate = new DateTime(2011,12,24);;
 
-            if (e.Day.Date > stratDate && e.Day.Date < endDate)
-            {
-                e.Cell.Font.Italic = true;
-                e.Cell.Font.Size = FontUnit.XLarge;
-                e.Cell.Font.Strikeout = true;
-                e.Cell.CssClass = "CustomCellCss";
-            }
-        }
-    </script>
+<h2>@ViewBag.Title.</h2>
+<p>Current year: @Model.Year, quarter: @Model.Quarter</p>
 
-@{
-    <style type="text/css">
-        .CustomCellCss a:hover {
-            background-color: DarkOrange;
-            padding: 0px 30px 0px 30px;
-        }
-    </style>
+<!-- This holds the generated Learning Schedule element.-->
+<div id="schedule">
 
-    <h2>@ViewBag.Title.</h2>
-    <p>Current year: @Model.Year, quarter: @Model.Quarter</p>
-    <input type="date" />
-    <form id="form1" runat="server">
-        <div>
-            <h2 style="color:SlateBlue; font-style:italic;">
-                How to use CSS style in Calendar individual Day Cell
-            </h2>
-            <hr width="550" align="left" color="SlateGray" />
-            <asp:Calendar ID="Calendar1"
-                          runat="server"
-                          NextPrevFormat="FullMonth"
-                          ForeColor="WhiteSmoke"
-                          SelectionMode="Day"
-                          DayNameFormat="Full"
-                          Font-Names="Book Antiqua"
-                          Font-Size="Medium"
-                          OnDayRender="Calendar1_DayRender"
-                          VisibleDate="12/1/2011">
-                <DayHeaderStyle BackColor="DodgerBlue" />
-                <DayStyle BackColor="Crimson"
-                          BorderColor="IndianRed"
-                          BorderWidth="1"
-                          Font-Bold="true"
-                          Font-Italic="true" />
-                <NextPrevStyle Font-Italic="true"
-                               Font-Names="Arial CE" />
-                <SelectedDayStyle BackColor="Green"
-                                  BorderColor="SpringGreen" />
-                <OtherMonthDayStyle BackColor="DarkRed" />
-                <TitleStyle BackColor="MidnightBlue"
-                            Height="36"
-                            Font-Size="Large"
-                            Font-Names="Courier New Baltic" />
-            </asp:Calendar>
+</div>
+
+<!-- Modal dialog to show learning day details. -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><span id="topicName"></span></h4>
+            </div>
+            <div class="modal-body">
+                <p id="pDetails"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
         </div>
-    </form>
+    </div>
+
+</div>
+
+<!--This is an old way to use FullCalendar-->
+<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css" rel="stylesheet" />
+<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css" rel="stylesheet" media="print" />
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var events = [];
+            $.ajax({
+                type: "GET",
+                url: "/Learning/GetLearningDays", // Change to learning days endpoint.
+                success: function (data) {
+                    $.each(data, function (i, v) {
+                        events.push({
+                            title: v.Topic.Name,
+                            description: 'Placeholder', // v.Description, // Not sure, why we would need descriptions here.
+                            start: moment(v.Date),
+                            end: null,
+                            color: 'Blue', // Could store the color inside learning days.
+                            allDay: true
+                        })
+                    });
+
+                    GenerateCalendar(events);
+                },
+                error: function (error) {
+                    alert('failed to get learning days');
+                }
+            })
+
+            function GenerateCalendar(events) {
+                $('#schedule').fullCalendar('destroy');
+                $('#schedule').fullCalendar({
+                    contentHeight: 400,
+                    defaultDate: new Date(),
+                    timeFormat: 'h(:mm)a',
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,basicWeek,basicDay,agenda'
+                    },
+                    eventLimit: true,
+                    eventColor: '#378006',
+                    events: events,
+                    eventClick: function (learningEvent, jsEvent, view) {
+                        $('#myModal #topicName').text(learningEvent.title);
+                        var $description = $('<div/>');
+                        $description.append($('<p/>').html('<b>Start:<b/>' + learningEvent.start.format("YYYY-MMM-DD")));
+                        $description.append($('<p/>').html('<b>Description:</b>' + 'Place to describe the learning day (sub topics and stuff)'
+                        + '<br/> or alternatively a user-written description of personal goals and then the list of sub-topics'));
+                        $('#myModal #pDetails').empty().html($description);
+
+                        $('#myModal').modal();
+                    }
+                })
+            }
+        })
+    </script>
 }
