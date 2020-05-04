@@ -1,37 +1,34 @@
-﻿@model ProjectMayhem.Models.ScheduleViewModel
+﻿<%@Page Language="C#" AutoEventWireup="true" %>
 
-@{
-    ViewBag.Title = "Learning schedule";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<!DOCTYPE html>
 
-    <script runat="server">
-        protected void Calendar1_DayRender(object sender, DayRenderEventArgs e)
+<script runat="server">
+    protected void Calendar1_DayRender(object sender, DayRenderEventArgs e)
+    {
+        DateTime stratDate = new DateTime(2011,12,15);;
+        DateTime endDate = new DateTime(2011,12,24);;
+
+        if (e.Day.Date > stratDate && e.Day.Date < endDate)
         {
-            DateTime stratDate = new DateTime(2011,12,15);;
-            DateTime endDate = new DateTime(2011,12,24);;
-
-            if (e.Day.Date > stratDate && e.Day.Date < endDate)
-            {
-                e.Cell.Font.Italic = true;
-                e.Cell.Font.Size = FontUnit.XLarge;
-                e.Cell.Font.Strikeout = true;
-                e.Cell.CssClass = "CustomCellCss";
-            }
+            e.Cell.Font.Italic = true;
+            e.Cell.Font.Size = FontUnit.XLarge;
+            e.Cell.Font.Strikeout = true;
+            e.Cell.CssClass = "CustomCellCss";
         }
-    </script>
+    }
+</script>
 
-@{
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <title>How to use CSS style in Calendar individual Day Cell</title>
     <style type="text/css">
         .CustomCellCss a:hover {
             background-color: DarkOrange;
             padding: 0px 30px 0px 30px;
         }
     </style>
-
-    <h2>@ViewBag.Title.</h2>
-    <p>Current year: @Model.Year, quarter: @Model.Quarter</p>
-    <input type="date" />
+</head>
+<body>
     <form id="form1" runat="server">
         <div>
             <h2 style="color:SlateBlue; font-style:italic;">
@@ -66,4 +63,5 @@
             </asp:Calendar>
         </div>
     </form>
-}
+</body>
+</html>

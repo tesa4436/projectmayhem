@@ -26,6 +26,12 @@ namespace ProjectMayhem.Controllers
             return View();
         }
 
+        // GET: Learning/Calendar
+        public ActionResult Calendar()
+        {
+            return View();
+        }
+
         // GET: Learning/Create
         public ActionResult AddLearningDay()
         {

@@ -5,6 +5,7 @@ using System.Web;
 
 namespace ProjectMayhem.Models
 {
+    // End goal - DB entities and using code-first approach.
     public class Topic
     {
         public string name { get; set; }
