@@ -148,7 +148,7 @@ namespace ProjectMayhem.Controllers
         public async Task<ActionResult> AcceptInvite(string userId, string InviteToken)
         {
             var result = await UserManager.VerifyUserTokenAsync(userId, "Invite", InviteToken);
-            
+           
             return View(result ? "AcceptInvite" : "Error");
         }
 
@@ -181,7 +181,7 @@ namespace ProjectMayhem.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        [Authorize]
         public ActionResult Register()
         {
             return View();
@@ -190,13 +190,13 @@ namespace ProjectMayhem.Controllers
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, teamLead = UserManager.FindById(User.Identity.GetUserId()) };
                 var RandPassword = Membership.GeneratePassword(20, 5);
                 var result = await UserManager.CreateAsync(user, RandPassword);
                 if (result.Succeeded)

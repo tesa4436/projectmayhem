@@ -193,8 +193,12 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\TeamController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Handlers.cs">
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Migrations\202004011033505_InitialCreate.cs" />
     <Compile Include="Migrations\202004011033505_InitialCreate.designer.cs">
@@ -204,8 +208,13 @@
     <Compile Include="Migrations\202004072051246_User_Testing.designer.cs">
       <DependentUpon>202004072051246_User_Testing.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004261612123_User_Groups.cs" />
+    <Compile Include="Migrations\202004261612123_User_Groups.designer.cs">
+      <DependentUpon>202004261612123_User_Groups.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\GroupViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -214,6 +223,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Services\TeamManager.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -384,6 +394,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Account\AcceptInvite.cshtml" />
+    <Content Include="Views\Team\Members.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -403,6 +414,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004072051246_User_Testing.resx">
       <DependentUpon>202004072051246_User_Testing.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004261612123_User_Groups.resx">
+      <DependentUpon>202004261612123_User_Groups.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

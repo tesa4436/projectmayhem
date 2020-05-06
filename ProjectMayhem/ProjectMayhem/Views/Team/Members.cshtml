@@ -1,0 +1,20 @@
+﻿@model ProjectMayhem.Models.MembersViewModel
+
+@{
+    ViewBag.Title = "Members";
+}
+
+<h2>Members</h2>
+@foreach (var Emp in Model.Employees)
+{
+    <div>
+        @Html.ActionLink(Emp.UserName, "Members", "Team", new { Id = Emp.Id }, new { @class = "elements" }) 
+    </div>
+}
+
+    <select name="EmpSelect">
+        @foreach (var Emp in Model.Employees)
+        {
+        <option value=@Emp.Id>@Emp.UserName</option>
+        }
+    </select>
