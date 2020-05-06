@@ -155,7 +155,7 @@ namespace ProjectMayhem.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> UpdateAfterInvitation(InvitationViewModel model)
+        public async Task<ActionResult> AcceptInvite(InvitationViewModel model)
         {
             if(ModelState.IsValid)
             {

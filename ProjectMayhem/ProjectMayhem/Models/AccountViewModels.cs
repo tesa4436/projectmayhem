@@ -69,6 +69,7 @@ namespace ProjectMayhem.Models
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$.,!%*?&])[A-Za-z\d@$.,!%*?&]{6,}$", ErrorMessage = "The password must contain at least 1 lowercase(a-z), 1 uppercase(A-Z), 1 numeric(0-9) and 1 special char(@$.,!%*?&)")]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }

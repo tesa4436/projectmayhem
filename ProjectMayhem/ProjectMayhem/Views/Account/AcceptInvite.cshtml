@@ -4,7 +4,7 @@
 }
 
 <h2>Accept Invite</h2>
-@using (Html.BeginForm("UpdateAfterInvitation", "Account", new { userId = Request.QueryString["userId"] }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("AcceptInvite", "Account", new { userId = Request.QueryString["userId"] }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
     <h4>Update your info:</h4>
@@ -17,12 +17,14 @@
         </div>
     </div>
     <div class="form-group">
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
         @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">
+        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
         @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })

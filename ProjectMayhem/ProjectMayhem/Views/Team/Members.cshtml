@@ -8,13 +8,34 @@
 @foreach (var Emp in Model.Employees)
 {
     <div>
-        @Html.ActionLink(Emp.UserName, "Members", "Team", new { Id = Emp.Id }, new { @class = "elements" }) 
+        @Html.ActionLink(Emp.UserName, "Members", "Team", new { EmpId = Emp.Id }, null)
     </div>
 }
 
-    <select name="EmpSelect">
-        @foreach (var Emp in Model.Employees)
-        {
-        <option value=@Emp.Id>@Emp.UserName</option>
-        }
-    </select>
+
+@using (Html.BeginForm("ChangeLead", "Team", new { EmpId = Request.QueryString["EmpId"] }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Assign a new Leader</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.EmpId, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.EmpId, new SelectList(Model.Employees.Select(x => new { Value = x.Id, Text = x.UserName }), "Value", "Text"))
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.NewLeadUserName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.NewLeadUserName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Change" />
+        </div>
+    </div>
+}

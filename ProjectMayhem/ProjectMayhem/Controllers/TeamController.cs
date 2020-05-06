@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using ProjectMayhem.Models;
 using ProjectMayhem.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -31,9 +33,9 @@ namespace ProjectMayhem.Controllers
 
         // GET: Team
         [Authorize]
-        public ActionResult Members(string Id)
+        public ActionResult Members(string EmpId)
         {
-            
+            string Id = EmpId;
             string LeadId;
             if (String.IsNullOrEmpty(Id))
                 LeadId = User.Identity.GetUserId();
@@ -45,9 +47,32 @@ namespace ProjectMayhem.Controllers
                 else return View("Error");
             }
 
-            Models.MembersViewModel viewModel = new Models.MembersViewModel();
+            MembersViewModel viewModel = new Models.MembersViewModel();
             viewModel.Employees = TM.GetMembersById(LeadId);
+            
             return View(viewModel);
+        }
+
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        [HttpPost]
+        public async Task<ActionResult> ChangeLead(MembersViewModel model)
+        {
+            string EmpId = Request.QueryString["EmpId"];
+            var ReqUser = UserManager.FindById(model.EmpId);
+            if (TM.CheckIfLead(ReqUser, User.Identity.GetUserId()))
+            {
+                var newLead = TM.GetEmployeeIdByUsername(model.NewLeadUserName);
+                if (model.NewLeadUserName == ReqUser.UserName)
+                    ModelState.AddModelError("", "Cant assign to himself");
+                else if (newLead != null) {
+                    ReqUser.teamLead = UserManager.FindById(newLead);
+                    UserManager.Update(ReqUser);
+                }
+                else ModelState.AddModelError("", "No such user exist");
+                return RedirectToAction("Members", "Team", new { EmpId = EmpId });
+            }
+            return View("Error"); //If you get here - you shouldn't be here
         }
 
     }

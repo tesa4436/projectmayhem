@@ -56,5 +56,19 @@ namespace ProjectMayhem.Services
             }
         }
 
+        public string GetEmployeeIdByUsername(string UserName)
+        {
+            try {
+                var query = context.Users.Where(x => x.UserName == UserName);
+                var user = query.ToArray()[0];
+                System.Diagnostics.Debug.WriteLine("Found " + UserName + " whoose id is: " + user.Id);
+                return user.Id;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
     }
 }
