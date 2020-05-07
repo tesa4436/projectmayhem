@@ -49,7 +49,7 @@ namespace ProjectMayhem.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Username")]
+        [Display(Name = "Username/Email")]
         public string Username { get; set; }
 
         [Required]
@@ -64,6 +64,7 @@ namespace ProjectMayhem.Models
     public class InvitationViewModel
     {
         [Required]
+        [RegularExpression(@"^[a-zA-Z0-9]*$", ErrorMessage = "Email must contain only alphabetic symbols and numbers")]
         [Display(Name="Username")]
         public string Username { get; set; }
 

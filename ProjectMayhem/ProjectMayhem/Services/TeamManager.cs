@@ -42,18 +42,14 @@ namespace ProjectMayhem.Services
 
         private bool CheckRecursion(ApplicationUser reqUser, string CurrentUserId)
         {
-            if(reqUser.teamLead.Id == CurrentUserId)
-            {
-                return true;
-            }
-            else if(string.IsNullOrEmpty(reqUser.teamLead.Id))
-            {
+            if (reqUser.teamLead == null)
                 return false;
-            }
+            else if(reqUser.teamLead.Id == CurrentUserId)
+                return true;
+            else if(string.IsNullOrEmpty(reqUser.teamLead.Id))
+                return false;
             else
-            {
                 return CheckRecursion(reqUser.teamLead, CurrentUserId);
-            }
         }
 
         public string GetEmployeeIdByUsername(string UserName)

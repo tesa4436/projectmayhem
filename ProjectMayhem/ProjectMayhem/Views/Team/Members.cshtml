@@ -1,17 +1,21 @@
 ﻿@model ProjectMayhem.Models.MembersViewModel
 
-@{
-    ViewBag.Title = "Members";
-}
+<h2>
+    @{
+        @ViewBag.Title;
+    }
+</h2>
 
-<h2>Members</h2>
-@foreach (var Emp in Model.Employees)
-{
-    <div>
-        @Html.ActionLink(Emp.UserName, "Members", "Team", new { LeadId = Emp.Id }, null)
-    </div>
-}
-
+<ul>
+    @foreach (var Emp in Model.Employees)
+    {
+    <li>
+        <div>
+            @Html.ActionLink(Emp.UserName, "Members", "Team", new { LeadId = Emp.Id }, null)
+        </div>
+    </li>
+    }
+</ul>
 
 @using (Html.BeginForm("Members", "Team", new { LeadId = Request.QueryString["LeadId"] }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {

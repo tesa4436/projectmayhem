@@ -38,6 +38,8 @@ namespace ProjectMayhem.Controllers
             string Id = LeadId;
             string CurrentLeadId;
 
+            
+
             if (String.IsNullOrEmpty(Id))
                 CurrentLeadId = User.Identity.GetUserId();
             else
@@ -49,6 +51,7 @@ namespace ProjectMayhem.Controllers
             }
 
             MembersViewModel viewModel = new MembersViewModel();
+            ViewBag.Title = "Members of " + UserManager.FindById(CurrentLeadId).UserName +"'s team:";
             viewModel.Employees = TM.GetMembersById(CurrentLeadId);
             viewModel.AllUsers = UserManager.Users.ToList();
             return View(viewModel);
@@ -62,51 +65,59 @@ namespace ProjectMayhem.Controllers
         {
             string EmpId = Request.QueryString["LeadId"];
             model.AllUsers = UserManager.Users.ToList();
+            ApplicationUser CurentTeamLead;
+
             if (!string.IsNullOrEmpty(EmpId))
-                model.Employees = TM.GetMembersById(EmpId);
+                CurentTeamLead = await UserManager.FindByIdAsync(EmpId);
             else
-                model.Employees = TM.GetMembersById(User.Identity.GetUserId());
+                CurentTeamLead = await UserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            Debug.WriteLine("Selected employee is " + model.EmpId);
+            ViewBag.Title = "Members of " + CurentTeamLead.UserName + "'s team:";
+            model.Employees = TM.GetMembersById(CurentTeamLead.Id);
+
+            Debug.WriteLine("Selected team Member is " + model.EmpId);
+            Debug.WriteLine("Possible lead is " + model.NewLeadId);
+
             if (string.IsNullOrEmpty(model.EmpId))
-            {
                 ModelState.AddModelError("", "Team Member not selected");
-                return View(model);
-            }
-            if(string.IsNullOrEmpty(model.NewLeadId))
-            {
+            else if (string.IsNullOrEmpty(model.NewLeadId))
                 ModelState.AddModelError("", "Leader Not selected");
-                return View(model);
-            }
+            else if (CurentTeamLead.Id == model.NewLeadId)
+                ModelState.AddModelError("", "The Member is in that team");
+            else if(model.NewLeadId == model.EmpId)
+                ModelState.AddModelError("", "Cant assign to himself");
 
-            var ReqUser = UserManager.FindById(model.EmpId);
-
-            if (TM.CheckIfLead(ReqUser, User.Identity.GetUserId()))  //Checking if you are a higher leader
+            if (ModelState.IsValid)
             {
-                var newLead = model.NewLeadId;    // Got an employee Id by his username
+                var ReassignedMember = await UserManager.FindByIdAsync(model.EmpId);
 
-                if (model.NewLeadId == ReqUser.Id)                      // Checking if not assigning the person to himself
-                    ModelState.AddModelError("", "Cant assign to himself");
-                else if (newLead != null) {                                        // Checking if newLead is legit
-                    var NewLeaderObj = UserManager.FindById(newLead);
-                    if (TM.CheckIfLead(ReqUser, NewLeaderObj.Id) || !TM.CheckIfLead(NewLeaderObj, ReqUser.Id)) //Check if newLead is in higher position
-                    {
-                        Debug.WriteLine("Person: " + NewLeaderObj.UserName + " Became a leader of: " + ReqUser.UserName);
-                        ReqUser.teamLead = NewLeaderObj;
-                        UserManager.Update(ReqUser);
-                        model.Employees.Remove(model.Employees.Find(x => x.Id == ReqUser.Id));
+                if (TM.CheckIfLead(ReassignedMember, User.Identity.GetUserId()))  //Checking if you are a higher leader
+                {
+                    var newLead = model.NewLeadId;    // Got an employee Id by his username
+                        
+                    if (newLead != null)
+                    {                                        // Checking if newLead is legit
+                        var NewLeaderObj = await UserManager.FindByIdAsync(newLead);
+                        if (TM.CheckIfLead(ReassignedMember, NewLeaderObj.Id) || !TM.CheckIfLead(NewLeaderObj, ReassignedMember.Id)) //Check if newLead is in higher position
+                        {
+                            Debug.WriteLine("Person: " + NewLeaderObj.UserName + " Became a leader of: " + ReassignedMember.UserName);
+                            ReassignedMember.teamLead = NewLeaderObj;
+                            UserManager.Update(ReassignedMember);
+                            model.Employees.Remove(model.Employees.Find(x => x.Id == ReassignedMember.Id));
+                        }
+                        else if (TM.CheckIfLead(NewLeaderObj, ReassignedMember.Id)) //Check if newLead is in lower position
+                        {
+                            ModelState.AddModelError("", "Can't assign to the lower leader in the Hierarchy");
+                        }
                     }
-                    else if(TM.CheckIfLead(NewLeaderObj, ReqUser.Id)) //Check if newLead is in lower position
-                    {
-                        ModelState.AddModelError("", "Can't assign to the lower leader in the Hierarchy");
-                    }
+                    else ModelState.AddModelError("", "No such user exist");
+
+                    return View(model);
                 }
-                else ModelState.AddModelError("", "No such user exist");
-                
-                return View(model);
+                return View("Error"); //If you get here - you shouldn't be in this view at all
             }
-
-            return View("Error"); //If you get here - you shouldn't be here
+            else
+                return View(model);
         }
 
     }
