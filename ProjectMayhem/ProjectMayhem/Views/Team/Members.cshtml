@@ -13,7 +13,7 @@
 }
 
 
-@using (Html.BeginForm("ChangeLead", "Team", new { EmpId = Request.QueryString["EmpId"] }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("Members", "Team", new { EmpId = Request.QueryString["EmpId"] }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
     <h4>Assign a new Leader</h4>

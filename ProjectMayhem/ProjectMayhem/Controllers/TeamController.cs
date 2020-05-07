@@ -56,7 +56,7 @@ namespace ProjectMayhem.Controllers
         [ValidateAntiForgeryToken]
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult> ChangeLead(MembersViewModel model)
+        public async Task<ActionResult> Members(MembersViewModel model)
         {
             string EmpId = Request.QueryString["EmpId"];
             var ReqUser = UserManager.FindById(model.EmpId);
@@ -70,7 +70,12 @@ namespace ProjectMayhem.Controllers
                     UserManager.Update(ReqUser);
                 }
                 else ModelState.AddModelError("", "No such user exist");
-                return RedirectToAction("Members", "Team", new { EmpId = EmpId });
+                if (!string.IsNullOrEmpty(EmpId))
+                    model.Employees = TM.GetMembersById(EmpId);
+                else
+                    model.Employees = TM.GetMembersById(User.Identity.GetUserId());
+                return View(model);
+                //return RedirectToAction("Members", "Team", new { EmpId = EmpId });
             }
             return View("Error"); //If you get here - you shouldn't be here
         }
