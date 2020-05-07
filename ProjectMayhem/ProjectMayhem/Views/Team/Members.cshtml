@@ -8,12 +8,12 @@
 @foreach (var Emp in Model.Employees)
 {
     <div>
-        @Html.ActionLink(Emp.UserName, "Members", "Team", new { EmpId = Emp.Id }, null)
+        @Html.ActionLink(Emp.UserName, "Members", "Team", new { LeadId = Emp.Id }, null)
     </div>
 }
 
 
-@using (Html.BeginForm("Members", "Team", new { EmpId = Request.QueryString["EmpId"] }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("Members", "Team", new { LeadId = Request.QueryString["LeadId"] }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
     <h4>Assign a new Leader</h4>
@@ -28,11 +28,12 @@
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.NewLeadUserName, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.NewLeadId, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.NewLeadUserName, new { @class = "form-control" })
+            @Html.DropDownListFor(m => m.NewLeadId, new SelectList(Model.AllUsers.Select(x => new { Value = x.Id, Text = x.UserName }), "Value", "Text"))
         </div>
     </div>
+
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" class="btn btn-default" value="Change" />

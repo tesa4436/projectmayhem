@@ -10,12 +10,12 @@ namespace ProjectMayhem.Models
     {
         public List<ApplicationUser> Employees { get; set; }
 
-
-        [Display(Name = "New Leader")]
-        [Required]
-        public string NewLeadUserName { get; set; }
+        public List<ApplicationUser> AllUsers { get; set; }
 
         [Display(Name = "Select a Team Member")]
         public string EmpId { get; set; }
+
+        [Display(Name = "Select a new Leader")]
+        public string NewLeadId { get; set; }
     }
 }
