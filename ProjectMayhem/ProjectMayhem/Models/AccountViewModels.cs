@@ -64,7 +64,7 @@ namespace ProjectMayhem.Models
     public class InvitationViewModel
     {
         [Required]
-        [RegularExpression(@"^[a-zA-Z0-9]*$", ErrorMessage = "Email must contain only alphabetic symbols and numbers")]
+        [RegularExpression(@"^[a-zA-Z0-9]*$", ErrorMessage = "Username must contain only alphabetic symbols and numbers")]
         [Display(Name="Username")]
         public string Username { get; set; }
 

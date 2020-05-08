@@ -11,17 +11,17 @@
     {
     <li>
         <div>
-            @Html.ActionLink(Emp.UserName, "Members", "Team", new { LeadId = Emp.Id }, null)
+            @Html.ActionLink(Emp.UserName, "Members", "Team", new { LeadId = Emp.Id, retUrl = HttpContext.Current.Request.Url }, null)
         </div>
     </li>
     }
 </ul>
 
-@using (Html.BeginForm("Members", "Team", new { LeadId = Request.QueryString["LeadId"] }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("Members", "Team", new { LeadId = Request.QueryString["LeadId"], retUrl = Request.QueryString["retUrl"] }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
     <h4>Assign a new Leader</h4>
-    <hr />
+    <hr /> 
     @Html.ValidationSummary("", new { @class = "text-danger" })
 
     <div class="form-group">
@@ -44,3 +44,11 @@
         </div>
     </div>
 }
+
+    <div>
+        @if (!string.IsNullOrEmpty(Request.QueryString["retUrl"]))
+        {
+            <a href=@Request.QueryString["retUrl"]>Back</a><br>   
+            @Html.ActionLink("My team", "Members", "Team")
+        }
+    </div>

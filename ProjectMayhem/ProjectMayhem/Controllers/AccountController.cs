@@ -228,7 +228,8 @@ namespace ProjectMayhem.Controllers
                 if (UserManager.FindByEmail(model.Email) == null)
                 {
                     var user = new ApplicationUser { UserName = model.Email, Email = model.Email, teamLead = UserManager.FindById(User.Identity.GetUserId()) };
-                    var RandPassword = Membership.GeneratePassword(20, 5);
+                    var symbolStr = "@$.,!%*?&";
+                    var RandPassword = Membership.GeneratePassword(20, 5) + new Random().Next(9).ToString() + symbolStr[new Random().Next(8)];
                     var result = await UserManager.CreateAsync(user, RandPassword);
                     if (result.Succeeded)
                     {

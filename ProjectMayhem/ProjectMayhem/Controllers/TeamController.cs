@@ -36,23 +36,19 @@ namespace ProjectMayhem.Controllers
         public ActionResult Members(string LeadId)
         {
             string Id = LeadId;
-            string CurrentLeadId;
-
             
-
-            if (String.IsNullOrEmpty(Id))
-                CurrentLeadId = User.Identity.GetUserId();
+            if (String.IsNullOrEmpty(Id) || User.Identity.GetUserId() == Id)
+                Id = User.Identity.GetUserId();
             else
             {
                 var ReqUser = UserManager.FindById(Id);
-                if (TM.CheckIfLead(ReqUser, User.Identity.GetUserId()))
-                    CurrentLeadId = Id;
-                else return View("Error"); //If you get here you shouldnt be here
+                if (!TM.CheckIfLead(ReqUser, User.Identity.GetUserId()))
+                    return View("Error"); //If you get here you shouldnt be here
             }
 
             MembersViewModel viewModel = new MembersViewModel();
-            ViewBag.Title = "Members of " + UserManager.FindById(CurrentLeadId).UserName +"'s team:";
-            viewModel.Employees = TM.GetMembersById(CurrentLeadId);
+            ViewBag.Title = "Members of " + UserManager.FindById(Id).UserName +"'s team:";
+            viewModel.Employees = UserManager.Users.Where(x => x.teamLead.Id == Id).ToList();//TM.GetMembersById(Id);
             viewModel.AllUsers = UserManager.Users.ToList();
             return View(viewModel);
         }
@@ -67,13 +63,13 @@ namespace ProjectMayhem.Controllers
             model.AllUsers = UserManager.Users.ToList();
             ApplicationUser CurentTeamLead;
 
-            if (!string.IsNullOrEmpty(EmpId))
+            if (!string.IsNullOrEmpty(EmpId) && User.Identity.GetUserId() != EmpId)
                 CurentTeamLead = await UserManager.FindByIdAsync(EmpId);
             else
                 CurentTeamLead = await UserManager.FindByIdAsync(User.Identity.GetUserId());
 
             ViewBag.Title = "Members of " + CurentTeamLead.UserName + "'s team:";
-            model.Employees = TM.GetMembersById(CurentTeamLead.Id);
+            model.Employees = UserManager.Users.Where(x => x.teamLead.Id == CurentTeamLead.Id).ToList();//TM.GetMembersById(CurentTeamLead.Id);
 
             Debug.WriteLine("Selected team Member is " + model.EmpId);
             Debug.WriteLine("Possible lead is " + model.NewLeadId);
