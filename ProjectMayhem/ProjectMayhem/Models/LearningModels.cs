@@ -9,17 +9,16 @@ namespace ProjectMayhem.Models
     public class Topic
     {
         public string Name { get; set; }
-        public List<SubTopic> SubTopics;
-    }
-
-    public class SubTopic
-    {
-        public string Name;
+        public Topic ParentTopic;
+        public List<string> References;
     }
 
     public class LearningDay
     {
         public DateTime Date;
-        public Topic Topic;
+        public List<Topic> Topics;
+        public string[] References;
+        public string Description;
+        public string Title;
     }
 }

@@ -36,9 +36,22 @@ namespace ProjectMayhem.Controllers
         public JsonResult GetLearningDays()
         {
             List<LearningDay> days = new List<LearningDay>();
-            days.Add(new LearningDay { Date = DateTime.Now, Topic = new Topic { Name = "Some body touched my baguette!" } });
-            days.Add(new LearningDay { Date = DateTime.Now.AddDays(1), Topic = new Topic { Name = "MSSQL basics" } });
-            days.Add(new LearningDay { Date = DateTime.Now.AddDays(3), Topic = new Topic { Name = "Yeah, aha, you know what it is." } });
+            string[] references = { "https://google.com", "https://wikipedia.org", "https://stackoverflow.com/" };
+            List<Topic> topics = new List<Topic> { new Topic { Name = "Some body touched my baguette!" } ,
+            new Topic { Name = "MSSQL basics" }, new Topic { Name = "Yeah, aha, you know what it is." } };
+
+            days.Add(new LearningDay { Date = DateTime.Now, References = references, 
+                Description = "Assembly, Basic, C#",
+                Title = "Programming ABC",
+                Topics = topics });
+            days.Add(new LearningDay { Date = DateTime.Now.AddDays(1), References = references,
+                Description = "Learning stuff - good. Hehe.",
+                Title = "Programming AB", 
+                Topics = topics });
+            days.Add(new LearningDay { Date = DateTime.Now.AddDays(3), References = references,
+                Description = "Everything I do, I do it big. Yeah, uh huh, screamin' that's nothin'",
+                Title = "Black and yellow",
+                Topics = new List<Topic> { new Topic { Name = "Yeah, aha, you know what it is." } } });
             return new JsonResult { Data = days, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
 
@@ -53,7 +66,7 @@ namespace ProjectMayhem.Controllers
                 LearningDay newDay = new LearningDay
                 {
                     Date = viewModel.NewDate,
-                    Topic = new Topic { Name = viewModel.Topic }
+                    Topics = new List<Topic> { new Topic { Name = viewModel.Topic } }
                 };
 
                 return RedirectToAction("Index");
