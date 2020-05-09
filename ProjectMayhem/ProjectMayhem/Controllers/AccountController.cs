@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -69,23 +70,51 @@ namespace ProjectMayhem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
+            if (model.Username.IndexOf('@') > -1)
+            {
+                //Validate email format
+                string emailRegex = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" +
+                                       @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" +
+                                          @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+                Regex re = new Regex(emailRegex);
+                if (!re.IsMatch(model.Username))
+                {
+                    ModelState.AddModelError("", "Email is not valid");
+                }
+            }
+            else
+            {
+                //validate Username format
+                string emailRegex = @"^[a-zA-Z0-9]*$";
+                Regex re = new Regex(emailRegex);
+                if (!re.IsMatch(model.Username))
+                {
+                    ModelState.AddModelError("", "Username is not valid");
+                }
+            }
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            /*var user = await UserManager.FindByNameAsync(model.Email);
+            var UserName = model.Username;
+            ApplicationUser user;
+            if (UserName.IndexOf('@') > -1)
+            {
+                user = await UserManager.FindByEmailAsync(model.Username);
+                UserName = user.UserName;
+            }
+            else
+                user = await UserManager.FindByNameAsync(model.Username);
             if (user != null)
             {
                 if (!await UserManager.IsEmailConfirmedAsync(user.Id))
                 {
-                    ViewBag.errorMessage = "You must have a confirmed email to log on.";
-                    return View("Error");
+                    ModelState.AddModelError("", "You must have a confirmed email to log on.");
+                    return View(model);
                 }
-            }*/
+            }
 
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -145,17 +174,25 @@ namespace ProjectMayhem.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<ActionResult> AcceptInvite(string userId, string InviteToken)
+        public async Task<ActionResult> AcceptInvite(string userId, string InviteToken, string EmailConf)
         {
+
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(InviteToken))
+                return View("Error");
             var result = await UserManager.VerifyUserTokenAsync(userId, "Invite", InviteToken);
+            if (result == true)
+            {
+                var EmailRes = await UserManager.ConfirmEmailAsync(userId, EmailConf);
+                return View(EmailRes.Succeeded ? "AcceptInvite" : "Error");
+            }
+            else return View("Error");
             
-            return View(result ? "AcceptInvite" : "Error");
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> UpdateAfterInvitation(InvitationViewModel model)
+        public async Task<ActionResult> AcceptInvite(InvitationViewModel model)
         {
             if(ModelState.IsValid)
             {
@@ -165,15 +202,7 @@ namespace ProjectMayhem.Controllers
                 user.UserName = model.Username;
                 var request = await UserManager.UpdateAsync(user);
                 if (request.Succeeded)
-                {
-                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Account",
-                     new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    await UserManager.SendEmailAsync(user.Id,
-                       "Confirm Email", "You can confirm the email by clicking <a href=\""
-                       + callbackUrl + "\">here</a><br> <br> Credentials: <br> Username: " + user.UserName + " <br> Password: " + model.Password);
                     return RedirectToAction("Login", "Account");
-                }
                 AddErrors(request);
             }
             return View(model);
@@ -181,7 +210,7 @@ namespace ProjectMayhem.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        [Authorize]
         public ActionResult Register()
         {
             return View();
@@ -190,43 +219,37 @@ namespace ProjectMayhem.Controllers
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var RandPassword = Membership.GeneratePassword(20, 5);
-                var result = await UserManager.CreateAsync(user, RandPassword);
-                if (result.Succeeded)
+                if (UserManager.FindByEmail(model.Email) == null)
                 {
-                    string code = await UserManager.GenerateUserTokenAsync("Invite", user.Id);
-                    var InviteUrl = Url.Action("AcceptInvite", "Account", new {userId = user.Id, InviteToken = code }, Request.Url.Scheme);
-                    await UserManager.SendEmailAsync(user.Id,
-                       "Invitation", "You can accept the invitation by clicking <a href=\""
-                       + InviteUrl + "\">here</a>");
+                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email, teamLead = UserManager.FindById(User.Identity.GetUserId()) };
+                    var symbolStr = "@$.,!%*?&";
+                    var RandPassword = Membership.GeneratePassword(20, 5) + new Random().Next(9).ToString() + symbolStr[new Random().Next(8)];
+                    var result = await UserManager.CreateAsync(user, RandPassword);
+                    if (result.Succeeded)
+                    {
+                        string EmailCode = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                        string InvCode = await UserManager.GenerateUserTokenAsync("Invite", user.Id);
+                        var InviteUrl = Url.Action("AcceptInvite", "Account", new { userId = user.Id, InviteToken = InvCode, EmailConf = EmailCode }, Request.Url.Scheme);
+                        await UserManager.SendEmailAsync(user.Id,
+                           "Invitation", "Hello,<br><br>You can accept the invitation by clicking <a href=\""
+                           + InviteUrl + "\">here</a><br><br>Best Regards,<br> ProjectMayhem Team");
 
-                    return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Members", "Team");
+                    }
+                    AddErrors(result);
                 }
-                AddErrors(result);
+                else
+                    ModelState.AddModelError("", "The User already exist");
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
-        }
-
-        //
-        // GET: /Account/ConfirmEmail
-        [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(string userId, string code)
-        {
-            if (userId == null || code == null)
-            {
-                return View("Error");
-            }
-            var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
         //

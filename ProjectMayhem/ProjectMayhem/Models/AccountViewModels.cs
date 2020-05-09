@@ -49,7 +49,7 @@ namespace ProjectMayhem.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Username")]
+        [Display(Name = "Username/Email")]
         public string Username { get; set; }
 
         [Required]
@@ -64,11 +64,13 @@ namespace ProjectMayhem.Models
     public class InvitationViewModel
     {
         [Required]
+        [RegularExpression(@"^[a-zA-Z0-9]*$", ErrorMessage = "Username must contain only alphabetic symbols and numbers")]
         [Display(Name="Username")]
         public string Username { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$.,!%*?&])[A-Za-z\d@$.,!%*?&]{6,}$", ErrorMessage = "The password must contain at least 1 lowercase(a-z), 1 uppercase(A-Z), 1 numeric(0-9) and 1 special char(@$.,!%*?&)")]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }

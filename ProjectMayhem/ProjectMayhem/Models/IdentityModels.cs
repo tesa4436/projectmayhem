@@ -11,6 +11,9 @@ namespace ProjectMayhem.Models
     public class ApplicationUser : IdentityUser
     {
         public virtual ICollection<Topic> AssignedTopics { get; set; }
+
+        public virtual ApplicationUser teamLead { get; set; }
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -25,6 +28,7 @@ namespace ProjectMayhem.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+            Configuration.ProxyCreationEnabled = true;
         }
 
         public static ApplicationDbContext Create()
