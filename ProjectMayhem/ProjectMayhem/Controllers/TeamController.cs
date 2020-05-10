@@ -52,7 +52,6 @@ namespace ProjectMayhem.Controllers
             viewModel.AllUsers = UserManager.Users.ToList();
             return View(viewModel);
         }
-        
 
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -115,6 +114,5 @@ namespace ProjectMayhem.Controllers
             else
                 return View(model);
         }
-
     }
 }
