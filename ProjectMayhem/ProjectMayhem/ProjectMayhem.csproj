@@ -206,15 +206,21 @@
     <Compile Include="Migrations\202004072051246_User_Testing.designer.cs">
       <DependentUpon>202004072051246_User_Testing.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005090334008_FixingMerge.cs" />
+    <Compile Include="Migrations\202005090334008_FixingMerge.designer.cs">
+      <DependentUpon>202005090334008_FixingMerge.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005090337338_AddTopicLearners.cs" />
+    <Compile Include="Migrations\202005090337338_AddTopicLearners.designer.cs">
+      <DependentUpon>202005090337338_AddTopicLearners.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\TopicLearnersModel.cs" />
     <Compile Include="Models\Topic.cs" />
     <Compile Include="Migrations\202004261612123_User_Groups.cs" />
     <Compile Include="Migrations\202004261612123_User_Groups.designer.cs">
       <DependentUpon>202004261612123_User_Groups.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GroupViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -416,6 +422,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004261612123_User_Groups.resx">
       <DependentUpon>202004261612123_User_Groups.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005090334008_FixingMerge.resx">
+      <DependentUpon>202005090334008_FixingMerge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005090337338_AddTopicLearners.resx">
+      <DependentUpon>202005090337338_AddTopicLearners.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

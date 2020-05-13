@@ -16,6 +16,7 @@ namespace ProjectMayhem.DAL
 
         public DbSet<Topic> Topics { get; set; }
        
+        public DbSet<TopicLearnersModel> TopicLearners { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
