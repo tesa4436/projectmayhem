@@ -1,6 +1,7 @@
 ﻿using ProjectMayhem.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -15,7 +16,7 @@ namespace ProjectMayhem.Controllers
         {
             ScheduleViewModel viewModel = new ScheduleViewModel();
             // Could add learning days from database here.
-            // viewModel.LearningDays = 
+            viewModel.LearningDays = getFakeLearningDays();
 
             return View(viewModel);
         }
@@ -35,41 +36,33 @@ namespace ProjectMayhem.Controllers
 
         public JsonResult GetLearningDays()
         {
-            List<LearningDay> days = new List<LearningDay>();
-            string[] references = { "https://google.com", "https://wikipedia.org", "https://stackoverflow.com/" };
-            List<Topic> topics = new List<Topic> { new Topic { Name = "Some body touched my baguette!" } ,
-            new Topic { Name = "MSSQL basics" }, new Topic { Name = "Yeah, aha, you know what it is." } };
-
-            days.Add(new LearningDay { Date = DateTime.Now, References = references, 
-                Description = "Assembly, Basic, C#",
-                Title = "Programming ABC",
-                Topics = topics });
-            days.Add(new LearningDay { Date = DateTime.Now.AddDays(1), References = references,
-                Description = "Learning stuff - good. Hehe.",
-                Title = "Programming AB", 
-                Topics = topics });
-            days.Add(new LearningDay { Date = DateTime.Now.AddDays(3), References = references,
-                Description = "Everything I do, I do it big. Yeah, uh huh, screamin' that's nothin'",
-                Title = "Black and yellow",
-                Topics = new List<Topic> { new Topic { Name = "Yeah, aha, you know what it is." } } });
-            return new JsonResult { Data = days, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            var learningDays = getFakeLearningDays();
+            return new JsonResult { Data = learningDays, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
 
 
         // POST: Learning/Create
         [HttpPost]
-        public ActionResult Create(AddLearningDayViewModel viewModel)
+        public ActionResult Create(ScheduleViewModel viewModel)
         {
             try
             {
+                Debug.WriteLine("Adding a new learning day, date: " + viewModel.Date);
                 // TODO: Add insert logic here
                 LearningDay newDay = new LearningDay
                 {
-                    Date = viewModel.NewDate,
-                    Topics = new List<Topic> { new Topic { Name = viewModel.Topic } }
+                    Date = viewModel.Date,
+                    Topics = new List<Topic> { new Topic { Name = viewModel.TopicName } },
+                    Description = viewModel.Description,
+                    Title = viewModel.Title
                 };
-
-                return RedirectToAction("Index");
+                viewModel.Date = DateTime.Now;
+                viewModel.Description = "";
+                viewModel.Title = "";
+                // To do: If there is no topic of a given name, then a new topic should be created.
+                viewModel.TopicName = "";
+                // How to handle redirection if this method will be called both from the learning schedule and
+                return RedirectToAction("Schedule");
             }
             catch
             {
@@ -120,5 +113,40 @@ namespace ProjectMayhem.Controllers
                 return View();
             }
         }
+        private List<LearningDay> getFakeLearningDays()
+        {
+            List<LearningDay> days = new List<LearningDay>();
+            string[] references = { "https://google.com", "https://wikipedia.org", "https://stackoverflow.com/" };
+            List<Topic> topics = new List<Topic> { new Topic { Name = "Some body touched my baguette!" } ,
+            new Topic { Name = "MSSQL basics" }, new Topic { Name = "Yeah, aha, you know what it is." } };
+
+            days.Add(new LearningDay
+            {
+                Date = DateTime.Now,
+                References = references,
+                Description = "Assembly, Basic, C#",
+                Title = "Programming ABC",
+                Topics = topics
+            });
+            days.Add(new LearningDay
+            {
+                Date = DateTime.Now.AddDays(1),
+                References = references,
+                Description = "Learning stuff - good. Hehe.",
+                Title = "Programming AB",
+                Topics = topics
+            });
+            days.Add(new LearningDay
+            {
+                Date = DateTime.Now.AddDays(3),
+                References = references,
+                Description = "Everything I do, I do it big. Yeah, uh huh, screamin' that's nothin'",
+                Title = "Black and yellow",
+                Topics = new List<Topic> { new Topic { Name = "Yeah, aha, you know what it is." } }
+            });
+
+            return days;
+        }
     }
+
 }

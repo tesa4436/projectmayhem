@@ -6,11 +6,13 @@ using System.Web;
 
 namespace ProjectMayhem.Models
 {
-    public class ScheduleViewModel
+    // May also be used to add a new learning day.
+    public class ScheduleViewModel : AddLearningDayViewModel
     {
         public int Quarter { get; set; }
         public int Year { get; set; }
         public List<LearningDay> LearningDays { get; set; }
+        public LearningDay ViewedDay { get; set; }
         public ScheduleViewModel()
         {
             this.Year = DateTime.Now.Year;
@@ -20,10 +22,10 @@ namespace ProjectMayhem.Models
 
     public class AddLearningDayViewModel
     {
-        [Required]
-        public DateTime NewDate { get; set; }
-        [Required]
-        public string Topic { get; set; }
+        public DateTime Date { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string TopicName { get; set; }
     }
 
 
