@@ -11,10 +11,17 @@
 <h2>@ViewBag.Title.</h2>
 <p>Current year: @Model.Year, quarter: @Model.Quarter</p>
 
-<!-- This holds the generated FullCalendar element for the Learning Schedule.-->
+<!-- This holds the generated FullCalendar element for the Learning Schedule.
+    Documentation: https://fullcalendar.io/docs -->
 <div id="schedule">
 
 </div>
+
+<!-- This holds the generated FullCalendar element for the Learning Schedule.-->
+<div id="schedule1">
+
+</div>
+
 
 <!-- Modal dialog to show learning day details. -->
 <div id="myModal" class="modal fade" role="dialog">
@@ -37,47 +44,95 @@
 
 </div>
 
-<!--This is an old way to use FullCalendar-->
-<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css" rel="stylesheet" />
-<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css" rel="stylesheet" media="print" />
+<!--This is an old way to use FullCalendar    -->
+<!--New way:-->
+<link href="~/Scripts/fullcalendar/core/main.css" rel="stylesheet" />
+<link href="~/Scripts/fullcalendar/daygrid/main.css" rel="stylesheet" media="print" />
 
 @section Scripts{
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
-
+    <script src="~/Scripts/fullcalendar/core/main.js"></script>
+    <script src="~/Scripts/fullcalendar/daygrid/main.js"></script>
+    <script src='~/Scripts/fullcalendar/interaction/main.js'></script>
+    <!--Utility functions: -->
     <script>
-        $(document).ready(function () {
+        function displayLearningDay(learningEvent, jsEvent, view) {
+            $('#myModal #topicName').text(learningEvent.title);
+            var $description = $('<div/>');
+            $description.append($('<p/>').html('<b>Start:<b/> ' + learningEvent.start.format("YYYY-MMM-DD")));
+            $description.append($('<p/>').html('<b>Description:</b> ' + learningEvent.description));
+
+            var $topicsDescription = $('<div/>');
+            $topicsDescription.append($('<p/>').html('<b>Topics:</b><br/>'));
+            var $topics = $('<ol/>');
+            for (var topic of learningEvent.topics) {
+                $topics.append($('<li>' + topic.Name + '</li>'));
+            }
+            $topicsDescription.append($topics);
+
+            var $referencesDescription = $('<div/>');
+            $referencesDescription.append($('<p/>').html('<b>References:</b>'));
+            var $references = $('<ol/>');
+            for (var reference of learningEvent.references) {
+                $references.append($('<li><a href="' + reference + '">' + reference + '</a></li>'));
+            }
+            $referencesDescription.append($references);
+
+            $('#myModal #pDetails').empty().html($description);
+            $('#myModal #pTopics').empty().html($topicsDescription);
+            $('#myModal #pReferences').empty().html($referencesDescription);
+
+            $('#myModal').modal();
+        }
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+    </script>
+    <script>
+        // Preparing the calendar
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('schedule1');
+
             var events = [];
             // Getting events for the calendar. Need Javascript objects with specific fields for FullCalendar to work.
             $.ajax({
                 type: "GET",
                 url: "/Learning/GetLearningDays",
                 success: function (data) {
+                    var i = 1;
                     $.each(data, function (i, learningDay) {
+                        var milisecondTime = learningDay.Date.slice(6, -2)
                         events.push({
+                            id: i.toString(),
                             title: learningDay.Title,
-                            description: learningDay.Description, // v.Description, // Not sure, why we would need descriptions here.
-                            start: moment(learningDay.Date),
-                            references: learningDay.References,
-                            topics: learningDay.Topics,
-                            end: null,
-                            color: 'Cyan', // Could store the color inside learning days.
-                            allDay: true // Learning days are events that last a full day.
+                            // Start has to be date-parseable like "2020-05-10"
+                            start: parseInt(learningDay.Date.substr(6)),
+                            allDay: true
                         })
-                    });
 
-                    GenerateCalendar(events);
+                        i++;
+                    });
+                    console.log('Initializing newer calendar, events:')
+                    console.log(events)
+                    InitializeCalendar(calendarEl, events);
                 },
                 error: function (error) {
                     alert('failed to get learning days');
                 }
             })
 
-            // Sets correct properties to the calendar, event handlers and events for display and interaction.
-            // Destroys the calendar in case it was created earlier. This avoids some issues.
-            function GenerateCalendar(events) {
-                $('#schedule').fullCalendar('destroy');
-                $('#schedule').fullCalendar({
+            function InitializeCalendar(calendarEl, _events) {
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    plugins: ['interaction', 'dayGrid'],
                     contentHeight: 400,
                     defaultDate: new Date(),
                     timeFormat: 'h(:mm)a',
@@ -87,39 +142,25 @@
                         right: 'month,basicWeek,basicDay,agenda'
                     },
                     eventLimit: true,
-                    eventColor: '#378006',
-                    events: events,
-                    // What happens when you click on an event -> display modal with event info.
-                    eventClick: function (learningEvent, jsEvent, view) {
-                        $('#myModal #topicName').text(learningEvent.title);
-                        var $description = $('<div/>');
-                        $description.append($('<p/>').html('<b>Start:<b/> ' + learningEvent.start.format("YYYY-MMM-DD")));
-                        $description.append($('<p/>').html('<b>Description:</b> ' + learningEvent.description));
-
-                        var $topicsDescription = $('<div/>');
-                        $topicsDescription.append($('<p/>').html('<b>Topics:</b><br/>'));
-                        var $topics = $('<ol/>');
-                        for (var topic of learningEvent.topics) {
-                            $topics.append($('<li>' + topic.Name + '</li>'));
-                        }
-                        $topicsDescription.append($topics);
-
-                        var $referencesDescription = $('<div/>');
-                        $referencesDescription.append($('<p/>').html('<b>References:</b>'));
-                        var $references = $('<ol/>');
-                        for (var reference of learningEvent.references) {
-                            $references.append($('<li><a href="' + reference + '">' + reference + '</a></li>'));
-                        }
-                        $referencesDescription.append($references);
-
-                        $('#myModal #pDetails').empty().html($description);
-                        $('#myModal #pTopics').empty().html($topicsDescription);
-                        $('#myModal #pReferences').empty().html($referencesDescription);
-
-                        $('#myModal').modal();
+                    eventColor: 'Cyan',
+                    events: _events,
+                    // Passing an event handler to display learning day information when event is clicked.
+                    eventClick: displayLearningDay,
+                    dateClick: function (info) {
+                        alert('Clicked on: ' + info.dateStr);
+                        alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+                        alert('Current view: ' + info.view.type);
+                        // change the day's background color just for fun
+                        info.dayEl.style.backgroundColor = 'red';
+                        console.log('Click detected');
                     }
-                })
+                });
+
+                calendar.render();
+                console.log('Calendar is: ', typeof calendar)
+                console.log('Getting event from calendar by id: 1')
+                console.log(calendar.getEventById('1'))
             }
-        })
+        });
     </script>
 }

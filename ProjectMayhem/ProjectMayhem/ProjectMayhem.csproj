@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -25,6 +26,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TypeScriptToolsVersion>3.8</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -201,7 +203,223 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\fullcalendar\bootstrap\main.js.map" />
+    <Content Include="Scripts\fullcalendar\bootstrap\package.json" />
+    <Content Include="Scripts\fullcalendar\bootstrap\README.md" />
+    <Content Include="Scripts\fullcalendar\bundle\google-calendar.js.map" />
+    <Content Include="Scripts\fullcalendar\bundle\luxon.js.map" />
+    <Content Include="Scripts\fullcalendar\bundle\moment-timezone.js.map" />
+    <Content Include="Scripts\fullcalendar\bundle\moment.js.map" />
+    <Content Include="Scripts\fullcalendar\bundle\rrule.js.map" />
+    <Content Include="Scripts\fullcalendar\core\main.js.map" />
+    <Content Include="Scripts\fullcalendar\core\package.json" />
+    <Content Include="Scripts\fullcalendar\core\README.md" />
+    <Content Include="Scripts\fullcalendar\daygrid\main.js.map" />
+    <Content Include="Scripts\fullcalendar\daygrid\package.json" />
+    <Content Include="Scripts\fullcalendar\daygrid\README.md" />
+    <Content Include="Scripts\fullcalendar\google-calendar\main.js.map" />
+    <Content Include="Scripts\fullcalendar\google-calendar\package.json" />
+    <Content Include="Scripts\fullcalendar\google-calendar\README.md" />
+    <Content Include="Scripts\fullcalendar\interaction\main.js.map" />
+    <Content Include="Scripts\fullcalendar\interaction\package.json" />
+    <Content Include="Scripts\fullcalendar\interaction\README.md" />
+    <Content Include="Scripts\fullcalendar\list\main.js.map" />
+    <Content Include="Scripts\fullcalendar\list\package.json" />
+    <Content Include="Scripts\fullcalendar\list\README.md" />
+    <Content Include="Scripts\fullcalendar\rrule\main.js.map" />
+    <Content Include="Scripts\fullcalendar\rrule\package.json" />
+    <Content Include="Scripts\fullcalendar\rrule\README.md" />
+    <Content Include="Scripts\fullcalendar\timegrid\main.js.map" />
+    <Content Include="Scripts\fullcalendar\timegrid\package.json" />
+    <Content Include="Scripts\fullcalendar\timegrid\README.md" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\fullcalendar\bootstrap\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\bootstrap\main.css" />
+    <Content Include="Scripts\fullcalendar\bootstrap\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\bootstrap\main.js" />
+    <Content Include="Scripts\fullcalendar\bootstrap\main.min.css" />
+    <Content Include="Scripts\fullcalendar\bootstrap\main.min.js" />
+    <Content Include="Scripts\fullcalendar\bundle\google-calendar.js" />
+    <Content Include="Scripts\fullcalendar\bundle\google-calendar.min.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales-all.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales-all.min.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\af.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar-dz.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar-kw.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar-ly.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar-ma.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar-sa.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar-tn.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\bg.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\bs.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ca.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\cs.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\da.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\de.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\el.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\en-au.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\en-gb.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\en-nz.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\es-us.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\es.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\et.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\eu.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\fa.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\fi.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\fr-ca.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\fr-ch.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\fr.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\gl.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\he.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\hi.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\hr.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\hu.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\id.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\is.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\it.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ja.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ka.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\kk.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ko.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\lb.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\lt.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\lv.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\mk.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ms.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\nb.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\nl.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\nn.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\pl.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\pt-br.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\pt.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ro.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ru.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\sk.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\sl.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\sq.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\sr-cyrl.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\sr.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\sv.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\th.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\tr.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\uk.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\vi.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\zh-cn.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\zh-tw.js" />
+    <Content Include="Scripts\fullcalendar\bundle\luxon.js" />
+    <Content Include="Scripts\fullcalendar\bundle\luxon.min.js" />
+    <Content Include="Scripts\fullcalendar\bundle\moment-timezone.js" />
+    <Content Include="Scripts\fullcalendar\bundle\moment-timezone.min.js" />
+    <Content Include="Scripts\fullcalendar\bundle\moment.js" />
+    <Content Include="Scripts\fullcalendar\bundle\moment.min.js" />
+    <Content Include="Scripts\fullcalendar\bundle\rrule.js" />
+    <Content Include="Scripts\fullcalendar\bundle\rrule.min.js" />
+    <Content Include="Scripts\fullcalendar\core\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\core\locales-all.js" />
+    <Content Include="Scripts\fullcalendar\core\locales-all.min.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\af.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar-dz.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar-kw.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar-ly.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar-ma.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar-sa.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar-tn.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\az.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\bg.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\bs.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ca.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\cs.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\da.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\de.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\el.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\en-au.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\en-gb.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\en-nz.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\es-us.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\es.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\et.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\eu.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\fa.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\fi.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\fr-ca.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\fr-ch.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\fr.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\gl.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\he.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\hi.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\hr.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\hu.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\id.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\is.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\it.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ja.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ka.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\kk.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ko.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\lb.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\lt.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\lv.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\mk.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ms.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\nb.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\nl.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\nn.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\pl.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\pt-br.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\pt.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ro.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ru.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\sk.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\sl.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\sq.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\sr-cyrl.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\sr.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\sv.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\th.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\tr.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ug.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\uk.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\uz.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\vi.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\zh-cn.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\zh-tw.js" />
+    <Content Include="Scripts\fullcalendar\core\main.css" />
+    <Content Include="Scripts\fullcalendar\core\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\core\main.js" />
+    <Content Include="Scripts\fullcalendar\core\main.min.css" />
+    <Content Include="Scripts\fullcalendar\core\main.min.js" />
+    <Content Include="Scripts\fullcalendar\daygrid\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\daygrid\main.css" />
+    <Content Include="Scripts\fullcalendar\daygrid\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\daygrid\main.js" />
+    <Content Include="Scripts\fullcalendar\daygrid\main.min.css" />
+    <Content Include="Scripts\fullcalendar\daygrid\main.min.js" />
+    <Content Include="Scripts\fullcalendar\google-calendar\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\google-calendar\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\google-calendar\main.js" />
+    <Content Include="Scripts\fullcalendar\google-calendar\main.min.js" />
+    <Content Include="Scripts\fullcalendar\interaction\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\interaction\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\interaction\main.js" />
+    <Content Include="Scripts\fullcalendar\interaction\main.min.js" />
+    <Content Include="Scripts\fullcalendar\list\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\list\main.css" />
+    <Content Include="Scripts\fullcalendar\list\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\list\main.js" />
+    <Content Include="Scripts\fullcalendar\list\main.min.css" />
+    <Content Include="Scripts\fullcalendar\list\main.min.js" />
+    <Content Include="Scripts\fullcalendar\rrule\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\rrule\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\rrule\main.js" />
+    <Content Include="Scripts\fullcalendar\rrule\main.min.js" />
+    <Content Include="Scripts\fullcalendar\timegrid\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\timegrid\main.css" />
+    <Content Include="Scripts\fullcalendar\timegrid\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\timegrid\main.js" />
+    <Content Include="Scripts\fullcalendar\timegrid\main.min.css" />
+    <Content Include="Scripts\fullcalendar\timegrid\main.min.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -249,7 +467,16 @@
     <Content Include="Views\Learning\Schedule.cshtml" />
     <Content Include="Views\Learning\AddLearningDay.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <TypeScriptCompile Include="Scripts\fullcalendar\bootstrap\main.d.ts" />
+    <TypeScriptCompile Include="Scripts\fullcalendar\core\main.d.ts" />
+    <TypeScriptCompile Include="Scripts\fullcalendar\daygrid\main.d.ts" />
+    <TypeScriptCompile Include="Scripts\fullcalendar\google-calendar\main.d.ts" />
+    <TypeScriptCompile Include="Scripts\fullcalendar\interaction\main.d.ts" />
+    <TypeScriptCompile Include="Scripts\fullcalendar\list\main.d.ts" />
+    <TypeScriptCompile Include="Scripts\fullcalendar\rrule\main.d.ts" />
+    <TypeScriptCompile Include="Scripts\fullcalendar\timegrid\main.d.ts" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -263,11 +490,15 @@
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
