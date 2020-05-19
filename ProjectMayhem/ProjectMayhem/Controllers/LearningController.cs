@@ -22,7 +22,6 @@ namespace ProjectMayhem.Controllers
                 Year = DateTime.Now.Year,
                 Quarter = 1 + DateTime.Now.Month / 3
             };
-            viewModel.Year = 2000;
             Debug.WriteLine("Schedule ViewModel initialized with a list of learning days. Its length is: {0}", viewModel.LearningDays.Count);
             return View(viewModel);
         }
@@ -40,8 +39,9 @@ namespace ProjectMayhem.Controllers
             return View(addLearningDayViewModel);
         }
 
-        public ActionResult EditLearningDay(string id)
+        public ActionResult EditLearningDay(int id)
         {
+            Debug.WriteLine("Editing day: " + id);
             EditLearningDayViewModel viewModel = new EditLearningDayViewModel();
             LearningDay editedDay = getFakeLearningDays()[0];
             viewModel.Topics = editedDay.Topics;
