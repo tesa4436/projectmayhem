@@ -9,12 +9,18 @@ namespace ProjectMayhem.DbEntities
 {
     public class TopicDay
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int TopicDayId { get; set; }
+
+        [Key, Column(Order = 0)]
+        [ForeignKey("Day")]
+        public int DayId { get; set; }
+        
+
+        [Key, Column(Order = 1)]
+        [ForeignKey("Topic")]
+        public int TopicId { get; set; }
+
+        public virtual Topic Topic { get; set; }
 
         public virtual LearningDay Day { get; set; }
-
-        public virtual Topics Topic { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace ProjectMayhem
         {
             using(var contxt = ApplicationDbContext.Create())
             {
-                var topics = new Topics();
+                var topics = new Topic();
                 topics.Title = "Graphical design";
                 topics.Description = "Very good thing";
                 contxt.topics.Add(topics);
