@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Globalization;
+using System.Diagnostics;
+using System.Dynamic;
 using System.Linq;
-using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -213,7 +213,16 @@ namespace ProjectMayhem.Controllers
         [Authorize]
         public ActionResult Register()
         {
-            return View();
+            AccountManagementViewModel mymodel = new AccountManagementViewModel();
+            var error = (String)TempData["DeleteError"];
+            if (!String.IsNullOrEmpty(error))
+            {
+                ModelState.AddModelError("Deletion", error);
+                TempData.Remove("DeleteError");
+            }
+            var currentUser = User.Identity.GetUserId();
+            mymodel.TeamMembers = UserManager.Users.Where(x => x.teamLead.Id == currentUser).ToList();
+            return View(mymodel);
         }
 
         //
@@ -221,7 +230,7 @@ namespace ProjectMayhem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(AccountManagementViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -247,7 +256,8 @@ namespace ProjectMayhem.Controllers
                 else
                     ModelState.AddModelError("", "The User already exist");
             }
-
+            var currentUser = User.Identity.GetUserId();
+            model.TeamMembers = UserManager.Users.Where(x => x.teamLead.Id == currentUser).ToList();
             // If we got this far, something failed, redisplay form
             return View(model);
         }
@@ -258,6 +268,22 @@ namespace ProjectMayhem.Controllers
         public ActionResult ForgotPassword()
         {
             return View();
+        }
+
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<ActionResult> DeleteAccount(AccountManagementViewModel model)
+        {
+            var SelectedId = model.EmpId;
+            Debug.WriteLine(SelectedId + " This ID");
+            if (UserManager.Users.Where(x => x.teamLead.Id == SelectedId).ToArray().Length == 0)
+            {
+                await UserManager.DeleteAsync(UserManager.FindById(SelectedId));
+            }
+            else
+                TempData["DeleteError"] = "Cannot delete a member who is a Team Leader";
+            return this.RedirectToAction("Register");
         }
 
         //
