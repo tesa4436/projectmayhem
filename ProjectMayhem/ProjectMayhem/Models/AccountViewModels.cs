@@ -3,18 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ProjectMayhem.Models
 {
-    public class ExternalLoginConfirmationViewModel
-    {
-        [Required]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
-    }
-
-    public class ExternalLoginListViewModel
-    {
-        public string ReturnUrl { get; set; }
-    }
-
     public class SendCodeViewModel
     {
         public string SelectedProvider { get; set; }
@@ -49,9 +37,8 @@ namespace ProjectMayhem.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Email")]
-        [EmailAddress]
-        public string Email { get; set; }
+        [Display(Name = "Username/Email")]
+        public string Username { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -62,15 +49,16 @@ namespace ProjectMayhem.Models
         public bool RememberMe { get; set; }
     }
 
-    public class RegisterViewModel
+    public class InvitationViewModel
     {
         [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
+        [RegularExpression(@"^[a-zA-Z0-9]*$", ErrorMessage = "Username must contain only alphabetic symbols and numbers")]
+        [Display(Name="Username")]
+        public string Username { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$.,!%*?&])[A-Za-z\d@$.,!%*?&]{6,}$", ErrorMessage = "The password must contain at least 1 lowercase(a-z), 1 uppercase(A-Z), 1 numeric(0-9) and 1 special char(@$.,!%*?&)")]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
@@ -79,6 +67,14 @@ namespace ProjectMayhem.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class RegisterViewModel
+    {
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
     }
 
     public class ResetPasswordViewModel

@@ -2,9 +2,11 @@
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -68,14 +70,51 @@ namespace ProjectMayhem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
+            if (model.Username.IndexOf('@') > -1)
+            {
+                //Validate email format
+                string emailRegex = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" +
+                                       @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" +
+                                          @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+                Regex re = new Regex(emailRegex);
+                if (!re.IsMatch(model.Username))
+                {
+                    ModelState.AddModelError("", "Email is not valid");
+                }
+            }
+            else
+            {
+                //validate Username format
+                string emailRegex = @"^[a-zA-Z0-9]*$";
+                Regex re = new Regex(emailRegex);
+                if (!re.IsMatch(model.Username))
+                {
+                    ModelState.AddModelError("", "Username is not valid");
+                }
+            }
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
+            var UserName = model.Username;
+            ApplicationUser user;
+            if (UserName.IndexOf('@') > -1)
+            {
+                user = await UserManager.FindByEmailAsync(model.Username);
+                UserName = user.UserName;
+            }
+            else
+                user = await UserManager.FindByNameAsync(model.Username);
+            if (user != null)
+            {
+                if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+                {
+                    ModelState.AddModelError("", "You must have a confirmed email to log on.");
+                    return View(model);
+                }
+            }
 
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -134,9 +173,44 @@ namespace ProjectMayhem.Controllers
             }
         }
 
+        [AllowAnonymous]
+        public async Task<ActionResult> AcceptInvite(string userId, string InviteToken, string EmailConf)
+        {
+
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(InviteToken))
+                return View("Error");
+            var result = await UserManager.VerifyUserTokenAsync(userId, "Invite", InviteToken);
+            if (result == true)
+            {
+                var EmailRes = await UserManager.ConfirmEmailAsync(userId, EmailConf);
+                return View(EmailRes.Succeeded ? "AcceptInvite" : "Error");
+            }
+            else return View("Error");
+            
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AcceptInvite(InvitationViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await UserManager.FindByIdAsync(Request.QueryString["userId"]);
+                var token = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                await UserManager.ResetPasswordAsync(user.Id, token, model.Password);
+                user.UserName = model.Username;
+                var request = await UserManager.UpdateAsync(user);
+                if (request.Succeeded)
+                    return RedirectToAction("Login", "Account");
+                AddErrors(request);
+            }
+            return View(model);
+        }
+
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        [Authorize]
         public ActionResult Register()
         {
             return View();
@@ -145,44 +219,37 @@ namespace ProjectMayhem.Controllers
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                if (UserManager.FindByEmail(model.Email) == null)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email, teamLead = UserManager.FindById(User.Identity.GetUserId()) };
+                    var symbolStr = "@$.,!%*?&";
+                    var RandPassword = Membership.GeneratePassword(20, 5) + new Random().Next(9).ToString() + symbolStr[new Random().Next(8)];
+                    var result = await UserManager.CreateAsync(user, RandPassword);
+                    if (result.Succeeded)
+                    {
+                        string EmailCode = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                        string InvCode = await UserManager.GenerateUserTokenAsync("Invite", user.Id);
+                        var InviteUrl = Url.Action("AcceptInvite", "Account", new { userId = user.Id, InviteToken = InvCode, EmailConf = EmailCode }, Request.Url.Scheme);
+                        await UserManager.SendEmailAsync(user.Id,
+                           "Invitation", "Hello,<br><br>You can accept the invitation by clicking <a href=\""
+                           + InviteUrl + "\">here</a><br><br>Best Regards,<br> ProjectMayhem Team");
 
-                    return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Members", "Team");
+                    }
+                    AddErrors(result);
                 }
-                AddErrors(result);
+                else
+                    ModelState.AddModelError("", "The User already exist");
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
-        }
-
-        //
-        // GET: /Account/ConfirmEmail
-        [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(string userId, string code)
-        {
-            if (userId == null || code == null)
-            {
-                return View("Error");
-            }
-            var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
         //
@@ -272,17 +339,6 @@ namespace ProjectMayhem.Controllers
         }
 
         //
-        // POST: /Account/ExternalLogin
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public ActionResult ExternalLogin(string provider, string returnUrl)
-        {
-            // Request a redirect to the external login provider
-            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
-        }
-
-        //
         // GET: /Account/SendCode
         [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
@@ -316,75 +372,6 @@ namespace ProjectMayhem.Controllers
             }
             return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
         }
-
-        //
-        // GET: /Account/ExternalLoginCallback
-        [AllowAnonymous]
-        public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
-        {
-            var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
-            if (loginInfo == null)
-            {
-                return RedirectToAction("Login");
-            }
-
-            // Sign in the user with this external login provider if the user already has a login
-            var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
-                case SignInStatus.Failure:
-                default:
-                    // If the user does not have an account, then prompt the user to create an account
-                    ViewBag.ReturnUrl = returnUrl;
-                    ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
-            }
-        }
-
-        //
-        // POST: /Account/ExternalLoginConfirmation
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Index", "Manage");
-            }
-
-            if (ModelState.IsValid)
-            {
-                // Get the information about the user from the external login provider
-                var info = await AuthenticationManager.GetExternalLoginInfoAsync();
-                if (info == null)
-                {
-                    return View("ExternalLoginFailure");
-                }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await UserManager.AddLoginAsync(user.Id, info.Login);
-                    if (result.Succeeded)
-                    {
-                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                        return RedirectToLocal(returnUrl);
-                    }
-                }
-                AddErrors(result);
-            }
-
-            ViewBag.ReturnUrl = returnUrl;
-            return View(model);
-        }
-
         //
         // POST: /Account/LogOff
         [HttpPost]
@@ -393,14 +380,6 @@ namespace ProjectMayhem.Controllers
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
-        }
-
-        //
-        // GET: /Account/ExternalLoginFailure
-        [AllowAnonymous]
-        public ActionResult ExternalLoginFailure()
-        {
-            return View();
         }
 
         protected override void Dispose(bool disposing)
