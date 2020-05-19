@@ -24,7 +24,7 @@
 
 
 <!-- Modal dialog to show learning day details. -->
-<div id="myModal" class="modal fade" role="dialog">
+<div id="viewedLearningDay" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -32,6 +32,15 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
+                @using (Html.BeginForm("Create", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ViewedDayId, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.ViewedDayId, new { @class = "form-control" })
+                        </div>
+                    </div>
+                }
                 <p id="pDetails"></p>
                 <p id="pTopics"></p>
                 <p id="pReferences"></p>
@@ -44,7 +53,7 @@
 
 </div>
 
-<div id="newLearningDayModal" class="modal fade" role="dialog">
+<div id="newLearningDay" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -53,7 +62,6 @@
             </div>
             @using (Html.BeginForm("Create", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
-                @Html.AntiForgeryToken()
                 <h4>Create a new learning day.</h4>
                 <hr />
                 @Html.ValidationSummary("", new { @class = "text-danger" })
@@ -108,10 +116,13 @@
             var topics = learningEvent.extendedProps.topics;
             var references = learningEvent.extendedProps.references;
 
+            // Setting the id of viewed learning day.
+            $('#ViewedDayId').val(learningEvent.id)
+
             console.log('Clicked on learning day, id: ', id);
             console.log(learningEvent.extendedProps)
 
-            $('#myModal #topicName').text(learningEvent.title);
+            $('#viewedLearningDay #topicName').text(learningEvent.title);
             var $description = $('<div/>');
             $description.append($('<p/>').html('<b>Start:<b/> ' + formatDate(learningEvent.start)));
             $description.append($('<p/>').html('<b>Description:</b> ' + learningEvent.extendedProps.description));
@@ -132,11 +143,12 @@
             }
             $referencesDescription.append($references);
 
-            $('#myModal #pDetails').empty().html($description);
-            $('#myModal #pTopics').empty().html($topicsDescription);
-            $('#myModal #pReferences').empty().html($referencesDescription);
+            $('#viewedLearningDay #pDetails').empty().html($description);
+            $('#viewedLearningDay #pTopics').empty().html($topicsDescription);
+            $('#viewedLearningDay #pReferences').empty().html($referencesDescription);
 
-            $('#myModal').modal();
+            // Displays the modal window.
+            $('#viewedLearningDay').modal();
         }
         function formatDate(date) {
             var d = new Date(date),
@@ -171,7 +183,7 @@
                 dateClick: function (info) {
                     console.log('Clicked on date: ', info.dateStr);
                     $('#Date:text').val(info.dateStr);
-                    $('#newLearningDayModal').modal();
+                    $('#newLearningDay').modal();
                 }
             });
 
@@ -193,10 +205,9 @@
                 // Can add user ID at the end of URL using razor tags, so that we get learning days of a certain user.
                 url: "/Learning/GetLearningDays",
                 success: function (data) {
-                    var i = 1;
                     $.each(data, function (i, learningDay) {
                         events.push({
-                            id: i.toString(),
+                            id: learningDay.Id,
                             title: learningDay.Title,
                             description: learningDay.Description,
                             start: parseInt(learningDay.Date.substr(6)),
@@ -207,8 +218,7 @@
                             allDay: true // Learning days are events that last a full day.
                         })
 
-                        i++;
-                        });
+                    });
                     console.log('Initializing newer calendar, events:')
                     console.log(events)
                     InitializeCalendar(calendarEl, events);

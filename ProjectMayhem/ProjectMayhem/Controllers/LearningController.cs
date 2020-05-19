@@ -14,10 +14,15 @@ namespace ProjectMayhem.Controllers
         [AllowAnonymous]
         public ActionResult Schedule()
         {
-            ScheduleViewModel viewModel = new ScheduleViewModel();
-            // Could add learning days from database here.
-            viewModel.LearningDays = getFakeLearningDays();
-
+            ScheduleViewModel viewModel = new ScheduleViewModel()
+            {
+                LearningDays = getFakeLearningDays(),
+                ViewedDay = new LearningDay(),
+                Year = DateTime.Now.Year,
+                Quarter = 1 + DateTime.Now.Month / 3
+            };
+            viewModel.Year = 2000;
+            Debug.WriteLine("Schedule ViewModel initialized with a list of learning days. Its length is: {0}", viewModel.LearningDays.Count);
             return View(viewModel);
         }
 
@@ -61,7 +66,6 @@ namespace ProjectMayhem.Controllers
                 viewModel.Title = "";
                 // To do: If there is no topic of a given name, then a new topic should be created.
                 viewModel.TopicName = "";
-                // How to handle redirection if this method will be called both from the learning schedule and
                 return RedirectToAction("Schedule");
             }
             catch
@@ -123,6 +127,7 @@ namespace ProjectMayhem.Controllers
             days.Add(new LearningDay
             {
                 Date = DateTime.Now,
+                Id = "1",
                 References = references,
                 Description = "Assembly, Basic, C#",
                 Title = "Programming ABC",
@@ -131,6 +136,7 @@ namespace ProjectMayhem.Controllers
             days.Add(new LearningDay
             {
                 Date = DateTime.Now.AddDays(1),
+                Id = "2",
                 References = references,
                 Description = "Learning stuff - good. Hehe.",
                 Title = "Programming AB",
@@ -139,6 +145,7 @@ namespace ProjectMayhem.Controllers
             days.Add(new LearningDay
             {
                 Date = DateTime.Now.AddDays(3),
+                Id = "3",
                 References = references,
                 Description = "Everything I do, I do it big. Yeah, uh huh, screamin' that's nothin'",
                 Title = "Black and yellow",

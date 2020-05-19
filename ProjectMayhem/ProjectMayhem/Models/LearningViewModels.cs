@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -13,10 +14,16 @@ namespace ProjectMayhem.Models
         public int Year { get; set; }
         public List<LearningDay> LearningDays { get; set; }
         public LearningDay ViewedDay { get; set; }
-        public ScheduleViewModel()
-        {
-            this.Year = DateTime.Now.Year;
-            this.Quarter = DateTime.Now.Month / 3;
+
+        // Custom setters and getters so that ViewedDay changes whenever ViewedDayId changes due to data binding.
+        private string viewedDayId;
+        public string ViewedDayId {
+            get { return this.viewedDayId; } 
+            set { 
+                this.viewedDayId = value;
+                // this.ViewedDay = this.LearningDays.Find(day => day.Id == this.viewedDayId);
+                // Debug.WriteLine("ViewedDayId changed to: {0}. ViewedDay found: {1}",this.viewedDayId, ViewedDay != null);
+            } 
         }
     }
 

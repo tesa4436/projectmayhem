@@ -16,6 +16,7 @@ namespace ProjectMayhem.Models
     public class LearningDay
     {
         public DateTime Date;
+        public string Id;
         public List<Topic> Topics;
         public string[] References;
         public string Description;
