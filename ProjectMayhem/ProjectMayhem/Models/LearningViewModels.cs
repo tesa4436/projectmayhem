@@ -13,10 +13,12 @@ namespace ProjectMayhem.Models
         public int Quarter { get; set; }
         public int Year { get; set; }
         public List<LearningDay> LearningDays { get; set; }
+        public List<Topic> AllTopics { get; set; }
         public LearningDay ViewedDay { get; set; }
 
         // Custom setters and getters so that ViewedDay changes whenever ViewedDayId changes due to data binding.
         private string viewedDayId;
+        [Display(Name = "Learning day ID")]
         public string ViewedDayId {
             get { return this.viewedDayId; } 
             set { 
@@ -32,7 +34,24 @@ namespace ProjectMayhem.Models
         public DateTime Date { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        [Display(Name = "Select your topic")]
         public string TopicName { get; set; }
+    }
+
+    public class EditLearningDayViewModel
+    {
+        public string[] References { get; set; }
+        
+        public List<Topic> Topics { get; set; }
+
+        [Required]
+        [DataType(DataType.Date)]
+        public string Date { get; set; }
+
+        [Required]
+        public string Title { get; set; }
+
+        public string Description { get; set; }
     }
 
 

@@ -16,6 +16,7 @@ namespace ProjectMayhem.Controllers
         {
             ScheduleViewModel viewModel = new ScheduleViewModel()
             {
+                AllTopics = getFakeTopics(),
                 LearningDays = getFakeLearningDays(),
                 ViewedDay = new LearningDay(),
                 Year = DateTime.Now.Year,
@@ -39,6 +40,26 @@ namespace ProjectMayhem.Controllers
             return View(addLearningDayViewModel);
         }
 
+        public ActionResult EditLearningDay(string id)
+        {
+            EditLearningDayViewModel viewModel = new EditLearningDayViewModel();
+            LearningDay editedDay = getFakeLearningDays()[0];
+            viewModel.Topics = editedDay.Topics;
+            viewModel.References = editedDay.References;
+            viewModel.Date = editedDay.Date.ToString();
+            viewModel.Description = editedDay.Description;
+            viewModel.Title = editedDay.Title;
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult EditLearningDay(EditLearningDayViewModel viewModel)
+        {
+            Debug.WriteLine("Updating learning day, date: {0}, title: {1}, description: {2}",
+                    viewModel.Date, viewModel.Title, viewModel.Description);
+            return RedirectToAction("Schedule");
+        }
+
         public JsonResult GetLearningDays()
         {
             var learningDays = getFakeLearningDays();
@@ -52,7 +73,8 @@ namespace ProjectMayhem.Controllers
         {
             try
             {
-                Debug.WriteLine("Adding a new learning day, date: " + viewModel.Date);
+                Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}", 
+                    viewModel.Date, viewModel.Title, viewModel.Description);
                 // TODO: Add insert logic here
                 LearningDay newDay = new LearningDay
                 {
@@ -121,9 +143,7 @@ namespace ProjectMayhem.Controllers
         {
             List<LearningDay> days = new List<LearningDay>();
             string[] references = { "https://google.com", "https://wikipedia.org", "https://stackoverflow.com/" };
-            List<Topic> topics = new List<Topic> { new Topic { Name = "Some body touched my baguette!" } ,
-            new Topic { Name = "MSSQL basics" }, new Topic { Name = "Yeah, aha, you know what it is." } };
-
+            List<Topic> topics = getFakeTopics();
             days.Add(new LearningDay
             {
                 Date = DateTime.Now,
@@ -154,6 +174,15 @@ namespace ProjectMayhem.Controllers
 
             return days;
         }
+        private List<Topic> getFakeTopics()
+        {
+            return new List<Topic> {
+                new Topic { Name = "Some body touched my baguette!" } ,
+                new Topic { Name = "MSSQL basics" },
+                new Topic { Name = "Yeah, aha, you know what it is." }
+            };
+        }
     }
 
+  
 }
