@@ -1,4 +1,10 @@
-﻿using ProjectMayhem.Models;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Newtonsoft.Json;
+using ProjectMayhem.DbEntities;
+using ProjectMayhem.Models;
+using ProjectMayhem.Services;
+using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,19 +16,53 @@ namespace ProjectMayhem.Controllers
 {
     public class LearningController : Controller
     {
-        // GET: Learning/Schedule
-        [AllowAnonymous]
-        public ActionResult Schedule()
+
+        private ApplicationUserManager _userManager;
+
+        public ApplicationUserManager UserManager
         {
+            get
+            {
+                return _userManager ?? Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
+        LearningDayManager dayManager = new LearningDayManager();
+        TopicManager topicManager = new TopicManager();
+        TeamManager teamManager = new TeamManager();
+
+        // Learning schedule of a specific user.
+        // GET: Learning/Schedule/123a-10df-...
+        [AllowAnonymous]
+        public ActionResult Schedule(string userId)
+        {
+            // Check if user is authorized to check the person's schedule.
+            if (String.IsNullOrEmpty(userId) || User.Identity.GetUserId() == userId)
+                userId = User.Identity.GetUserId();
+            else
+            {
+                var ReqUser = UserManager.FindById(userId);
+                if (!teamManager.CheckIfLead(ReqUser, User.Identity.GetUserId()))
+                    return View("Error"); //If you get here you shouldnt be here
+            }
+            
+            List<LearningDay> learningDays = dayManager.getLearningDaysByUserId(userId);
+
             ScheduleViewModel viewModel = new ScheduleViewModel()
             {
-                AllTopics = getFakeTopics(),
-                LearningDays = getFakeLearningDays(),
-                ViewedDay = new LearningDay(),
+                UserId = userId,
+                AllTopics = topicManager.getAllTopics(),
+                LearningDays = learningDays,
                 Year = DateTime.Now.Year,
                 Quarter = 1 + DateTime.Now.Month / 3
             };
-            Debug.WriteLine("Schedule ViewModel initialized with a list of learning days. Its length is: {0}", viewModel.LearningDays.Count);
+            
+            Debug.WriteLine("Schedule ViewModel initialized. UserId: {0}, LearnDays count: {1}", 
+                userId, viewModel.LearningDays.Count);
             return View(viewModel);
         }
 
@@ -32,23 +72,49 @@ namespace ProjectMayhem.Controllers
             return View();
         }
 
-        // GET: Learning/Create
-        public ActionResult AddLearningDay()
+        // POST: Learning/AddLearningDay
+        [HttpPost]
+        public ActionResult AddLearningDay(ScheduleViewModel viewModel)
         {
-            AddLearningDayViewModel addLearningDayViewModel = new AddLearningDayViewModel();
-            return View(addLearningDayViewModel);
+            /*// Only the user can add a learning day for self.
+            if (viewModel.UserId != User.Identity.GetUserId())
+            {
+                return View("Error");
+            }
+            */
+            try
+            {
+                Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}",
+                    viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription);
+                // TODO: Add insert logic here
+
+                Topics topic = topicManager.getTopicById(viewModel.NewDayTopicId);
+                dayManager.createLearningDay(viewModel.NewDayDate, viewModel.NewDayDescription, viewModel.UserId,
+                    new List<Topics>() { topic });
+
+                viewModel.NewDayDate = DateTime.Now;
+                viewModel.NewDayDescription = "";
+                viewModel.NewDayTitle = "";
+                // To do: If there is no topic of a given name, then a new topic should be created.
+                viewModel.NewDayTopicId = 1;
+                return RedirectToAction("Schedule");
+            }
+            catch
+            {
+                return View();
+            }
         }
 
         public ActionResult EditLearningDay(int id)
         {
             Debug.WriteLine("Editing day: " + id);
             EditLearningDayViewModel viewModel = new EditLearningDayViewModel();
-            LearningDay editedDay = getFakeLearningDays()[0];
-            viewModel.Topics = editedDay.Topics;
-            viewModel.References = editedDay.References;
+            LearningDay editedDay = dayManager.getLearningDayById(id);
+            viewModel.Topics = editedDay.topics;
+            viewModel.References = editedDay.references;
             viewModel.Date = editedDay.Date.ToString();
             viewModel.Description = editedDay.Description;
-            viewModel.Title = editedDay.Title;
+            viewModel.Title = "The title"; // editedDay.Title;
             return View(viewModel);
         }
 
@@ -60,62 +126,18 @@ namespace ProjectMayhem.Controllers
             return RedirectToAction("Schedule");
         }
 
-        public JsonResult GetLearningDays()
+        public ContentResult GetLearningDays(string id)
         {
-            var learningDays = getFakeLearningDays();
-            return new JsonResult { Data = learningDays, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
-        }
-
-
-        // POST: Learning/Create
-        [HttpPost]
-        public ActionResult Create(ScheduleViewModel viewModel)
-        {
-            try
-            {
-                Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}", 
-                    viewModel.Date, viewModel.Title, viewModel.Description);
-                // TODO: Add insert logic here
-                LearningDay newDay = new LearningDay
+            List<LearningDay> learningDays = dayManager.getLearningDaysByUserId(id);
+            Debug.WriteLine("Getting {0} learning days as JSON for user {1}", learningDays.Count, id);
+            var list = JsonConvert.SerializeObject(learningDays,
+                Formatting.None,
+                new JsonSerializerSettings()
                 {
-                    Date = viewModel.Date,
-                    Topics = new List<Topic> { new Topic { Name = viewModel.TopicName } },
-                    Description = viewModel.Description,
-                    Title = viewModel.Title
-                };
-                viewModel.Date = DateTime.Now;
-                viewModel.Description = "";
-                viewModel.Title = "";
-                // To do: If there is no topic of a given name, then a new topic should be created.
-                viewModel.TopicName = "";
-                return RedirectToAction("Schedule");
-            }
-            catch
-            {
-                return View();
-            }
-        }
+                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            });
 
-        // GET: Learning/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Learning/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            return Content(list, "application/json");
         }
 
         // GET: Learning/Delete/5
@@ -138,49 +160,6 @@ namespace ProjectMayhem.Controllers
             {
                 return View();
             }
-        }
-        private List<LearningDay> getFakeLearningDays()
-        {
-            List<LearningDay> days = new List<LearningDay>();
-            string[] references = { "https://google.com", "https://wikipedia.org", "https://stackoverflow.com/" };
-            List<Topic> topics = getFakeTopics();
-            days.Add(new LearningDay
-            {
-                Date = DateTime.Now,
-                Id = "1",
-                References = references,
-                Description = "Assembly, Basic, C#",
-                Title = "Programming ABC",
-                Topics = topics
-            });
-            days.Add(new LearningDay
-            {
-                Date = DateTime.Now.AddDays(1),
-                Id = "2",
-                References = references,
-                Description = "Learning stuff - good. Hehe.",
-                Title = "Programming AB",
-                Topics = topics
-            });
-            days.Add(new LearningDay
-            {
-                Date = DateTime.Now.AddDays(3),
-                Id = "3",
-                References = references,
-                Description = "Everything I do, I do it big. Yeah, uh huh, screamin' that's nothin'",
-                Title = "Black and yellow",
-                Topics = new List<Topic> { new Topic { Name = "Yeah, aha, you know what it is." } }
-            });
-
-            return days;
-        }
-        private List<Topic> getFakeTopics()
-        {
-            return new List<Topic> {
-                new Topic { Name = "Some body touched my baguette!" } ,
-                new Topic { Name = "MSSQL basics" },
-                new Topic { Name = "Yeah, aha, you know what it is." }
-            };
         }
     }
 

@@ -192,6 +192,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LearningController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\TeamController.cs" />
     <Compile Include="DbEntities\LDayReferences.cs" />
@@ -213,6 +214,8 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GroupViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\LearningModels.cs" />
+    <Compile Include="Models\LearningViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -222,6 +225,7 @@
     </Compile>
     <Compile Include="Services\LearningDayManager.cs" />
     <Compile Include="Services\TeamManager.cs" />
+    <Compile Include="Services\TopicManager.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -24,6 +24,11 @@ namespace ProjectMayhem.Services
             return applicationDbContext.learningDays.Where(x => x.User.Id == userId && x.Date == date).First();
         }
 
+        public LearningDay getLearningDayById(int dayId)
+        {
+            return applicationDbContext.learningDays.Where(x => x.LearningDayId == dayId).First();
+        }
+
         public bool createLearningDay(DateTime date, string Desc, string userId, List<Topics> chosenTopics = null, List<string> references = null)
         {
             using (var context = new ApplicationDbContext()) {

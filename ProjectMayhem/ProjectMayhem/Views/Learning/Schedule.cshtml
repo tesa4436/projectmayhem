@@ -9,6 +9,8 @@
 
 <h2>@ViewBag.Title.</h2>
 <p>Current year: @Model.Year, quarter: @Model.Quarter</p>
+@Html.HiddenFor(m => m.UserId)
+
 
 <!-- This holds the generated FullCalendar element for the Learning Schedule.
     Documentation: https://fullcalendar.io/docs -->
@@ -49,33 +51,33 @@
                 <h4 class="modal-title"><span id="topicName"></span></h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            @using (Html.BeginForm("Create", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            @using (Html.BeginForm("AddLearningDay", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
                 <h4>Create a new learning day.</h4>
                 <hr />
                 @Html.ValidationSummary("", new { @class = "text-danger" })
                 <div class="form-group">
-                    @Html.LabelFor(m => m.Title, new { @class = "col-md-2 control-label" })
+                    @Html.LabelFor(m => m.NewDayTitle, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.NewDayTitle, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
+                    @Html.LabelFor(m => m.NewDayDescription, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.NewDayDescription, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(m => m.Date, new { @class = "col-md-2 control-label" })
+                    @Html.LabelFor(m => m.NewDayDate, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Date, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.NewDayDate, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(m => m.TopicName, new { @class = "col-md-2 control-label" })
+                    @Html.LabelFor(m => m.NewDayTopicId, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
-                        @Html.DropDownListFor(m => m.TopicName, new SelectList(Model.AllTopics.Select(tp => new { Value = tp.Name, Text = tp.Name }), "Value", "Text"))
+                        @Html.DropDownListFor(m => m.NewDayTopicId, new SelectList(Model.AllTopics.Select(tp => new { Value = tp.TopicsId, Text = tp.Title }), "Value", "Text"))
                     </div>
                 </div>
                 <div class="form-group">
@@ -122,7 +124,7 @@
             $topicsDescription.append($('<p/>').html('<b>Topics:</b><br/>'));
             var $topics = $('<ol/>');
             for (var topic of topics) {
-                $topics.append($('<li>' + topic.Name + '</li>'));
+                $topics.append($('<li>' + topic.Topic.Title + '</li>'));
             }
             $topicsDescription.append($topics);
 
@@ -130,7 +132,7 @@
             $referencesDescription.append($('<p/>').html('<b>References:</b>'));
             var $references = $('<ol/>');
             for (var reference of references) {
-                $references.append($('<li><a href="' + reference + '">' + reference + '</a></li>'));
+                $references.append($('<li><a href="' + reference.ReferenceUrl + '">' + reference.ReferenceUrl + '</a></li>'));
             }
             $referencesDescription.append($references);
 
@@ -190,23 +192,24 @@
         // Preparing the calendar
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('schedule');
-
+            var userId = $('#UserId').attr('value');
             var events = [];
             // Getting events for the calendar. Need Javascript objects with specific fields for FullCalendar to work.
             $.ajax({
                 type: "GET",
                 // Can add user ID at the end of URL using razor tags, so that we get learning days of a certain user.
-                url: "/Learning/GetLearningDays",
+                url: "/Learning/GetLearningDays/" + userId,
                 success: function (data) {
                     $.each(data, function (i, learningDay) {
+                        console.log('Learning Day at: ' + learningDay.Date)
                         events.push({
-                            id: learningDay.Id,
-                            title: learningDay.Title,
+                            id: learningDay.LearningDayId,
+                            title: 'Title here', // learningDay.Title,
                             description: learningDay.Description,
-                            start: parseInt(learningDay.Date.substr(6)),
+                            start: learningDay.Date, // parseInt(learningDay.Date.substr(6)), // In case dates are returned as /Date(132342042424)/
                             extendedProps: {
-                                references: learningDay.References,
-                                topics: learningDay.Topics
+                                references: learningDay.references,
+                                topics: learningDay.topics
                             },
                             allDay: true // Learning days are events that last a full day.
                         })
