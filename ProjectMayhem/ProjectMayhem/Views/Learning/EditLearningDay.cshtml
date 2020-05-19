@@ -1,0 +1,68 @@
+﻿@using ProjectMayhem.Models
+
+@model EditLearningDayViewModel
+
+@{
+    ViewBag.Title = "EditLearningDay";
+}
+
+<h2>EditLearningDay</h2>
+
+@using (Html.BeginForm("EditLearningDay", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <h4>Create a new learning day.</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.Title, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Date, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Date, new { @class = "form-control" })
+        </div>
+    </div>
+    <h3>Topics:</h3>
+    <ul>
+        @foreach (var topic in Model.Topics)
+        {
+            <li>
+                <div>
+                    @topic.Name
+                </div>
+            </li>
+        }
+    </ul>
+    <h3>References:</h3>
+    <ul>
+        @foreach (var reference in Model.References)
+        {
+            <li>
+                <div>
+                    <a href="@reference">@reference</a>
+                </div>
+            </li>
+        }
+    </ul>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Edit" />
+        </div>
+    </div>
+    <div>
+        @if (!string.IsNullOrEmpty(Request.QueryString["retUrl"]))
+        {
+            <a href=@Request.QueryString["retUrl"]>Back</a><br>
+            @Html.ActionLink("My Schedule", "Schedule", "Learning")
+        }
+    </div>
+}

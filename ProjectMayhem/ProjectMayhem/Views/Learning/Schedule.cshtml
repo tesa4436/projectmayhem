@@ -1,0 +1,227 @@
+﻿@using ProjectMayhem.Models
+
+@model ScheduleViewModel
+
+@{
+    ViewBag.Title = "Learning schedule";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title.</h2>
+<p>Current year: @Model.Year, quarter: @Model.Quarter</p>
+
+<!-- This holds the generated FullCalendar element for the Learning Schedule.
+    Documentation: https://fullcalendar.io/docs -->
+<div id="schedule">
+
+</div>
+
+<!-- Modal dialog to show learning day details. -->
+<div id="viewedLearningDay" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="topicName"></span></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <p id="pDetails"></p>
+                    <p id="pTopics"></p>
+                    <p id="pReferences"></p>
+                </div>
+                <!-- Could add an "if" helper to check whether the person viewing can edit.-->
+
+                <a id="editDay" href="Learning/EditLearningDay">Edit learning day</a>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal dialog for creating new learning days. -->
+<div id="newLearningDay" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="topicName"></span></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            @using (Html.BeginForm("Create", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                <h4>Create a new learning day.</h4>
+                <hr />
+                @Html.ValidationSummary("", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Title, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Date, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Date, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.TopicName, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(m => m.TopicName, new SelectList(Model.AllTopics.Select(tp => new { Value = tp.Name, Text = tp.Name }), "Value", "Text"))
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" class="btn btn-default" value="Add" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!--Styling links for FullCalendar-->
+<link href="~/Scripts/fullcalendar/core/main.css" rel="stylesheet" />
+<link href="~/Scripts/fullcalendar/daygrid/main.css" rel="stylesheet" media="print" />
+
+@section Scripts{
+    <!-- JS libraries for FullCalendar-->
+    <script src="~/Scripts/fullcalendar/core/main.js"></script>
+    <script src="~/Scripts/fullcalendar/daygrid/main.js"></script>
+    <script src='~/Scripts/fullcalendar/interaction/main.js'></script>
+
+    <!--Utility functions: -->
+    <script>
+        function displayLearningDay(eventClickInfo) {
+            var learningEvent = eventClickInfo.event;
+            var id = learningEvent.id;
+            var topics = learningEvent.extendedProps.topics;
+            var references = learningEvent.extendedProps.references;
+
+            // Setting the id of viewed learning day.
+            var $editLink = $('#editDay');
+            $editLink.attr('href', 'EditLearningDay/' + id);
+
+            console.log('Clicked on learning day, id: ', id);
+            console.log(learningEvent.extendedProps)
+
+            $('#viewedLearningDay #topicName').text(learningEvent.title);
+            var $description = $('<div/>');
+            $description.append($('<p/>').html('<b>Start:<b/> ' + formatDate(learningEvent.start)));
+            $description.append($('<p/>').html('<b>Description:</b> ' + learningEvent.extendedProps.description));
+
+            var $topicsDescription = $('<div/>');
+            $topicsDescription.append($('<p/>').html('<b>Topics:</b><br/>'));
+            var $topics = $('<ol/>');
+            for (var topic of topics) {
+                $topics.append($('<li>' + topic.Name + '</li>'));
+            }
+            $topicsDescription.append($topics);
+
+            var $referencesDescription = $('<div/>');
+            $referencesDescription.append($('<p/>').html('<b>References:</b>'));
+            var $references = $('<ol/>');
+            for (var reference of references) {
+                $references.append($('<li><a href="' + reference + '">' + reference + '</a></li>'));
+            }
+            $referencesDescription.append($references);
+
+            $('#viewedLearningDay #pDetails').empty().html($description);
+            $('#viewedLearningDay #pTopics').empty().html($topicsDescription);
+            $('#viewedLearningDay #pReferences').empty().html($referencesDescription);
+
+            // Displays the modal window.
+            $('#viewedLearningDay').modal();
+        }
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+        // Uses passed events to initialize FullCalendar at the document element "calendarEl".
+        function InitializeCalendar(calendarEl, _events) {
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: ['interaction', 'dayGrid'],
+                contentHeight: 400,
+                defaultDate: new Date(),
+                timeFormat: 'h(:mm)a',
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,basicWeek,basicDay,agenda'
+                },
+                eventLimit: true,
+                eventColor: 'Cyan',
+                events: _events,
+                // Passing an event handler to display learning day information when event is clicked.
+                eventClick: displayLearningDay,
+                dateClick: function (info) {
+                    console.log('Clicked on date: ', info.dateStr);
+                    $('#Date:text').val(info.dateStr);
+                    $('#newLearningDay').modal();
+                }
+            });
+
+            calendar.render();
+            console.log('Calendar is: ', typeof calendar);
+            console.log('Getting event from calendar by id: 1');
+            console.log(calendar.getEventById('1'));
+        }
+    </script>
+
+    <!--Calendar Initialization code-->
+    <script>
+        // Preparing the calendar
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('schedule');
+
+            var events = [];
+            // Getting events for the calendar. Need Javascript objects with specific fields for FullCalendar to work.
+            $.ajax({
+                type: "GET",
+                // Can add user ID at the end of URL using razor tags, so that we get learning days of a certain user.
+                url: "/Learning/GetLearningDays",
+                success: function (data) {
+                    $.each(data, function (i, learningDay) {
+                        events.push({
+                            id: learningDay.Id,
+                            title: learningDay.Title,
+                            description: learningDay.Description,
+                            start: parseInt(learningDay.Date.substr(6)),
+                            extendedProps: {
+                                references: learningDay.References,
+                                topics: learningDay.Topics
+                            },
+                            allDay: true // Learning days are events that last a full day.
+                        })
+
+                    });
+                    console.log('Initializing newer calendar, events:')
+                    console.log(events)
+                    InitializeCalendar(calendarEl, events);
+                },
+                error: function (error) {
+                    alert('failed to get learning days');
+                }
+            })
+
+
+        });
+    </script>
+}
