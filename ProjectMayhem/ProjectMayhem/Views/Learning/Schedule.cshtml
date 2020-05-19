@@ -7,7 +7,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <h2>@ViewBag.Title.</h2>
 <p>Current year: @Model.Year, quarter: @Model.Quarter</p>
 
@@ -16,12 +15,6 @@
 <div id="schedule">
 
 </div>
-
-<!-- This holds the generated FullCalendar element for the Learning Schedule.-->
-<div id="schedule1">
-
-</div>
-
 
 <!-- Modal dialog to show learning day details. -->
 <div id="viewedLearningDay" class="modal fade" role="dialog">
@@ -32,20 +25,23 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
+                <div>
+                    <p id="pDetails"></p>
+                    <p id="pTopics"></p>
+                    <p id="pReferences"></p>
+                </div>
                 <!-- Could add an "if" helper to check whether the person viewing can edit.-->
-                @Html.ActionLink("Edit learning day", "EditLearningDay", "Learning")
-                <p id="pDetails"></p>
-                <p id="pTopics"></p>
-                <p id="pReferences"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                <a id="editDay" href="Learning/EditLearningDay">Edit learning day</a>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-
 </div>
 
+<!-- Modal dialog for creating new learning days. -->
 <div id="newLearningDay" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -90,7 +86,6 @@
             }
         </div>
     </div>
-
 </div>
 
 <!--Styling links for FullCalendar-->
@@ -98,9 +93,11 @@
 <link href="~/Scripts/fullcalendar/daygrid/main.css" rel="stylesheet" media="print" />
 
 @section Scripts{
+    <!-- JS libraries for FullCalendar-->
     <script src="~/Scripts/fullcalendar/core/main.js"></script>
     <script src="~/Scripts/fullcalendar/daygrid/main.js"></script>
     <script src='~/Scripts/fullcalendar/interaction/main.js'></script>
+
     <!--Utility functions: -->
     <script>
         function displayLearningDay(eventClickInfo) {
@@ -110,7 +107,8 @@
             var references = learningEvent.extendedProps.references;
 
             // Setting the id of viewed learning day.
-            $('#ViewedDayId').val(learningEvent.id)
+            var $editLink = $('#editDay');
+            $editLink.attr('href', 'EditLearningDay/' + id);
 
             console.log('Clicked on learning day, id: ', id);
             console.log(learningEvent.extendedProps)
@@ -186,6 +184,8 @@
             console.log(calendar.getEventById('1'));
         }
     </script>
+
+    <!--Calendar Initialization code-->
     <script>
         // Preparing the calendar
         document.addEventListener('DOMContentLoaded', function () {
@@ -221,7 +221,7 @@
                 }
             })
 
-            
+
         });
     </script>
 }
