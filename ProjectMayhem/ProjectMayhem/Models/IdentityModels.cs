@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using ProjectMayhem.DbEntities;
 
 namespace ProjectMayhem.Models
 {
@@ -12,6 +13,7 @@ namespace ProjectMayhem.Models
     {
 
         public virtual ApplicationUser teamLead { get; set; }
+        public virtual ICollection<LearningDay> LearningDays { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -24,6 +26,10 @@ namespace ProjectMayhem.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Topics> topics { get; set; }
+        public DbSet<LearningDay> learningDays { get; set; }
+        public DbSet<LDayReferences> lDayReferences { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

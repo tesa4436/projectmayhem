@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using ProjectMayhem.DbEntities;
 using ProjectMayhem.Models;
 using ProjectMayhem.Services;
 using System;
@@ -30,11 +31,12 @@ namespace ProjectMayhem.Controllers
         }
 
         TeamManager TM = new TeamManager();
-
         // GET: Team
         [Authorize]
         public ActionResult Members(string LeadId)
         {
+            var LM = new LearningDayManager();
+            //LM.createLearningDay(DateTime.Now, "This is test", User.Identity.GetUserId(), new List<Topics> { LM.getTopicById(1) }, new List<string> { "www.pornhub.com" });
             string Id = LeadId;
             
             if (String.IsNullOrEmpty(Id) || User.Identity.GetUserId() == Id)
@@ -58,6 +60,7 @@ namespace ProjectMayhem.Controllers
         [HttpPost]
         public async Task<ActionResult> Members(MembersViewModel model)
         {
+           
             string EmpId = Request.QueryString["LeadId"];
             model.AllUsers = UserManager.Users.ToList();
             ApplicationUser CurentTeamLead;
