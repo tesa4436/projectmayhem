@@ -18,7 +18,7 @@ namespace ProjectMayhem
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            AddTopics();
+           // AddTopics();
         }
 
         private void AddTopics()

@@ -221,6 +221,10 @@
     <Compile Include="Migrations\202005192103529_PrimaryKeys1.designer.cs">
       <DependentUpon>202005192103529_PrimaryKeys1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005192115288_databaseUpdate.cs" />
+    <Compile Include="Migrations\202005192115288_databaseUpdate.designer.cs">
+      <DependentUpon>202005192115288_databaseUpdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GroupViewModels.cs" />
@@ -426,6 +430,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005192103529_PrimaryKeys1.resx">
       <DependentUpon>202005192103529_PrimaryKeys1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005192115288_databaseUpdate.resx">
+      <DependentUpon>202005192115288_databaseUpdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

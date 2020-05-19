@@ -20,7 +20,7 @@ namespace ProjectMayhem.DbEntities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int LearningDayId { get; set; }
         
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
         public DateTime Date { get; set; }
 
         public string Title { get; set; }

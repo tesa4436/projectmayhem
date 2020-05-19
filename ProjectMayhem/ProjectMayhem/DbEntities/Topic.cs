@@ -22,6 +22,8 @@ namespace ProjectMayhem.DbEntities
 
         public string Description { get; set; }
 
+        public virtual Topic parentTopic { get; set; }
+
         public virtual ICollection<TopicDay> Days { get; set; }
     }
 }
