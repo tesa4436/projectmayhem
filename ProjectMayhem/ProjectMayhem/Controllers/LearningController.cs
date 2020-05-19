@@ -72,9 +72,9 @@ namespace ProjectMayhem.Controllers
             return View();
         }
 
-        // POST: Learning/AddLearningDay
+        // POST: Learning/Schedule
         [HttpPost]
-        public ActionResult AddLearningDay(ScheduleViewModel viewModel)
+        public ActionResult Schedule(ScheduleViewModel viewModel)
         {
             /*// Only the user can add a learning day for self.
             if (viewModel.UserId != User.Identity.GetUserId())
@@ -84,12 +84,11 @@ namespace ProjectMayhem.Controllers
             */
             try
             {
-                Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}",
-                    viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription);
-                // TODO: Add insert logic here
+                Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}, topicId: {3}",
+                    viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription, viewModel.NewDayTopicId);
 
                 Topics topic = topicManager.getTopicById(viewModel.NewDayTopicId);
-                dayManager.createLearningDay(viewModel.NewDayDate, viewModel.NewDayDescription, viewModel.UserId,
+                dayManager.createLearningDay(viewModel.NewDayDate, viewModel.NewDayDescription, User.Identity.GetUserId(),
                     new List<Topics>() { topic });
 
                 viewModel.NewDayDate = DateTime.Now;
@@ -101,6 +100,7 @@ namespace ProjectMayhem.Controllers
             }
             catch
             {
+                Debug.WriteLine("An error occurred while adding a new Learning day");
                 return View();
             }
         }
@@ -135,7 +135,8 @@ namespace ProjectMayhem.Controllers
                 new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            });
+                }
+            );
 
             return Content(list, "application/json");
         }

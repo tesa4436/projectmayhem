@@ -9,23 +9,11 @@ using System.Web;
 namespace ProjectMayhem.Models
 {
     // May also be used to add a new learning day.
-    public class ScheduleViewModel
+    public class ScheduleViewModel : AddLearningDayViewModel
     {
         public int Quarter { get; set; }
         public int Year { get; set; }
-        public string UserId { get; set; }
         public List<LearningDay> LearningDays { get; set; }
-        public List<Topics> AllTopics { get; set; }
-
-
-        [Display(Name = "Date")]
-        public DateTime NewDayDate { get; set; }
-        [Display(Name = "Title")]
-        public string NewDayTitle { get; set; }
-        [Display(Name = "Description")]
-        public string NewDayDescription { get; set; }
-        [Display(Name = "Select your topic")]
-        public int NewDayTopicId { get; set; }
 
         // Custom setters and getters so that ViewedDay changes whenever ViewedDayId changes due to data binding.
         // This doesn't work.
@@ -39,6 +27,20 @@ namespace ProjectMayhem.Models
                 // Debug.WriteLine("ViewedDayId changed to: {0}. ViewedDay found: {1}",this.viewedDayId, ViewedDay != null);
             } 
         }
+    }
+
+    public class AddLearningDayViewModel
+    {
+        [Display(Name = "Date")]
+        public DateTime NewDayDate { get; set; }
+        [Display(Name = "Title")]
+        public string NewDayTitle { get; set; }
+        [Display(Name = "Description")]
+        public string NewDayDescription { get; set; }
+        [Display(Name = "Select your topic")]
+        public int NewDayTopicId { get; set; }
+        public List<Topics> AllTopics { get; set; }
+        public string UserId { get; set; }
     }
 
     public class EditLearningDayViewModel

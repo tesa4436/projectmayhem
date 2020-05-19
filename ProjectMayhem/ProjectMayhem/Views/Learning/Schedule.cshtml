@@ -51,7 +51,7 @@
                 <h4 class="modal-title"><span id="topicName"></span></h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            @using (Html.BeginForm("AddLearningDay", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            @using (Html.BeginForm("Schedule", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
                 <h4>Create a new learning day.</h4>
                 <hr />
@@ -175,7 +175,7 @@
                 eventClick: displayLearningDay,
                 dateClick: function (info) {
                     console.log('Clicked on date: ', info.dateStr);
-                    $('#Date:text').val(info.dateStr);
+                    $('#NewDayDate:text').val(info.dateStr);
                     $('#newLearningDay').modal();
                 }
             });
