@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -13,7 +14,6 @@ namespace ProjectMayhem.Models
         public bool selectFromList { get; set; }
 
         [Display(Name ="New Topic title")]
-        [Required(ErrorMessage = "Topic title is required")]
         public string newTopicTitle { get; set; }
 
         [Display(Name ="New Topic Description")]
