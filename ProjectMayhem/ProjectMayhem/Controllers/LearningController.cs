@@ -87,9 +87,9 @@ namespace ProjectMayhem.Controllers
                 Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}, topicId: {3}",
                     viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription, viewModel.NewDayTopicId);
 
-                Topics topic = topicManager.getTopicById(viewModel.NewDayTopicId);
+                Topic topic = topicManager.getTopicById(viewModel.NewDayTopicId);
                 dayManager.createLearningDay(viewModel.NewDayDate, viewModel.NewDayDescription, User.Identity.GetUserId(),
-                    new List<Topics>() { topic });
+                    new List<Topic>() { topic });
 
                 viewModel.NewDayDate = DateTime.Now;
                 viewModel.NewDayDescription = "";
@@ -110,8 +110,8 @@ namespace ProjectMayhem.Controllers
             Debug.WriteLine("Editing day: " + id);
             EditLearningDayViewModel viewModel = new EditLearningDayViewModel();
             LearningDay editedDay = dayManager.getLearningDayById(id);
-            viewModel.Topics = editedDay.topics;
-            viewModel.References = editedDay.references;
+            viewModel.Topics = editedDay.Topics;
+            viewModel.References = editedDay.References;
             viewModel.Date = editedDay.Date.ToString();
             viewModel.Description = editedDay.Description;
             viewModel.Title = "The title"; // editedDay.Title;

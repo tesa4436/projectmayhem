@@ -11,12 +11,12 @@ namespace ProjectMayhem.Services
     {
         ApplicationDbContext applicationDbContext = new ApplicationDbContext();
 
-        public List<Topics> getAllTopics()
+        public List<Topic> getAllTopics()
         {
             return applicationDbContext.topics.ToList();
         }
 
-        public Topics getTopicById(int id)
+        public Topic getTopicById(int id)
         {
             return applicationDbContext.topics.Where(x => x.TopicsId == id).First();
         }

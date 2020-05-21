@@ -39,7 +39,7 @@ namespace ProjectMayhem.Models
         public string NewDayDescription { get; set; }
         [Display(Name = "Select your topic")]
         public int NewDayTopicId { get; set; }
-        public List<Topics> AllTopics { get; set; }
+        public List<Topic> AllTopics { get; set; }
         public string UserId { get; set; }
     }
 
