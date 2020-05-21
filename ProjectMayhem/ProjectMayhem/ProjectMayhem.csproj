@@ -193,11 +193,13 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\RecommendationController.cs" />
     <Compile Include="Controllers\TeamController.cs" />
     <Compile Include="DbEntities\LDayReferences.cs" />
     <Compile Include="DbEntities\LearningDay.cs" />
     <Compile Include="DbEntities\Topic.cs" />
     <Compile Include="DbEntities\TopicDay.cs" />
+    <Compile Include="DbEntities\TopicUser.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -225,11 +227,16 @@
     <Compile Include="Migrations\202005192115288_databaseUpdate.designer.cs">
       <DependentUpon>202005192115288_databaseUpdate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005202024147_topicRecomemdations.cs" />
+    <Compile Include="Migrations\202005202024147_topicRecomemdations.designer.cs">
+      <DependentUpon>202005202024147_topicRecomemdations.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GroupViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\RecommendationViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -238,6 +245,7 @@
     </Compile>
     <Compile Include="Services\LearningDayManager.cs" />
     <Compile Include="Services\TeamManager.cs" />
+    <Compile Include="Services\TopicManager.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -402,6 +410,7 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Account\AcceptInvite.cshtml" />
     <Content Include="Views\Team\Members.cshtml" />
+    <Content Include="Views\Recommendation\Recommended.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -433,6 +442,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005192115288_databaseUpdate.resx">
       <DependentUpon>202005192115288_databaseUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005202024147_topicRecomemdations.resx">
+      <DependentUpon>202005202024147_topicRecomemdations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -1,0 +1,87 @@
+﻿@model ProjectMayhem.Models.RecommendationViewModel
+@{
+    ViewBag.Title = "Recommended";
+}
+
+
+<h2>Recommended to me:</h2>
+
+<ul>
+    @if (Model.myRecommendedTopics.ToArray().Length > 0)
+    {
+        foreach (var item in Model.myRecommendedTopics)
+        {
+            <li>
+                @item.Title
+            </li>
+        }
+    }
+    else
+    {
+        <li>
+            You do not have any recommended topics
+        </li>
+    }
+</ul>
+
+@if (Model.TeamMembers.ToArray().Length > 0)
+{
+    using (Html.BeginForm("Recommended", "Recommendation", new { }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+
+        <br />
+        <h4>Recommend a Topic</h4>
+        <div>
+            @Html.DropDownListFor(m => m.selectedTeamMemberId, new SelectList(Model.TeamMembers.Select(x => new { Value = x.Id, Text = x.UserName }), "Value", "Text"))
+        </div>
+        @Html.LabelFor(m => m.selectFromList)
+        <br />
+        @Html.CheckBoxFor(m => m.selectFromList)
+        <div id="topicSelection" style="@(Model.selectFromList ? "display:block" : "display:none")">
+            @Html.LabelFor(m => m.recommendedTopicId)
+            @Html.DropDownListFor(m => m.recommendedTopicId, new SelectList(Model.allTopics.Select(x => new { Value = x.TopicsId, Text = x.Title }), "Value", "Text"))
+        </div>
+        <div id="newTopic" style="@(Model.selectFromList ? "display:none" : "display:block")">
+            <div>
+                @Html.LabelFor(m => m.newTopicTitle)
+                <br />
+                @Html.TextBoxFor(model => model.newTopicTitle)
+            </div>
+
+            <div>
+                @Html.LabelFor(m => m.newTopicDescription)
+                <br />
+                @Html.TextAreaFor(model => model.newTopicDescription, 10, 55, null)
+            </div>
+
+            <div>
+                @Html.LabelFor(m => m.newTopicParentId)
+                <br />
+                @Html.DropDownListFor(m => m.newTopicParentId, new SelectList(Model.allTopics.Select(x => new { Value = x.TopicsId, Text = x.Title }), "Value", "Text"), "None")
+            </div>
+        </div>
+
+        <br />
+        <input type="submit" value="Recommend a topic" />
+    }
+}
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+    $(function () {
+        $("#selectFromList").click(function () {
+            if ($(this).is(':checked')) {
+                $("#newTopic").hide();
+                $("#topicSelection").show();
+
+            }
+            else {
+                $("#newTopic").show();
+                $("#topicSelection").hide();
+            }
+        });
+    });
+</script>

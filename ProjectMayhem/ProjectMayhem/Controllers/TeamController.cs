@@ -35,8 +35,6 @@ namespace ProjectMayhem.Controllers
         [Authorize]
         public ActionResult Members(string LeadId)
         {
-            var LM = new LearningDayManager();
-            //LM.createLearningDay(DateTime.Now, "This is test", User.Identity.GetUserId(), new List<Topics> { LM.getTopicById(1) }, new List<string> { "www.pornhub.com" });
             string Id = LeadId;
             
             if (String.IsNullOrEmpty(Id) || User.Identity.GetUserId() == Id)
