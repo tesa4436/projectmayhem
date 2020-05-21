@@ -51,7 +51,7 @@
                 <h4 class="modal-title"><span id="topicName"></span></h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            @using (Html.BeginForm("Schedule", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            @using (Html.BeginForm("Schedule", "Learning", FormMethod.Post, new { userId = Model.UserId, @class = "form-horizontal", role = "form" }))
             {
                 <h4>Create a new learning day.</h4>
                 <hr />
@@ -80,6 +80,8 @@
                         @Html.DropDownListFor(m => m.NewDayTopicId, new SelectList(Model.AllTopics.Select(tp => new { Value = tp.TopicsId, Text = tp.Title }), "Value", "Text"))
                     </div>
                 </div>
+                <!-- Using hidden fields to pass values to controller that aren't visible in the form.-->
+                @Html.HiddenFor(m => m.UserId)
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
                         <input type="submit" class="btn btn-default" value="Add" />

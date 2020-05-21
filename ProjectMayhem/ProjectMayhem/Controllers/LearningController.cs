@@ -76,20 +76,21 @@ namespace ProjectMayhem.Controllers
         [HttpPost]
         public ActionResult Schedule(ScheduleViewModel viewModel)
         {
-            /*// Only the user can add a learning day for themselves.
+            // Only the user can add a learning day for themselves.
             if (viewModel.UserId != User.Identity.GetUserId())
             {
+                // Could return a more specific error window.
                 return View("Error");
             }
-            */
             try
             {
                 Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}, topicId: {3}",
                     viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription, viewModel.NewDayTopicId);
+                Debug.WriteLine("Target user: {0}", viewModel.UserId);
 
                 Topic topic = topicManager.getTopicById(viewModel.NewDayTopicId);
-                dayManager.createLearningDay(viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription, 
-                    User.Identity.GetUserId(), new List<Topic>() { topic });
+                dayManager.createLearningDay(viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription,
+                    viewModel.UserId, new List<Topic>() { topic });
 
                 viewModel.NewDayDate = DateTime.Now;
                 viewModel.NewDayDescription = "";
