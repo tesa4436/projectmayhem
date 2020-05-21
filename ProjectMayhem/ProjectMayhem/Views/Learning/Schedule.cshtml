@@ -182,8 +182,9 @@
 
             calendar.render();
             console.log('Calendar is: ', typeof calendar);
-            console.log('Getting event from calendar by id: 1');
-            console.log(calendar.getEventById('1'));
+            id = '3'
+            console.log('Getting event from calendar by id: ' + id);
+            console.log(calendar.getEventById(id));
         }
     </script>
 
@@ -204,12 +205,12 @@
                         console.log('Learning Day at: ' + learningDay.Date)
                         events.push({
                             id: learningDay.LearningDayId,
-                            title: 'Title here', // learningDay.Title,
+                            title: learningDay.Title,
                             description: learningDay.Description,
                             start: learningDay.Date, // parseInt(learningDay.Date.substr(6)), // In case dates are returned as /Date(132342042424)/
                             extendedProps: {
-                                references: learningDay.references,
-                                topics: learningDay.topics
+                                references: learningDay.References,
+                                topics: learningDay.Topics
                             },
                             allDay: true // Learning days are events that last a full day.
                         })

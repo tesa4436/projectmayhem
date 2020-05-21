@@ -3,6 +3,7 @@ using ProjectMayhem.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Migrations;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
@@ -29,12 +30,12 @@ namespace ProjectMayhem.Services
             return applicationDbContext.learningDays.Where(x => x.LearningDayId == dayId).First();
         }
 
-        public bool createLearningDay(DateTime date, string Desc, string userId, List<Topic> chosenTopics = null, List<string> references = null)
+        public bool createLearningDay(DateTime date, string Title, string Desc, string userId, List<Topic> chosenTopics = null, List<string> references = null)
         {
             using (var context = new ApplicationDbContext()) {
                 var user = context.Users.Where(x => x.Id == userId).First();
                 var LD = new LearningDay();
-                LD.Date = date; LD.Description = Desc; LD.User = user;
+                LD.Date = date; LD.Description = Desc; LD.User = user; LD.Title = Title;
                 if (chosenTopics != null)
                 {
                     foreach (var topic in chosenTopics)
@@ -51,6 +52,22 @@ namespace ProjectMayhem.Services
                     }
                 }
                 context.learningDays.Add(LD);
+                context.SaveChanges();
+                return true;
+            }
+        }
+
+        public bool updateLearningDay(LearningDay changedDay)
+        {
+            if (changedDay.Topics.Count == 0)
+            {
+                Debug.WriteLine("Failed to update learning day, it has no topics");
+                return false;
+            }
+            using (var context = new ApplicationDbContext())
+            {
+                LearningDay oldDay = getLearningDayById(changedDay.LearningDayId);
+                context.learningDays.AddOrUpdate(changedDay);
                 context.SaveChanges();
                 return true;
             }

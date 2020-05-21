@@ -76,7 +76,7 @@ namespace ProjectMayhem.Controllers
         [HttpPost]
         public ActionResult Schedule(ScheduleViewModel viewModel)
         {
-            /*// Only the user can add a learning day for self.
+            /*// Only the user can add a learning day for themselves.
             if (viewModel.UserId != User.Identity.GetUserId())
             {
                 return View("Error");
@@ -88,8 +88,8 @@ namespace ProjectMayhem.Controllers
                     viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription, viewModel.NewDayTopicId);
 
                 Topic topic = topicManager.getTopicById(viewModel.NewDayTopicId);
-                dayManager.createLearningDay(viewModel.NewDayDate, viewModel.NewDayDescription, User.Identity.GetUserId(),
-                    new List<Topic>() { topic });
+                dayManager.createLearningDay(viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription, 
+                    User.Identity.GetUserId(), new List<Topic>() { topic });
 
                 viewModel.NewDayDate = DateTime.Now;
                 viewModel.NewDayDescription = "";
@@ -111,10 +111,11 @@ namespace ProjectMayhem.Controllers
             EditLearningDayViewModel viewModel = new EditLearningDayViewModel();
             LearningDay editedDay = dayManager.getLearningDayById(id);
             viewModel.Topics = editedDay.Topics;
+            viewModel.LearningDayId = editedDay.LearningDayId;
             viewModel.References = editedDay.References;
             viewModel.Date = editedDay.Date.ToString();
             viewModel.Description = editedDay.Description;
-            viewModel.Title = "The title"; // editedDay.Title;
+            viewModel.Title = editedDay.Title;
             return View(viewModel);
         }
 
@@ -123,7 +124,22 @@ namespace ProjectMayhem.Controllers
         {
             Debug.WriteLine("Updating learning day, date: {0}, title: {1}, description: {2}",
                     viewModel.Date, viewModel.Title, viewModel.Description);
-            return RedirectToAction("Schedule");
+            LearningDay oldDay = dayManager.getLearningDayById(viewModel.LearningDayId);
+            oldDay.Date = DateTime.Parse(viewModel.Date);
+            oldDay.Description = viewModel.Description;
+            oldDay.Title = viewModel.Title;
+            // To do: incorporate topics and references in the edit day form. Currently References and Topics are always null.
+            // oldDay.References = viewModel.References;
+            // oldDay.Topics = viewModel.Topics;
+            if (dayManager.updateLearningDay(oldDay))
+            {
+                return RedirectToAction("Schedule");
+            }
+            else
+            {
+                // Update was unauthorized (not the owner editing) or the edit is not allowed (removed all topics)
+                return View("Error");
+            }
         }
 
         public ContentResult GetLearningDays(string id)
