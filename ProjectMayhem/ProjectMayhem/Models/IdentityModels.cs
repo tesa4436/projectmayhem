@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -41,4 +42,14 @@ namespace ProjectMayhem.Models
             return new ApplicationDbContext();
         }
     }
+
+    [Flags] public enum Authorized
+    {
+        None = 0,
+        View = 1,
+        Edit = 2,
+        Create = 4,
+        Delete = 8
+    }
+
 }

@@ -40,14 +40,13 @@ namespace ProjectMayhem.Controllers
         [AllowAnonymous]
         public ActionResult Schedule(string userId)
         {
-            // Check if user is authorized to check the person's schedule.
-            if (String.IsNullOrEmpty(userId) || User.Identity.GetUserId() == userId)
+            if (String.IsNullOrEmpty(userId))
                 userId = User.Identity.GetUserId();
             else
             {
-                var ReqUser = UserManager.FindById(userId);
-                if (!teamManager.CheckIfLead(ReqUser, User.Identity.GetUserId()))
-                    return View("Error"); //If you get here you shouldnt be here
+                // If a user is not authorized to view the schedule, redirect to error page.
+                if (!IsAuthorizedTo(Authorized.View, userId))
+                    return View("Error");
             }
             
             List<LearningDay> learningDays = dayManager.getLearningDaysByUserId(userId);
@@ -66,21 +65,17 @@ namespace ProjectMayhem.Controllers
             return View(viewModel);
         }
 
-        // GET: Learning/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
         // POST: Learning/Schedule
         [HttpPost]
         public ActionResult Schedule(ScheduleViewModel viewModel)
         {
-            // Only the user can add a learning day for themselves.
-            if (viewModel.UserId != User.Identity.GetUserId())
+            // User needs to be authorized to create learning days.
+            if (!IsAuthorizedTo(Authorized.Create, viewModel.UserId))
             {
-                // Could return a more specific error window.
-                return View("Error");
+                return View("Error", new HandleErrorInfo(
+                    new Exception("You may create learning days only for yourself."),
+                    "Learning Controller",
+                    "Schedule - Create learning day."));
             }
             try
             {
@@ -106,6 +101,7 @@ namespace ProjectMayhem.Controllers
             }
         }
 
+        // Get: /Learning/EditLearningDay/1
         public ActionResult EditLearningDay(int id)
         {
             Debug.WriteLine("Editing day: " + id);
@@ -132,6 +128,10 @@ namespace ProjectMayhem.Controllers
             // To do: incorporate topics and references in the edit day form. Currently References and Topics are always null.
             // oldDay.References = viewModel.References;
             // oldDay.Topics = viewModel.Topics;
+
+            if (oldDay.User.Id != User.Identity.GetUserId())
+                return View("Error"); // Cannot edit someone elses learning day.
+
             if (dayManager.updateLearningDay(oldDay))
             {
                 return RedirectToAction("Schedule");
@@ -179,7 +179,23 @@ namespace ProjectMayhem.Controllers
                 return View();
             }
         }
-    }
 
-  
+        private Authorized CheckAuthorized(string userId)
+        {
+            var rights = Authorized.None;
+            var currentUserId = User.Identity.GetUserId();
+            var ReqUser = UserManager.FindById(userId);
+            if (userId == currentUserId)
+                rights = Authorized.View | Authorized.Edit | Authorized.Create | Authorized.Delete;
+            if (teamManager.CheckIfLead(ReqUser, User.Identity.GetUserId()))
+                rights = Authorized.View;
+            return rights;
+        }
+
+        // Returns true if a user is authorized to perform the specified action.
+        private bool IsAuthorizedTo(Authorized action, string userId)
+        {
+            return (CheckAuthorized(userId) & action) != 0;
+        }
+    }
 }

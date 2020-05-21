@@ -31,7 +31,8 @@ namespace ProjectMayhem.Services
                 var query = context.Users.Where(s => s.Id == user.Id).Include(u => u.teamLead);
                 reqUser = query.ToArray()[0];
                 
-                System.Diagnostics.Debug.WriteLine("Requested access of: " + reqUser.teamLead.Id);
+                // If you check if current user is the leader of the top user, the line below throws null reference exception.
+                // System.Diagnostics.Debug.WriteLine("Requested access of: " + reqUser.teamLead.Id);
                 return CheckRecursion(reqUser, CurrentUserId);
             }
             catch 
