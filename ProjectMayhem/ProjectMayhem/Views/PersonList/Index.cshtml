@@ -1,0 +1,43 @@
+@* Goes in Views\PersonList *@ 
+@using ProjectMayhem.Models
+@model IEnumerable<Person>
+
+@{
+    ViewBag.Title = "Person List";
+}
+
+<h2>Person List</h2>
+
+@using (Html.BeginForm("Index", "PersonList", FormMethod.Post))
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Age)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Remove)
+                </th>
+            </tr>
+        </thead>
+        <tbody id="childtable">
+            @Html.EditorFor(model => Model)
+        </tbody>
+    </table>
+    <p>
+        <input name="command" type="submit" value="Add Item" />
+        <input name="command" type="submit" value="Remove Selected" />
+        <input name="command" type="submit" value="Cancel/Refresh" />
+    </p>
+    <p>
+        @Html.ValidationSummary()
+        <input name="command" type="submit" value="Submit" />
+    </p>
+}
