@@ -10,11 +10,14 @@ namespace ProjectMayhem.DbEntities
     public class LDayReferences
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int LDayReferencesId { get; set; }
+        [ForeignKey("learningDay")]
+        [Column(Order = 1)]
+        public int LDId { get; set; }
 
         public virtual LearningDay learningDay { get; set; }
 
+        [Key]
+        [Column(Order = 0)]
         public string ReferenceUrl { get; set; }
     }
 }

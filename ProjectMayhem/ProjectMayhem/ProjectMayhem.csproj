@@ -197,8 +197,8 @@
     <Compile Include="Controllers\TeamController.cs" />
     <Compile Include="DbEntities\LDayReferences.cs" />
     <Compile Include="DbEntities\LearningDay.cs" />
+    <Compile Include="DbEntities\Topic.cs" />
     <Compile Include="DbEntities\TopicDay.cs" />
-    <Compile Include="DbEntities\Topics.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -209,6 +209,22 @@
     <Compile Include="Migrations\202005191456412_UpdateManTM.cs" />
     <Compile Include="Migrations\202005191456412_UpdateManTM.designer.cs">
       <DependentUpon>202005191456412_UpdateManTM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005192039087_UpdateTopicMTM.cs" />
+    <Compile Include="Migrations\202005192039087_UpdateTopicMTM.designer.cs">
+      <DependentUpon>202005192039087_UpdateTopicMTM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005192100504_PrimaryKeys.cs" />
+    <Compile Include="Migrations\202005192100504_PrimaryKeys.designer.cs">
+      <DependentUpon>202005192100504_PrimaryKeys.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005192103529_PrimaryKeys1.cs" />
+    <Compile Include="Migrations\202005192103529_PrimaryKeys1.designer.cs">
+      <DependentUpon>202005192103529_PrimaryKeys1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005192115288_databaseUpdate.cs" />
+    <Compile Include="Migrations\202005192115288_databaseUpdate.designer.cs">
+      <DependentUpon>202005192115288_databaseUpdate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -629,6 +645,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005191456412_UpdateManTM.resx">
       <DependentUpon>202005191456412_UpdateManTM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005192039087_UpdateTopicMTM.resx">
+      <DependentUpon>202005192039087_UpdateTopicMTM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005192100504_PrimaryKeys.resx">
+      <DependentUpon>202005192100504_PrimaryKeys.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005192103529_PrimaryKeys1.resx">
+      <DependentUpon>202005192103529_PrimaryKeys1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005192115288_databaseUpdate.resx">
+      <DependentUpon>202005192115288_databaseUpdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

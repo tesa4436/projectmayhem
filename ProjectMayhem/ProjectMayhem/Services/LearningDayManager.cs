@@ -39,7 +39,7 @@ namespace ProjectMayhem.Services
                 {
                     foreach (var topic in chosenTopics)
                     {
-                        LD.topics.Add(new TopicDay() { Day = LD, Topic = context.topics.Where(x => x.TopicsId == topic.TopicsId).First() });
+                        LD.Topics.Add(new TopicDay() { Day = LD, Topic = context.topics.Where(x => x.TopicsId == topic.TopicsId).First() });
                     
                     }
                 }
@@ -47,7 +47,7 @@ namespace ProjectMayhem.Services
                 {
                     foreach(var reference in references)
                     {
-                        LD.references.Add(new LDayReferences() { learningDay = LD, ReferenceUrl = reference });
+                        LD.References.Add(new LDayReferences() { learningDay = LD, ReferenceUrl = reference });
                     }
                 }
                 context.learningDays.Add(LD);
@@ -56,7 +56,7 @@ namespace ProjectMayhem.Services
             }
         }
 
-        public void setTopics(LearningDay learningDay, List<Topics> newTopics)
+        public void setTopics(LearningDay learningDay, List<Topic> newTopics)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -67,13 +67,13 @@ namespace ProjectMayhem.Services
                     {
                         NewTopicDays.Add(new TopicDay() { Day = learningDay, Topic = topic });
                     }
-                    learningDay.topics = NewTopicDays;
+                    learningDay.Topics = NewTopicDays;
                     UpdateChanges();
                 }
             }
         }
 
-        public Topics getTopicById(int id)
+        public Topic getTopicById(int id)
         {
             return applicationDbContext.topics.Where(x => x.TopicsId == id).First();
         }
@@ -89,9 +89,19 @@ namespace ProjectMayhem.Services
                     {
                         newReferenceDays.Add(new LDayReferences() { learningDay = learningDay, ReferenceUrl = reference });
                     }
-                    learningDay.references = newReferenceDays;
+                    learningDay.References = newReferenceDays;
                     UpdateChanges();
                 }
+            }
+        }
+
+        public void DeleteLearningDay(DateTime dateTime, string UserId)
+        {
+            using(var context = new ApplicationDbContext())
+            {
+                var user = context.Users.Where(x => x.Id == UserId).First();
+                context.learningDays.Remove(user.LearningDays.Where(x => x.Date == dateTime).First());
+                context.SaveChanges();
             }
         }
 

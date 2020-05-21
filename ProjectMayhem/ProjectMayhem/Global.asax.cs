@@ -18,14 +18,14 @@ namespace ProjectMayhem
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            AddTopics();
+           // AddTopics();
         }
 
         private void AddTopics()
         {
             using(var contxt = ApplicationDbContext.Create())
             {
-                var topics = new Topics();
+                var topics = new Topic();
                 topics.Title = "Graphical design";
                 topics.Description = "Very good thing";
                 contxt.topics.Add(topics);

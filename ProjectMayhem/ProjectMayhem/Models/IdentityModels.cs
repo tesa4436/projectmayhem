@@ -26,7 +26,7 @@ namespace ProjectMayhem.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<Topics> topics { get; set; }
+        public DbSet<Topic> topics { get; set; }
         public DbSet<LearningDay> learningDays { get; set; }
         public DbSet<LDayReferences> lDayReferences { get; set; }
 
