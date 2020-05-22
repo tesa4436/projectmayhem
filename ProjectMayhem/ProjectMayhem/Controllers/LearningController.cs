@@ -71,16 +71,15 @@ namespace ProjectMayhem.Controllers
         {
             // User needs to be authorized to create learning days.
             Authorized allowedActions = CheckAuthorized(viewModel.UserId);
-
+            if ((!HasAuthorization(allowedActions, Authorized.Create)))
+            {
+                return View("Error", new HandleErrorInfo(
+                    new Exception("You may create/edit/remove learning days only for yourself."),
+                    "Learning Controller",
+                    "Schedule - Create learning day."));
+            }
             if (command == "Add")
             {
-                if ((!HasAuthorization(allowedActions, Authorized.Create)))
-                {
-                    return View("Error", new HandleErrorInfo(
-                        new Exception("You may create learning days only for yourself."),
-                        "Learning Controller",
-                        "Schedule - Create learning day."));
-                }
                 try
                 {
                     Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}, topicId: {3}",
@@ -164,28 +163,6 @@ namespace ProjectMayhem.Controllers
             );
 
             return Content(list, "application/json");
-        }
-
-        // GET: Learning/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Learning/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
         }
 
         // Checks if the current user can perform actions with given user.

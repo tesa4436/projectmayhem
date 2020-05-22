@@ -32,6 +32,7 @@ namespace ProjectMayhem.Models
     public class AddLearningDayViewModel
     {
         [Display(Name = "Date")]
+        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         public DateTime NewDayDate { get; set; }
         [Display(Name = "Title")]
         public string NewDayTitle { get; set; }
@@ -50,6 +51,7 @@ namespace ProjectMayhem.Models
         public ICollection<TopicDay> Topics { get; set; }
 
         [Required]
+        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         [DataType(DataType.Date)]
         public string Date { get; set; }
 
