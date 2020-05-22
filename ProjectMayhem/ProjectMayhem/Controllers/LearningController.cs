@@ -37,7 +37,6 @@ namespace ProjectMayhem.Controllers
 
         // Learning schedule of a specific user.
         // GET: Learning/Schedule/123a-10df-...
-        [AllowAnonymous]
         public ActionResult Schedule(string userId)
         {
             if (String.IsNullOrEmpty(userId))

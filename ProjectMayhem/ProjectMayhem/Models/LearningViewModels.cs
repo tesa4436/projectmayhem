@@ -31,6 +31,8 @@ namespace ProjectMayhem.Models
 
     public class AddLearningDayViewModel
     {
+        public List<Topic> AllTopics { get; set; }
+
         [Display(Name = "Date")]
         [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         public DateTime NewDayDate { get; set; }
@@ -40,7 +42,20 @@ namespace ProjectMayhem.Models
         public string NewDayDescription { get; set; }
         [Display(Name = "Select your topic")]
         public int NewDayTopicId { get; set; }
-        public List<Topic> AllTopics { get; set; }
+
+        // If creating a new topic:
+
+        [Display(Name = "Create a new topic")]
+        public bool CreateTopic { get; set; }
+
+        [Display(Name = "Title")]
+        public string NewTopicTitle { get; set; }
+        [Display(Name = "Parent topic")]
+        public string NewTopicParentId { get; set; }
+        [Display(Name = "Description")]
+        public string NewTopicDescription { get; set; }
+
+        // Hidden field.
         public string UserId { get; set; }
     }
 

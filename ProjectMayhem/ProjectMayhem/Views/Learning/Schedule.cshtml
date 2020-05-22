@@ -9,8 +9,7 @@
 }
 
 <div class="text-center">
-    <h2>@ViewBag.Title.</h2>
-    <p>Current year: @Model.Year, quarter: @Model.Quarter</p>
+    <h2>@ViewBag.Title</h2>
 </div>
 @Html.HiddenFor(m => m.UserId)
 
@@ -68,7 +67,7 @@
             </div>
             @using (Html.BeginForm("Schedule", "Learning", FormMethod.Post, new { userId = Model.UserId, @class = "form-horizontal", role = "form" }))
             {
-                <h4>Create a new learning day.</h4>
+                <h4 class="text-center">Create a new learning day</h4>
                 <hr />
                 @Html.ValidationSummary("", new { @class = "text-danger" })
                 <div class="form-group">
@@ -76,24 +75,42 @@
                     <div class="col-md-10">
                         @Html.TextBoxFor(m => m.NewDayTitle, new { @class = "form-control" })
                     </div>
-                </div>
-                <div class="form-group">
                     @Html.LabelFor(m => m.NewDayDescription, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
                         @Html.TextBoxFor(m => m.NewDayDescription, new { @class = "form-control" })
                     </div>
-                </div>
-                <div class="form-group">
                     @Html.LabelFor(m => m.NewDayDate, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
                         @Html.TextBoxFor(m => m.NewDayDate, new { @class = "form-control" })
                     </div>
                 </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.NewDayTopicId, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.DropDownListFor(m => m.NewDayTopicId, new SelectList(Model.AllTopics.Select(tp => new { Value = tp.TopicsId, Text = tp.Title }), "Value", "Text"))
+                <hr />
+                <h4 class="text-md-center">Topic</h4>
+                <div class="form-group col-md-10">
+                    <div id="topicSelection" style="@(Model.CreateTopic ? "display:none" : "display:block")">
+                        @Html.DropDownListFor(m => m.NewDayTopicId, new SelectList(Model.AllTopics.Select(x => new { Value = x.TopicsId, Text = x.Title }), "Value", "Text"), new { @class = "form-control" })
                     </div>
+                    <div id="newTopic" style="@(Model.CreateTopic ? "display:block" : "display:none")">
+                        <div>
+                            @Html.LabelFor(m => m.NewTopicTitle, new { @class = "col-md-2 control-label" })
+                            <br />
+                            @Html.TextBoxFor(model => model.NewTopicTitle, new { @class = "form-control" })
+                        </div>
+
+                        <div>
+                            @Html.LabelFor(m => m.NewTopicDescription, new { @class = "col-md-2 control-label" })
+                            <br />
+                            @Html.TextAreaFor(model => model.NewTopicDescription, new { @class = "form-control" })
+                        </div>
+
+                        <div>
+                            @Html.LabelFor(m => m.NewTopicParentId, new { @class = "control-label" })
+                            <br />
+                            @Html.DropDownListFor(m => m.NewTopicParentId, new SelectList(Model.AllTopics.Select(x => new { Value = x.TopicsId, Text = x.Title }), "Value", "Text"), "None", new { @class = "form-control" })
+                        </div>
+                    </div>
+                    @Html.LabelFor(m => m.CreateTopic, new { @class = "control-label" })
+                    @Html.CheckBoxFor(m => m.CreateTopic, new { @class = "form-control" })
                 </div>
                 <!-- Using hidden fields to pass values to controller that aren't visible in the form.-->
                 @Html.HiddenFor(m => m.UserId)
@@ -116,6 +133,23 @@
     <script src="~/Scripts/fullcalendar/core/main.js"></script>
     <script src="~/Scripts/fullcalendar/daygrid/main.js"></script>
     <script src='~/Scripts/fullcalendar/interaction/main.js'></script>
+
+    <!-- Makes the modal window change when checkbox is pressed-->
+    <script>
+        $(function () {
+            $("#CreateTopic").click(function () {
+                if ($(this).is(':checked')) {
+                    $("#newTopic").show();
+                    $("#topicSelection").hide();
+                }
+                else {
+                    $("#newTopic").hide();
+                    $("#topicSelection").show();
+                }
+            });
+        });
+    </script>
+
 
     <!--Utility functions: -->
     <script>
@@ -265,6 +299,8 @@
                 }
             })
 
+            // Unchecking the check box in case it was checked and the page was refreshed.
+            $('#CreateTopic').prop("checked", false);
 
         });
     </script>
