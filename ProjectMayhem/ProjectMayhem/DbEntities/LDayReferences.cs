@@ -9,18 +9,15 @@ namespace ProjectMayhem.DbEntities
 {
     public class LDayReferences
     {
-        [Key, Column(Order = 0)]
-        public int LearningDayId { get; set; }
-        
-        [Key, Column(Order = 1)]
-        public string UserId { get; set; }
-        
-        
-        [ForeignKey("LearningDayId, UserId")]
+        [Key]
+        [ForeignKey("learningDay")]
+        [Column(Order = 1)]
+        public int LDId { get; set; }
+
         public virtual LearningDay learningDay { get; set; }
 
         [Key]
-        [Column(Order = 2)]
+        [Column(Order = 0)]
         public string ReferenceUrl { get; set; }
     }
 }

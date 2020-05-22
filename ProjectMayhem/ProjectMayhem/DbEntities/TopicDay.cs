@@ -10,21 +10,17 @@ namespace ProjectMayhem.DbEntities
     public class TopicDay
     {
 
-        [Column(Order = 0)]
-        [Key]
-        public int LearningDayId { get; set; }
-        [Column(Order = 1)]
-        [Key]
-        public string UserId { get; set; }
-        [Column(Order = 2)]
-        [Key]
+        [Key, Column(Order = 0)]
+        [ForeignKey("Day")]
+        public int DayId { get; set; }
+        
+
+        [Key, Column(Order = 1)]
+        [ForeignKey("Topic")]
         public int TopicId { get; set; }
 
-        
-        [ForeignKey("TopicId")]
         public virtual Topic Topic { get; set; }
 
-        [ForeignKey("LearningDayId, UserId")]
         public virtual LearningDay Day { get; set; }
     }
 }

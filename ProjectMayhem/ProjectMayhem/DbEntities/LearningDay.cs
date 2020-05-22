@@ -16,13 +16,10 @@ namespace ProjectMayhem.DbEntities
             References = new List<LDayReferences>();
         }
 
-        [Key, Column(Order = 0)]
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int LearningDayId { get; set; }
-
-        [Key, Column(Order = 1), ForeignKey("User")]
-        public string UserId { get; set; }
-
+        
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
 
