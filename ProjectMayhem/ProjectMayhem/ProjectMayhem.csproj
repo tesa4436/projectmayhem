@@ -230,6 +230,16 @@
     <Compile Include="Migrations\202005202024147_topicRecomemdations.cs" />
     <Compile Include="Migrations\202005202024147_topicRecomemdations.designer.cs">
       <DependentUpon>202005202024147_topicRecomemdations.cs</DependentUpon>
+    <Compile Include="Migrations\202005221446358_learningDayFix.cs" />
+    <Compile Include="Migrations\202005221446358_learningDayFix.designer.cs">
+      <DependentUpon>202005221446358_learningDayFix.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005221521149_learningDayFix2.cs" />
+    <Compile Include="Migrations\202005221521149_learningDayFix2.designer.cs">
+      <DependentUpon>202005221521149_learningDayFix2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005221529387_ReferenceFix.cs" />
+    <Compile Include="Migrations\202005221529387_ReferenceFix.designer.cs">
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -445,6 +455,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005202024147_topicRecomemdations.resx">
       <DependentUpon>202005202024147_topicRecomemdations.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202005221446358_learningDayFix.resx">
+      <DependentUpon>202005221446358_learningDayFix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005221521149_learningDayFix2.resx">
+      <DependentUpon>202005221521149_learningDayFix2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005221529387_ReferenceFix.resx">
+      <DependentUpon>202005221529387_ReferenceFix.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
