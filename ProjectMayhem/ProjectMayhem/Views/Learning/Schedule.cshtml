@@ -1,4 +1,5 @@
 ﻿@using ProjectMayhem.Models
+@using Microsoft.AspNet.Identity
 
 @model ScheduleViewModel
 
@@ -7,8 +8,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@ViewBag.Title.</h2>
-<p>Current year: @Model.Year, quarter: @Model.Quarter</p>
+    <div class="text-center">
+        <h2>@ViewBag.Title.</h2>
+        <p>Current year: @Model.Year, quarter: @Model.Quarter</p>
+    </div>
 @Html.HiddenFor(m => m.UserId)
 
 
@@ -33,8 +36,10 @@
                     <p id="pReferences"></p>
                 </div>
                 <!-- Could add an "if" helper to check whether the person viewing can edit.-->
-
-                <a id="editDay" href="Learning/EditLearningDay">Edit learning day</a>
+                @if (Model.UserId == User.Identity.GetUserId())
+                {
+                    <a id="editDay" href="Learning/EditLearningDay">Edit learning day</a>
+                }
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
