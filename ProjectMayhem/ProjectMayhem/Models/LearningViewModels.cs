@@ -34,6 +34,7 @@ namespace ProjectMayhem.Models
         public List<Topic> AllTopics { get; set; }
 
         [Display(Name = "Date")]
+        [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         public DateTime NewDayDate { get; set; }
         [Display(Name = "Title")]
@@ -68,7 +69,7 @@ namespace ProjectMayhem.Models
         [Required]
         [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         [DataType(DataType.Date)]
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
 
         [Required]
         public string Title { get; set; }

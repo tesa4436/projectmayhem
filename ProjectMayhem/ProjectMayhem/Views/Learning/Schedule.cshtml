@@ -44,6 +44,7 @@
                         using (Html.BeginForm("Schedule", "Learning", FormMethod.Post, new { userId = Model.UserId, @class = "form-horizontal", role = "form" }))
                         {
                             @Html.HiddenFor(m => m.ViewedDayId)
+                            @Html.HiddenFor(m => m.UserId)
                             <input name="command" class="fc-button-active" type="submit" value="Delete" />
                             <input name="command" class="fc-button-active" type="submit" value="Edit" />
                         }
@@ -79,9 +80,10 @@
                     <div class="col-md-10">
                         @Html.TextBoxFor(m => m.NewDayDescription, new { @class = "form-control" })
                     </div>
-                    @Html.LabelFor(m => m.NewDayDate, new { @class = "col-md-2 control-label" })
+                    @Html.LabelFor(model => model.NewDayDate, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.NewDayDate, new { @class = "form-control" })
+                        @Html.EditorFor(model => model.NewDayDate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.NewDayDate, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <hr />
@@ -248,7 +250,7 @@
         <script>
             // Viewing own calendar.
             function showNewDayModal(info) {
-                $('#NewDayDate:text').val(info.dateStr);
+                $('#NewDayDate').val(info.dateStr);
                 $('#newLearningDay').modal();
             }
         </script>
