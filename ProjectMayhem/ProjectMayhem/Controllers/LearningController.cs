@@ -1,4 +1,10 @@
-﻿using ProjectMayhem.Models;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Newtonsoft.Json;
+using ProjectMayhem.DbEntities;
+using ProjectMayhem.Models;
+using ProjectMayhem.Services;
+using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,179 +16,174 @@ namespace ProjectMayhem.Controllers
 {
     public class LearningController : Controller
     {
-        // GET: Learning/Schedule
-        [AllowAnonymous]
-        public ActionResult Schedule()
+
+        private ApplicationUserManager _userManager;
+
+        public ApplicationUserManager UserManager
         {
+            get
+            {
+                return _userManager ?? Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
+        LearningDayManager dayManager = new LearningDayManager();
+        TopicManager topicManager = new TopicManager();
+        TeamManager teamManager = new TeamManager();
+
+        // Learning schedule of a specific user.
+        // GET: Learning/Schedule/123a-10df-...
+        public ActionResult Schedule(string userId)
+        {
+            if (String.IsNullOrEmpty(userId))
+                userId = User.Identity.GetUserId();
+            else
+            {
+                // If a user is not authorized to view the schedule, redirect to error page.
+                if (!IsAuthorizedTo(Authorized.View, userId))
+                    return View("Error");
+            }
+            
+            List<LearningDay> learningDays = dayManager.getLearningDaysByUserId(userId);
+
             ScheduleViewModel viewModel = new ScheduleViewModel()
             {
-                AllTopics = getFakeTopics(),
-                LearningDays = getFakeLearningDays(),
-                ViewedDay = new LearningDay(),
+                UserId = userId,
+                AllTopics = topicManager.getAllTopics(),
+                LearningDays = learningDays,
                 Year = DateTime.Now.Year,
                 Quarter = 1 + DateTime.Now.Month / 3
             };
-            Debug.WriteLine("Schedule ViewModel initialized with a list of learning days. Its length is: {0}", viewModel.LearningDays.Count);
+            
+            Debug.WriteLine("Schedule ViewModel initialized. UserId: {0}, LearnDays count: {1}", 
+                userId, viewModel.LearningDays.Count);
             return View(viewModel);
         }
 
-        // GET: Learning/Details/5
-        public ActionResult Details(int id)
+        // POST: Learning/Schedule
+        [HttpPost]
+        public ActionResult Schedule(ScheduleViewModel viewModel, string command)
         {
-            return View();
+            // User needs to be authorized to create learning days.
+            Authorized allowedActions = CheckAuthorized(viewModel.UserId);
+            if ((!HasAuthorization(allowedActions, Authorized.Create)))
+            {
+                return View("Error", new HandleErrorInfo(
+                    new Exception("You may create/edit/remove learning days only for yourself."),
+                    "Learning Controller",
+                    "Schedule - Create learning day."));
+            }
+            if (command == "Add")
+            {
+                try
+                {
+                    Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}, topicId: {3}",
+                        viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription, viewModel.NewDayTopicId);
+                    Debug.WriteLine("Target user: {0}", viewModel.UserId);
+
+                    Topic topic = topicManager.getTopicById(viewModel.NewDayTopicId);
+                    dayManager.createLearningDay(viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription,
+                        viewModel.UserId, new List<Topic>() { topic });
+
+                    return RedirectToAction("Schedule");
+                }
+                catch
+                {
+                    Debug.WriteLine("An error occurred while adding a new Learning day. LearningController");
+                    return View();
+                }
+            } else if (command == "Delete")
+            {
+                dayManager.deleteLearningDay(int.Parse(viewModel.ViewedDayId), User.Identity.GetUserId());
+            } else if (command == "Edit")
+            {
+                return EditLearningDay(int.Parse(viewModel.ViewedDayId));
+            }
+
+            return RedirectToAction("Schedule");
         }
 
-        // GET: Learning/Create
-        public ActionResult AddLearningDay()
-        {
-            AddLearningDayViewModel addLearningDayViewModel = new AddLearningDayViewModel();
-            return View(addLearningDayViewModel);
-        }
-
+        // Get: /Learning/EditLearningDay/1
         public ActionResult EditLearningDay(int id)
         {
             Debug.WriteLine("Editing day: " + id);
             EditLearningDayViewModel viewModel = new EditLearningDayViewModel();
-            LearningDay editedDay = getFakeLearningDays()[0];
-            viewModel.Topics = editedDay.Topics;
-            viewModel.References = editedDay.References;
-            viewModel.Date = editedDay.Date.ToString();
-            viewModel.Description = editedDay.Description;
-            viewModel.Title = editedDay.Title;
-            return View(viewModel);
+            LearningDay editedDay = dayManager.getLearningDayById(id);
+            return View("EditLearningDay", editedDay);
         }
 
         [HttpPost]
-        public ActionResult EditLearningDay(EditLearningDayViewModel viewModel)
+        public ActionResult EditLearningDay(LearningDay learningDay)
         {
             Debug.WriteLine("Updating learning day, date: {0}, title: {1}, description: {2}",
-                    viewModel.Date, viewModel.Title, viewModel.Description);
-            return RedirectToAction("Schedule");
-        }
+                    learningDay.Date, learningDay.Title, learningDay.Description);
+            LearningDay oldDay = dayManager.getLearningDayById(learningDay.LearningDayId);
+            oldDay.Date = learningDay.Date;
+            oldDay.Description = learningDay.Description;
+            oldDay.Title = learningDay.Title;
+            // To do: incorporate topics and references in the edit day form. Currently References and Topics are always null.
+            // oldDay.References = viewModel.References;
+            // oldDay.Topics = viewModel.Topics;
 
-        public JsonResult GetLearningDays()
-        {
-            var learningDays = getFakeLearningDays();
-            return new JsonResult { Data = learningDays, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
-        }
+            if (oldDay.User.Id != User.Identity.GetUserId())
+                return View("Error"); // Cannot edit someone elses learning day.
 
-
-        // POST: Learning/Create
-        [HttpPost]
-        public ActionResult Create(ScheduleViewModel viewModel)
-        {
-            try
+            if (dayManager.updateLearningDay(oldDay))
             {
-                Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}", 
-                    viewModel.Date, viewModel.Title, viewModel.Description);
-                // TODO: Add insert logic here
-                LearningDay newDay = new LearningDay
-                {
-                    Date = viewModel.Date,
-                    Topics = new List<Topic> { new Topic { Name = viewModel.TopicName } },
-                    Description = viewModel.Description,
-                    Title = viewModel.Title
-                };
-                viewModel.Date = DateTime.Now;
-                viewModel.Description = "";
-                viewModel.Title = "";
-                // To do: If there is no topic of a given name, then a new topic should be created.
-                viewModel.TopicName = "";
                 return RedirectToAction("Schedule");
             }
-            catch
+            else
             {
-                return View();
+                // Update was unauthorized (not the owner editing) or the edit is not allowed (removed all topics)
+                return View("Error");
             }
         }
 
-        // GET: Learning/Edit/5
-        public ActionResult Edit(int id)
+        public ContentResult GetLearningDays(string id)
         {
-            return View();
+            List<LearningDay> learningDays = dayManager.getLearningDaysByUserId(id);
+            Debug.WriteLine("Getting {0} learning days as JSON for user {1}", learningDays.Count, id);
+            var list = JsonConvert.SerializeObject(learningDays,
+                Formatting.None,
+                new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                }
+            );
+
+            return Content(list, "application/json");
         }
 
-        // POST: Learning/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        // Checks if the current user can perform actions with given user.
+        private Authorized CheckAuthorized(string userId)
         {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            var rights = Authorized.None;
+            var currentUserId = User.Identity.GetUserId();
+            // If the user is editing personal information, grant all access.
+            if (userId == currentUserId)
+                return Authorized.View | Authorized.Edit | Authorized.Create | Authorized.Delete;
+            // If the user is editing team members data, grant viewing access.
+            var ReqUser = UserManager.FindById(userId);
+            if (teamManager.CheckIfLead(ReqUser, User.Identity.GetUserId()))
+                rights = Authorized.View;
+            return rights;
         }
 
-        // GET: Learning/Delete/5
-        public ActionResult Delete(int id)
+        // Returns true if a user is authorized to perform the specified action.
+        private bool IsAuthorizedTo(Authorized action, string userId)
         {
-            return View();
+            return (CheckAuthorized(userId) & action) != 0;
         }
 
-        // POST: Learning/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        // Returns true if a given flag for authorized actions contains specific authorized action.
+        // (Authorized.View | Authorized.Edit) & Authorized.View == Authorized.View
+        private bool HasAuthorization(Authorized actions, Authorized action)
         {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-        private List<LearningDay> getFakeLearningDays()
-        {
-            List<LearningDay> days = new List<LearningDay>();
-            string[] references = { "https://google.com", "https://wikipedia.org", "https://stackoverflow.com/" };
-            List<Topic> topics = getFakeTopics();
-            days.Add(new LearningDay
-            {
-                Date = DateTime.Now,
-                Id = "1",
-                References = references,
-                Description = "Assembly, Basic, C#",
-                Title = "Programming ABC",
-                Topics = topics
-            });
-            days.Add(new LearningDay
-            {
-                Date = DateTime.Now.AddDays(1),
-                Id = "2",
-                References = references,
-                Description = "Learning stuff - good. Hehe.",
-                Title = "Programming AB",
-                Topics = topics
-            });
-            days.Add(new LearningDay
-            {
-                Date = DateTime.Now.AddDays(3),
-                Id = "3",
-                References = references,
-                Description = "Everything I do, I do it big. Yeah, uh huh, screamin' that's nothin'",
-                Title = "Black and yellow",
-                Topics = new List<Topic> { new Topic { Name = "Yeah, aha, you know what it is." } }
-            });
-
-            return days;
-        }
-        private List<Topic> getFakeTopics()
-        {
-            return new List<Topic> {
-                new Topic { Name = "Some body touched my baguette!" } ,
-                new Topic { Name = "MSSQL basics" },
-                new Topic { Name = "Yeah, aha, you know what it is." }
-            };
+            return (actions & action) == action;
         }
     }
-
-  
 }

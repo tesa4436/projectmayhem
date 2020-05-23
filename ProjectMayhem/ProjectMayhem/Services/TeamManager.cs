@@ -30,8 +30,6 @@ namespace ProjectMayhem.Services
                 ApplicationUser reqUser;
                 var query = context.Users.Where(s => s.Id == user.Id).Include(u => u.teamLead);
                 reqUser = query.ToArray()[0];
-                
-                System.Diagnostics.Debug.WriteLine("Requested access of: " + reqUser.teamLead.Id);
                 return CheckRecursion(reqUser, CurrentUserId);
             }
             catch 

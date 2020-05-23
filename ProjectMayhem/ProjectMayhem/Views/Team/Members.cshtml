@@ -26,7 +26,8 @@
         {
             <li>
                 <div>
-                    @Html.ActionLink(Emp.UserName, "Members", "Team", new { LeadId = Emp.Id, retUrl = HttpContext.Current.Request.Url }, null)
+                    @Html.ActionLink(Emp.UserName, "Members", "Team", new { LeadId = Emp.Id, retUrl = HttpContext.Current.Request.Url }, null)  |
+                    @Html.ActionLink("View schedule", "Schedule", "Learning", new { userId = Emp.Id, retUrl = HttpContext.Current.Request.Url }, null)
                 </div>
             </li>
         }
@@ -49,7 +50,7 @@
             <div class="form-group">
                 @Html.LabelFor(m => m.NewLeadId, new { @class = "col-md-2 control-label" })
                 <div class="col-md-10">
-                    @Html.DropDownListFor(m => m.NewLeadId, new SelectList(Model.AllUsers.Select(x => new { Value = x.Id, Text = x.UserName }), "Value", "Text"))
+                    @Html.DropDownListFor(m => m.NewLeadId, new SelectList(Model.AllUsers.Select(x => new { Value = x.Id, Text = x.UserName }), "Value", "Text"), "None")
                 </div>
             </div>
 
