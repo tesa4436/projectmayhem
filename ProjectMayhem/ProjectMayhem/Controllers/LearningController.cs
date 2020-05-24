@@ -101,6 +101,12 @@ namespace ProjectMayhem.Controllers
             }
         }
 
+        // Get: /Learning/List/1234-abcd-...
+        public ActionResult List(string id)
+        {
+            return RedirectToAction("List", "LearningDay", new { id = id });
+        }
+
         // Get: /Learning/EditLearningDay/1
         public ActionResult EditLearningDay(int id)
         {

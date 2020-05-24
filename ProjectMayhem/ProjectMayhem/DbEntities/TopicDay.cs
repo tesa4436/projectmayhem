@@ -22,5 +22,8 @@ namespace ProjectMayhem.DbEntities
         public virtual Topic Topic { get; set; }
 
         public virtual LearningDay Day { get; set; }
+
+        [NotMapped]
+        public bool Remove { get; set; }
     }
 }

@@ -1,0 +1,24 @@
+﻿@model ProjectMayhem.DbEntities.TopicDay
+
+@{
+    ViewBag.Title = "Topic";
+}
+
+<tr>
+    <td>
+        @Html.HiddenFor(model => model.TopicId)
+        @Html.EditorFor(model => model.Topic.Title)
+        @Html.ValidationMessageFor(model => model.Topic.Title, "", new { @class = "text-danger" })
+    </td>
+    <td>
+        @Html.EditorFor(model => model.Topic.Description)
+        @Html.ValidationMessageFor(model => model.Topic.Description, "", new { @class = "text-danger" })
+    </td>
+    <td>
+        @Html.EditorFor(model => model.Topic.parentTopic)
+        @Html.ValidationMessageFor(model => model.Topic.parentTopic, "", new { @class = "text-danger" })
+    </td>
+    <td>
+        @Html.EditorFor(model => model.Remove)
+    </td>
+</tr>

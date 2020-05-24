@@ -1,4 +1,5 @@
 ﻿@using ProjectMayhem.Models
+@using Microsoft.AspNet.Identity
 
 @model ScheduleViewModel
 
@@ -17,6 +18,10 @@
 <div id="schedule">
 
 </div>
+
+
+@Html.ActionLink("View Learning days list", "List", new { id = User.Identity.GetUserId()})
+
 
 <!-- Modal dialog to show learning day details. -->
 <div id="viewedLearningDay" class="modal fade" role="dialog">

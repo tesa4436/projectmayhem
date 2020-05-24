@@ -193,6 +193,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LearningController.cs" />
+    <Compile Include="Controllers\LearningDayController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PersonListController.cs" />
     <Compile Include="Controllers\TeamController.cs" />
@@ -231,7 +232,6 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GroupViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\LearningModels.cs" />
     <Compile Include="Models\LearningViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Person.cs" />
@@ -630,6 +630,12 @@
     <Content Include="Views\Learning\EditLearningDay.cshtml" />
     <Content Include="Views\PersonList\EditorTemplates\Person.cshtml" />
     <Content Include="Views\PersonList\Index.cshtml" />
+    <Content Include="Views\LearningDay\EditorTemplates\TopicDay.cshtml" />
+    <Content Include="Views\LearningDay\EditorTemplates\LearningDay.cshtml" />
+    <Content Include="Views\LearningDay\List.cshtml" />
+    <Content Include="Views\LearningDay\EditorTemplates\LDayReferences.cshtml" />
+    <Content Include="Views\Learning\EditorTemplates\LDayReferences.cshtml" />
+    <Content Include="Views\Learning\EditorTemplates\TopicDay.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

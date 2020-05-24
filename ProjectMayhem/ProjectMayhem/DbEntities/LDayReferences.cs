@@ -19,5 +19,8 @@ namespace ProjectMayhem.DbEntities
         [Key]
         [Column(Order = 0)]
         public string ReferenceUrl { get; set; }
+
+        [NotMapped]
+        public bool Remove { get; set; }
     }
 }

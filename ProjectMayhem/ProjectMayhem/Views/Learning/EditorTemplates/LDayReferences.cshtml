@@ -1,0 +1,16 @@
+﻿@model ProjectMayhem.DbEntities.LDayReferences
+@{
+    ViewBag.Title = "LDReferenceUI";
+}
+
+<tr>
+    <td>
+        @Html.HiddenFor(model => model.LDId)
+        @Html.EditorFor(model => model.ReferenceUrl)
+        @Html.ValidationMessageFor(model => model.ReferenceUrl, "", new { @class = "text-danger" })
+    </td>
+    <td>
+        @Html.EditorFor(model => model.Remove)
+    </td>
+</tr>
+

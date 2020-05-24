@@ -122,6 +122,15 @@ namespace ProjectMayhem.Services
             }
         }
 
+        public void UpdateChanges(List<LearningDay> learningDays)
+        {
+            foreach(var day in learningDays)
+            {
+                updateLearningDay(day);
+            }
+            applicationDbContext.SaveChanges();
+        }
+
         public void UpdateChanges()
         {
             applicationDbContext.SaveChanges();

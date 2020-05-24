@@ -1,0 +1,88 @@
+﻿using Microsoft.AspNet.Identity;
+using ProjectMayhem.DbEntities;
+using ProjectMayhem.Models;
+using ProjectMayhem.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ProjectMayhem.Controllers
+{
+    public class LearningDayController : Controller
+    {
+        private LearningDayManager dayManager = new LearningDayManager();
+
+        private List<LearningDay> _dayList;
+        private List<LearningDay> DayList
+        {
+            get
+            {
+                if (_dayList == null)
+                    _dayList = Session["DayList"] as List<LearningDay>;
+                return _dayList;
+            }
+            set
+            {
+                _dayList = value;
+                Session["DayList"] = _dayList;
+            }
+        }
+
+        // GET: LearningDay/List/1234-ddas-12dk-ooo...
+        public ActionResult List(string id)
+        {
+            if (DayList == null)
+            {
+                // TODO: load real data from database
+                DayList = dayManager.getLearningDaysByUserId(id);
+            }
+            return View(DayList);
+        }
+
+        [HttpPost]
+        public ActionResult List(List<LearningDay> dayList, string command)
+        {
+            try
+            {
+                if (command == "Add Item")
+                {
+                    dayList.Add(new LearningDay() { LearningDayId = -1 });
+                    DayList = dayList;
+                }
+                else if (command == "Remove Selected")
+                {
+                    int pos = dayList.Count();
+                    while (pos > 0)
+                    {
+                        pos--;
+                        if (dayList[pos].Remove)
+                        {
+                            dayManager.DeleteLearningDay(dayList[pos].Date, User.Identity.GetUserId());
+                            dayList.RemoveAt(pos);
+                        }
+                    }
+                    DayList = dayList;
+                }
+                else if (command == "Cancel/Refresh")
+                {
+                    // force reload of data from database
+                    DayList = null;
+                }
+                else
+                {
+                    // update actual database
+                    dayManager.UpdateChanges(dayList);
+                    // force reload of data from database
+                    DayList = null;
+                }
+                return RedirectToAction("List", new { id = User.Identity.GetUserId()});
+            }
+            catch
+            {
+                return View();
+            }
+        }
+    }
+}

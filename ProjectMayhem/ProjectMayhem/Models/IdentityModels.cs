@@ -41,6 +41,8 @@ namespace ProjectMayhem.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<ProjectMayhem.DbEntities.TopicDay> TopicDays { get; set; }
     }
 
     [Flags] public enum Authorized
