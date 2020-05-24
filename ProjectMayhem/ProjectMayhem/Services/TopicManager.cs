@@ -2,7 +2,6 @@
 using ProjectMayhem.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -75,6 +74,7 @@ namespace ProjectMayhem.Services
             {
                 return context.topics.Where(x => x.TopicsId == Id).First();
             }
+            ApplicationDbContext applicationDbContext = new ApplicationDbContext();
         }
 
     }

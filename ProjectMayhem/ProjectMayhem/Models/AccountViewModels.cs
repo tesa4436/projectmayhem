@@ -68,9 +68,13 @@ namespace ProjectMayhem.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
-
-    public class RegisterViewModel
+    public class AccountManagementViewModel
     {
+        public List<ApplicationUser> TeamMembers { get; set; }
+
+        [Display(Name ="Select a Team member to delete")]
+        public string EmpId { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

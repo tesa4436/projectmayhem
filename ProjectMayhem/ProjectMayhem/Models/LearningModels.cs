@@ -5,21 +5,7 @@ using System.Web;
 
 namespace ProjectMayhem.Models
 {
-    // End goal - DB entities and using code-first approach.
-    public class Topic
+    public class LearningModels
     {
-        public string Name { get; set; }
-        public Topic ParentTopic;
-        public List<string> References;
-    }
-
-    public class LearningDay
-    {
-        public DateTime Date;
-        public string Id;
-        public List<Topic> Topics;
-        public string[] References;
-        public string Description;
-        public string Title;
     }
 }

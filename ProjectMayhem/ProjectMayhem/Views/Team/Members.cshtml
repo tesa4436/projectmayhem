@@ -1,4 +1,18 @@
 ﻿@model ProjectMayhem.Models.MembersViewModel
+
+<head>
+    <style>
+        #Navigation{
+            display: inline;
+            margin-right:10px
+        }
+        #Forms form, #Forms form div{
+            display: inline;
+
+        }
+    </style>
+</head>
+
 @if (Model.Employees.ToArray().Length > 0)
 {
     <h2>
@@ -12,49 +26,54 @@
         {
             <li>
                 <div>
-                    @Html.ActionLink(Emp.UserName, "Members", "Team", new { LeadId = Emp.Id, retUrl = HttpContext.Current.Request.Url }, null)
+                    @Html.ActionLink(Emp.UserName, "Members", "Team", new { LeadId = Emp.Id, retUrl = HttpContext.Current.Request.Url }, null)  |
+                    @Html.ActionLink("View schedule", "Schedule", "Learning", new { userId = Emp.Id, retUrl = HttpContext.Current.Request.Url }, null)
                 </div>
             </li>
         }
     </ul>
+    <div id="Forms">
+        @using (Html.BeginForm("Members", "Team", new { LeadId = Request.QueryString["LeadId"], retUrl = Request.QueryString["retUrl"] }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <h4>Assign a new Leader</h4>
+            <hr />
+            @Html.ValidationSummary("", new { @class = "text-danger" })
 
-    using (Html.BeginForm("Members", "Team", new { LeadId = Request.QueryString["LeadId"], retUrl = Request.QueryString["retUrl"] }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-    {
-        @Html.AntiForgeryToken()
-        <h4>Assign a new Leader</h4>
-        <hr />
-        @Html.ValidationSummary("", new { @class = "text-danger" })
-
-        <div class="form-group">
-            @Html.LabelFor(m => m.EmpId, new { @class = "col-md-2 control-label" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(m => m.EmpId, new SelectList(Model.Employees.Select(x => new { Value = x.Id, Text = x.UserName }), "Value", "Text"))
+            <div class="form-group">
+                @Html.LabelFor(m => m.EmpId, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.EmpId, new SelectList(Model.Employees.Select(x => new { Value = x.Id, Text = x.UserName }), "Value", "Text"))
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.NewLeadId, new { @class = "col-md-2 control-label" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(m => m.NewLeadId, new SelectList(Model.AllUsers.Select(x => new { Value = x.Id, Text = x.UserName }), "Value", "Text"))
+            <div class="form-group">
+                @Html.LabelFor(m => m.NewLeadId, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.NewLeadId, new SelectList(Model.AllUsers.Select(x => new { Value = x.Id, Text = x.UserName }), "Value", "Text"), "None")
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" class="btn btn-default" value="Change" />
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" class="btn btn-primary" value="Change" />
+                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 }
 else
 {
     <h2>There are no Team members</h2>
-
-    <div>
-        @if (!string.IsNullOrEmpty(Request.QueryString["retUrl"]))
-        {
-            <a href=@Request.QueryString["retUrl"]>Back</a><br>
-            @Html.ActionLink("My team", "Members", "Team")
-        }
-    </div>
 }
+    <div style="width:400px">
+            @if (!string.IsNullOrEmpty(Request.QueryString["retUrl"]))
+            {
+            <div id="Navigation" class="btn btn-dark">
+                <a href=@Request.QueryString["retUrl"]  style="color: white">Back</a>
+            </div>
+            <div id="Navigation" class ="btn btn-secondary">
+                @Html.ActionLink("My team", "Members", "Team", null, new { style="color: white" })
+            </div>
+            }
+    </div>

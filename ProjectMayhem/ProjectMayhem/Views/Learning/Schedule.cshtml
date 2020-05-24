@@ -1,4 +1,5 @@
 ﻿@using ProjectMayhem.Models
+@using Microsoft.AspNet.Identity
 
 @model ScheduleViewModel
 
@@ -7,21 +8,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<div class="text-center">
+    <h2>@ViewBag.Title</h2>
+</div>
+@Html.HiddenFor(m => m.UserId)
 
-<h2>@ViewBag.Title.</h2>
-<p>Current year: @Model.Year, quarter: @Model.Quarter</p>
 
 <!-- This holds the generated FullCalendar element for the Learning Schedule.
     Documentation: https://fullcalendar.io/docs -->
 <div id="schedule">
 
 </div>
-
-<!-- This holds the generated FullCalendar element for the Learning Schedule.-->
-<div id="schedule1">
-
-</div>
-
 
 <!-- Modal dialog to show learning day details. -->
 <div id="viewedLearningDay" class="modal fade" role="dialog">
@@ -32,20 +29,36 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
+                <div>
+                    <p id="pDetails"></p>
+                    <p id="pTopics"></p>
+                    <p id="pReferences"></p>
+                </div>
                 <!-- Could add an "if" helper to check whether the person viewing can edit.-->
-                @Html.ActionLink("Edit learning day", "EditLearningDay", "Learning")
-                <p id="pDetails"></p>
-                <p id="pTopics"></p>
-                <p id="pReferences"></p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+            <div class="modal-footer" style="width:100%;">
+                <div style="float:left;width:200px;">
+                    @if (Model.UserId == User.Identity.GetUserId())
+                    {
+                        using (Html.BeginForm("Schedule", "Learning", FormMethod.Post, new { userId = Model.UserId, @class = "form-horizontal", role = "form" }))
+                        {
+                            @Html.HiddenFor(m => m.ViewedDayId)
+                            @Html.HiddenFor(m => m.UserId)
+                            <input name="command" class="fc-button-active" type="submit" value="Delete" />
+                            <input name="command" class="fc-button-active" type="submit" value="Edit" />
+                        }
+                    }
+                </div>
+                <div style="float:right;width:100px;">
+                    <button type="button" class="fc-button-active" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-
 </div>
 
+<!-- Modal dialog for creating new learning days. -->
 <div id="newLearningDay" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -53,44 +66,64 @@
                 <h4 class="modal-title"><span id="topicName"></span></h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            @using (Html.BeginForm("Create", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            @using (Html.BeginForm("Schedule", "Learning", FormMethod.Post, new { userId = Model.UserId, @class = "form-horizontal", role = "form" }))
             {
-                <h4>Create a new learning day.</h4>
+                <h4 class="text-center">Create a new learning day</h4>
                 <hr />
                 @Html.ValidationSummary("", new { @class = "text-danger" })
                 <div class="form-group">
-                    @Html.LabelFor(m => m.Title, new { @class = "col-md-2 control-label" })
+                    @Html.LabelFor(m => m.NewDayTitle, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.NewDayTitle, new { @class = "form-control" })
+                    </div>
+                    @Html.LabelFor(m => m.NewDayDescription, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.NewDayDescription, new { @class = "form-control" })
+                    </div>
+                    @Html.LabelFor(model => model.NewDayDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.NewDayDate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.NewDayDate, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                <hr />
+                <h4 class="text-md-center">Topic</h4>
+                <div class="form-group col-md-10">
+                    <div id="topicSelection" style="@(Model.CreateTopic ? "display:none" : "display:block")">
+                        @Html.DropDownListFor(m => m.NewDayTopicId, new SelectList(Model.AllTopics.Select(x => new { Value = x.TopicsId, Text = x.Title }), "Value", "Text"), new { @class = "form-control" })
                     </div>
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Date, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Date, new { @class = "form-control" })
+                    <div id="newTopic" style="@(Model.CreateTopic ? "display:block" : "display:none")">
+                        <div>
+                            @Html.LabelFor(m => m.NewTopicTitle, new { @class = "col-md-2 control-label" })
+                            <br />
+                            @Html.TextBoxFor(model => model.NewTopicTitle, new { @class = "form-control" })
+                        </div>
+
+                        <div>
+                            @Html.LabelFor(m => m.NewTopicDescription, new { @class = "col-md-2 control-label" })
+                            <br />
+                            @Html.TextAreaFor(model => model.NewTopicDescription, new { @class = "form-control" })
+                        </div>
+
+                        <div>
+                            @Html.LabelFor(m => m.NewTopicParentId, new { @class = "control-label" })
+                            <br />
+                            @Html.DropDownListFor(m => m.NewTopicParentId, new SelectList(Model.AllTopics.Select(x => new { Value = x.TopicsId, Text = x.Title }), "Value", "Text"), "None", new { @class = "form-control" })
+                        </div>
                     </div>
+                    @Html.LabelFor(m => m.CreateTopic, new { @class = "control-label" })
+                    @Html.CheckBoxFor(m => m.CreateTopic, new { @class = "form-control" })
                 </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.TopicName, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.DropDownListFor(m => m.TopicName, new SelectList(Model.AllTopics.Select(tp => new { Value = tp.Name, Text = tp.Name }), "Value", "Text"))
-                    </div>
-                </div>
+                <!-- Using hidden fields to pass values to controller that aren't visible in the form.-->
+                @Html.HiddenFor(m => m.UserId)
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" class="btn btn-default" value="Add" />
+                        <input name="command" type="submit" value="Add" />
                     </div>
                 </div>
             }
         </div>
     </div>
-
 </div>
 
 <!--Styling links for FullCalendar-->
@@ -98,9 +131,28 @@
 <link href="~/Scripts/fullcalendar/daygrid/main.css" rel="stylesheet" media="print" />
 
 @section Scripts{
+    <!-- JS libraries for FullCalendar-->
     <script src="~/Scripts/fullcalendar/core/main.js"></script>
     <script src="~/Scripts/fullcalendar/daygrid/main.js"></script>
     <script src='~/Scripts/fullcalendar/interaction/main.js'></script>
+
+    <!-- Makes the modal window change when checkbox is pressed-->
+    <script>
+        $(function () {
+            $("#CreateTopic").click(function () {
+                if ($(this).is(':checked')) {
+                    $("#newTopic").show();
+                    $("#topicSelection").hide();
+                }
+                else {
+                    $("#newTopic").hide();
+                    $("#topicSelection").show();
+                }
+            });
+        });
+    </script>
+
+
     <!--Utility functions: -->
     <script>
         function displayLearningDay(eventClickInfo) {
@@ -110,7 +162,11 @@
             var references = learningEvent.extendedProps.references;
 
             // Setting the id of viewed learning day.
-            $('#ViewedDayId').val(learningEvent.id)
+            // var $editLink = $('#editDay');
+            // $editLink.attr('href', 'EditLearningDay/' + id);
+
+            // Set the value for the ViewedDayId field. It's used to pass the entity ID from form to controller actions.
+            $('#ViewedDayId').val(id);
 
             console.log('Clicked on learning day, id: ', id);
             console.log(learningEvent.extendedProps)
@@ -124,7 +180,7 @@
             $topicsDescription.append($('<p/>').html('<b>Topics:</b><br/>'));
             var $topics = $('<ol/>');
             for (var topic of topics) {
-                $topics.append($('<li>' + topic.Name + '</li>'));
+                $topics.append($('<li>' + topic.Topic.Title + '</li>'));
             }
             $topicsDescription.append($topics);
 
@@ -132,7 +188,7 @@
             $referencesDescription.append($('<p/>').html('<b>References:</b>'));
             var $references = $('<ol/>');
             for (var reference of references) {
-                $references.append($('<li><a href="' + reference + '">' + reference + '</a></li>'));
+                $references.append($('<li><a href="' + reference.ReferenceUrl + '">' + reference.ReferenceUrl + '</a></li>'));
             }
             $referencesDescription.append($references);
 
@@ -175,35 +231,59 @@
                 eventClick: displayLearningDay,
                 dateClick: function (info) {
                     console.log('Clicked on date: ', info.dateStr);
-                    $('#Date:text').val(info.dateStr);
-                    $('#newLearningDay').modal();
+                    showNewDayModal(info);
                 }
             });
 
             calendar.render();
             console.log('Calendar is: ', typeof calendar);
-            console.log('Getting event from calendar by id: 1');
-            console.log(calendar.getEventById('1'));
+            id = '3'
+            console.log('Getting event from calendar by id: ' + id);
+            console.log(calendar.getEventById(id));
         }
     </script>
+
+
+    <!--Functions that vary depending on situation.-->
+    @if (Model.UserId == User.Identity.GetUserId())
+    {
+        <script>
+            // Viewing own calendar.
+            function showNewDayModal(info) {
+                $('#NewDayDate').val(info.dateStr);
+                $('#newLearningDay').modal();
+            }
+        </script>
+    }
+    else
+    {
+        <script>
+            // Viewing team member's calendar. Don't show the new day modal.
+            function showNewDayModal() {
+                console.log("Trying to add a new day for a team member");
+            }
+        </script>
+    }
+    <!--Calendar Initialization code-->
     <script>
         // Preparing the calendar
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('schedule');
-
+            var userId = $('#UserId').attr('value');
             var events = [];
             // Getting events for the calendar. Need Javascript objects with specific fields for FullCalendar to work.
             $.ajax({
                 type: "GET",
                 // Can add user ID at the end of URL using razor tags, so that we get learning days of a certain user.
-                url: "/Learning/GetLearningDays",
+                url: "/Learning/GetLearningDays/" + userId,
                 success: function (data) {
                     $.each(data, function (i, learningDay) {
+                        console.log('Learning Day at: ' + learningDay.Date)
                         events.push({
-                            id: learningDay.Id,
+                            id: learningDay.LearningDayId,
                             title: learningDay.Title,
                             description: learningDay.Description,
-                            start: parseInt(learningDay.Date.substr(6)),
+                            start: learningDay.Date, // parseInt(learningDay.Date.substr(6)), // In case dates are returned as /Date(132342042424)/
                             extendedProps: {
                                 references: learningDay.References,
                                 topics: learningDay.Topics
@@ -221,7 +301,9 @@
                 }
             })
 
-            
+            // Unchecking the check box in case it was checked and the page was refreshed.
+            $('#CreateTopic').prop("checked", false);
+
         });
     </script>
 }
