@@ -37,6 +37,7 @@ namespace ProjectMayhem.Controllers
 
         // Learning schedule of a specific user.
         // GET: Learning/Schedule/123a-10df-...
+        [Authorize]
         public ActionResult Schedule(string userId)
         {
             if (String.IsNullOrEmpty(userId))
@@ -66,6 +67,8 @@ namespace ProjectMayhem.Controllers
 
         // POST: Learning/Schedule
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Schedule(ScheduleViewModel viewModel, string command)
         {
             // User needs to be authorized to create learning days.
@@ -91,9 +94,9 @@ namespace ProjectMayhem.Controllers
 
                     return RedirectToAction("Schedule");
                 }
-                catch
+                catch (Exception e)
                 {
-                    Debug.WriteLine("An error occurred while adding a new Learning day. LearningController");
+                    Debug.WriteLine("An error occurred while adding a new Learning day. LearningController ");
                     return View();
                 }
             } else if (command == "Delete")
@@ -108,6 +111,7 @@ namespace ProjectMayhem.Controllers
         }
 
         // Get: /Learning/EditLearningDay/1
+        [Authorize]
         public ActionResult EditLearningDay(int id)
         {
             Debug.WriteLine("Editing day: " + id);
@@ -117,6 +121,8 @@ namespace ProjectMayhem.Controllers
         }
 
         [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
         public ActionResult EditLearningDay(LearningDay learningDay)
         {
             Debug.WriteLine("Updating learning day, date: {0}, title: {1}, description: {2}",

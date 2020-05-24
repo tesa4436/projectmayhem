@@ -26,6 +26,9 @@ namespace ProjectMayhem.DbEntities
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         public string Title { get; set; }
 
         public string Description { get; set; }

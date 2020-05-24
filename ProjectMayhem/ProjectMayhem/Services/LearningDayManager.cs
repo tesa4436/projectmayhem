@@ -33,27 +33,40 @@ namespace ProjectMayhem.Services
         public bool createLearningDay(DateTime date, string Title, string Desc, string userId, List<Topic> chosenTopics = null, List<string> references = null)
         {
             using (var context = new ApplicationDbContext()) {
-                var user = context.Users.Where(x => x.Id == userId).First();
-                var LD = new LearningDay();
-                LD.Date = date; LD.Description = Desc; LD.User = user; LD.Title = Title;
-                if (chosenTopics != null)
+                using (var dbContextTransaction = context.Database.BeginTransaction())
                 {
-                    foreach (var topic in chosenTopics)
+                    try
                     {
-                        LD.Topics.Add(new TopicDay() { Day = LD, Topic = context.topics.Where(x => x.TopicsId == topic.TopicsId).First() });
-                    
+                        var user = context.Users.Where(x => x.Id == userId).First();
+                        var LD = new LearningDay();
+                        LD.Date = date; LD.Description = Desc; LD.User = user; LD.Title = Title;
+                        LD = context.learningDays.Add(LD);
+                        context.SaveChanges();
+                        if (chosenTopics != null)
+                        {
+                            foreach (var topic in chosenTopics)
+                            {
+                                context.topicDay.Add(new TopicDay() { Day = LD, Topic = context.topics.Where(x => x.TopicsId == topic.TopicsId).First() });
+                            }
+                        }
+                        if (references != null)
+                        {
+                            foreach (var reference in references)
+                            {
+                                context.lDayReferences.Add(new LDayReferences() { learningDay = LD, ReferenceUrl = reference });
+                            }
+                        }
+
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        return false;
                     }
                 }
-                if(references != null)
-                {
-                    foreach(var reference in references)
-                    {
-                        LD.References.Add(new LDayReferences() { learningDay = LD, ReferenceUrl = reference });
-                    }
-                }
-                context.learningDays.Add(LD);
-                context.SaveChanges();
-                return true;
+                
             }
         }
 
@@ -67,6 +80,8 @@ namespace ProjectMayhem.Services
             using (var context = new ApplicationDbContext())
             {
                 LearningDay oldDay = getLearningDayById(changedDay.LearningDayId);
+                Debug.WriteLine("Check Opt lock " + oldDay.RowVersion);
+                Debug.WriteLine("Check Opt lock " + changedDay.RowVersion);
                 context.learningDays.AddOrUpdate(changedDay);
                 context.SaveChanges();
                 return true;

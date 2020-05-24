@@ -5,17 +5,9 @@
     {
     @Html.AntiForgeryToken()
         
-<ul class="nav navbar-nav navbar-right">
-    <li class="nav-item">@Html.ActionLink("Recommendations", "Recommended", "Recommendation", routeValues: null, htmlAttributes: new { id = "recommendedLink", @class = "nav-link" })</li>
-    <li class="nav-item">@Html.ActionLink("Invite", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
-    <li class="nav-item">@Html.ActionLink("My Team", "Members", "Team", routeValues: null, htmlAttributes: new { id = "teamLink", @class = "nav-link" })</li>
-    <li class="nav-item">
-        @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
-    </li>
-    <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-</ul>
     <ul class="nav navbar-nav navbar-right">
         <li class="nav-item">@Html.ActionLink("Schedule", "Schedule", "Learning", routeValues: null, htmlAttributes: new { id = "scheduleLink", @class = "nav-link" })</li>
+        <li class="nav-item">@Html.ActionLink("Recommendations", "Recommended", "Recommendation", routeValues: null, htmlAttributes: new { id = "recommendedLink", @class = "nav-link" })</li>
         <li class="nav-item">@Html.ActionLink("Invite", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
         <li class="nav-item">@Html.ActionLink("My Team", "Members", "Team", routeValues: null, htmlAttributes: new { id = "teamLink", @class = "nav-link" })</li>
         <li class="nav-item">

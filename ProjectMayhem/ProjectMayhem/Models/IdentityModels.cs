@@ -32,6 +32,7 @@ namespace ProjectMayhem.Models
         public DbSet<LearningDay> learningDays { get; set; }
         public DbSet<LDayReferences> lDayReferences { get; set; }
         public DbSet<TopicUser> topicUsers { get; set; }
+        public DbSet<TopicDay> topicDay { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

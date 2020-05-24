@@ -277,12 +277,14 @@ namespace ProjectMayhem.Controllers
         {
             var SelectedId = model.EmpId;
             Debug.WriteLine(SelectedId + " This ID");
-            if (UserManager.Users.Where(x => x.teamLead.Id == SelectedId).ToArray().Length == 0)
+            var currentUser = User.Identity.GetUserId();
+            var deletionUser = UserManager.FindById(SelectedId);
+            if (UserManager.Users.Where(x => x.teamLead.Id == deletionUser.Id).ToArray().Length == 0 && deletionUser.teamLead.Id == currentUser)
             {
-                await UserManager.DeleteAsync(UserManager.FindById(SelectedId));
+                await UserManager.DeleteAsync(deletionUser);
             }
             else
-                TempData["DeleteError"] = "Cannot delete a member who is a Team Leader";
+                TempData["DeleteError"] = "Cannot delete a member. User is a Team Leader or you do not have permission";
             return this.RedirectToAction("Register");
         }
 

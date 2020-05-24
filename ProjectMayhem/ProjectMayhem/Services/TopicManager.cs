@@ -74,7 +74,6 @@ namespace ProjectMayhem.Services
             {
                 return context.topics.Where(x => x.TopicsId == Id).First();
             }
-            ApplicationDbContext applicationDbContext = new ApplicationDbContext();
         }
 
     }
