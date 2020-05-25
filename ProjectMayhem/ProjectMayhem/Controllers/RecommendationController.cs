@@ -46,7 +46,6 @@ namespace ProjectMayhem.Controllers
             string currentUserId = User.Identity.GetUserId();
             model.TeamMembers = UserManager.Users.Where(x => x.teamLead.Id == currentUserId).ToList();
             model.myRecommendedTopics = TopM.getRecommendedTopics(currentUserId);
-            model.selectFromList = false;
             return model;
         }
 
@@ -57,11 +56,16 @@ namespace ProjectMayhem.Controllers
         {
             model = getData(model);
             ModelState.Remove("newTopicParentId");
+            if (UserManager.Users.Single(x => x.Id == model.selectedTeamMemberId) == null)
+                ModelState.AddModelError("", "Team Member not found");
+
             if (ModelState.IsValid)
             {
                 Debug.WriteLine("Parent id " +model.newTopicParentId);
-                if(model.selectFromList == true)
+                Debug.WriteLine("Testing recommend " + model.selectFromList);
+                if (model.selectFromList == true)
                 {
+                    Debug.WriteLine("Testing recommend " + model.recommendedTopicId);
                     TopM.recommendTopic(model.recommendedTopicId, model.selectedTeamMemberId);
                 }
                 else
