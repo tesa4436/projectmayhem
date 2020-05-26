@@ -37,9 +37,11 @@
         <div>
             @Html.DropDownListFor(m => m.selectedTeamMemberId, new SelectList(Model.TeamMembers.Select(x => new { Value = x.Id, Text = x.UserName }), "Value", "Text"))
         </div>
-        @Html.LabelFor(m => m.selectFromList)
         <br />
-        @Html.CheckBoxFor(m => m.selectFromList)
+        <div>
+            @Html.LabelFor(m => m.selectFromList) @Html.CheckBoxFor(m => m.selectFromList)
+        </div>
+        <br />
         <div id="topicSelection" style="@(Model.selectFromList ? "display:block" : "display:none")">
             @Html.LabelFor(m => m.recommendedTopicId)
             @Html.DropDownListFor(m => m.recommendedTopicId, new SelectList(Model.allTopics.Select(x => new { Value = x.TopicsId, Text = x.Title }), "Value", "Text"))

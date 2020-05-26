@@ -40,8 +40,10 @@ namespace ProjectMayhem.Controllers
         [Authorize]
         public ActionResult Schedule(string userId)
         {
+
             if (String.IsNullOrEmpty(userId))
                 userId = User.Identity.GetUserId();
+
             else
             {
                 // If a user is not authorized to view the schedule, redirect to error page.
@@ -114,11 +116,19 @@ namespace ProjectMayhem.Controllers
         [Authorize]
         public ActionResult EditLearningDay(int id)
         {
+            var error = (string)TempData["UpdateLD"];
+            if (!string.IsNullOrEmpty(error))
+            {
+                ModelState.AddModelError("", error);
+                TempData.Remove("UpdateLD");
+            }
             Debug.WriteLine("Editing day: " + id);
             LearningDay editedDay = dayManager.getLearningDayById(id);
             Debug.WriteLine("Learning day values: " + " iD = " + editedDay.LearningDayId + " rowVersion = " + editedDay.RowVersion);
             return View("EditLearningDay", editedDay);
         }
+
+        TopicManager TM;
 
         [HttpPost]
         [Authorize]
@@ -127,27 +137,22 @@ namespace ProjectMayhem.Controllers
         {
             Debug.WriteLine("Updating learning day, date: {0}, title: {1}, description: {2}",
                     learningDay.Date, learningDay.Title, learningDay.Description);
-            LearningDay oldDay = dayManager.getLearningDayById(learningDay.LearningDayId);
-            oldDay.Date = learningDay.Date;
-            oldDay.Description = learningDay.Description;
-            oldDay.Title = learningDay.Title;
-            Debug.WriteLine("Learning day values: " + " iD = " + learningDay.LearningDayId + " rowVersion = " + learningDay.RowVersion);
-            // To do: incorporate topics and references in the edit day form. Currently References and Topics are always null.
-            // oldDay.References = viewModel.References;
-            // oldDay.Topics = viewModel.Topics;
 
-            if (oldDay.User.Id != User.Identity.GetUserId())
+            if (learningDay.UserId != User.Identity.GetUserId())
                 return View("Error"); // Cannot edit someone elses learning day.
+            
+            //TM = new TopicManager();
 
-            if (dayManager.updateLearningDay(oldDay))
+            //learningDay.Topics.Add(new TopicDay() { TopicId = TM.createTopic("Testas123", "").TopicsId, LearningDayId = learningDay.LearningDayId, UserId = learningDay.UserId });
+            //learningDay.Topics.Add(new TopicDay() { TopicId = TM.getTopicById(21).TopicsId, LearningDayId = learningDay.LearningDayId, UserId = learningDay.UserId });
+
+            if (!dayManager.updateLearningDay(learningDay, learningDay.RowVersion))
             {
-                return RedirectToAction("Schedule");
+                TempData["UpdateLD"] = "The day was already modified by another user";
+                //LearningDay newDay = dayManager.getLearningDayById(learningDay.LearningDayId);
+                return RedirectToAction("EditLearningDay", new { id = learningDay.LearningDayId });
             }
-            else
-            {
-                // Update was unauthorized (not the owner editing) or the edit is not allowed (removed all topics)
-                return View("Error");
-            }
+            return RedirectToAction("Schedule");
         }
 
         public ContentResult GetLearningDays(string id)

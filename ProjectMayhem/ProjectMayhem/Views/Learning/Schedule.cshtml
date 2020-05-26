@@ -12,7 +12,7 @@
     <h2>@ViewBag.Title</h2>
 </div>
 @Html.HiddenFor(m => m.UserId)
-
+@Html.ValidationSummary()
 
 <!-- This holds the generated FullCalendar element for the Learning Schedule.
     Documentation: https://fullcalendar.io/docs -->
@@ -43,6 +43,7 @@
                     {
                         using (Html.BeginForm("Schedule", "Learning", FormMethod.Post, new { userId = Model.UserId, @class = "form-horizontal", role = "form" }))
                         {
+                            @Html.AntiForgeryToken()
                             @Html.HiddenFor(m => m.ViewedDayId)
                             @Html.HiddenFor(m => m.UserId)
                             <input name="command" class="fc-button-active" type="submit" value="Delete" />

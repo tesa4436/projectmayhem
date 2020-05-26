@@ -9,7 +9,6 @@ namespace ProjectMayhem.DbEntities
 {
     public class TopicDay
     {
-
         [Column(Order = 0)]
         [Key]
         public int LearningDayId { get; set; }

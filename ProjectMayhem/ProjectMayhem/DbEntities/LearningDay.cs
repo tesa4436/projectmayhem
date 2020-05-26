@@ -35,6 +35,7 @@ namespace ProjectMayhem.DbEntities
 
         public virtual ApplicationUser User {get; set;}
 
+        //Does not exist in DB
         public virtual ICollection<TopicDay> Topics { get; set; }
 
         public virtual ICollection<LDayReferences> References { get; set; }

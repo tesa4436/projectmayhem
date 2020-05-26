@@ -3,7 +3,9 @@ using ProjectMayhem.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Migrations;
+using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
@@ -70,21 +72,40 @@ namespace ProjectMayhem.Services
             }
         }
 
-        public bool updateLearningDay(LearningDay changedDay)
+        public bool updateLearningDay(LearningDay changedDay, byte[] RowState)
         {
-            if (changedDay.Topics.Count == 0)
-            {
-                Debug.WriteLine("Failed to update learning day, it has no topics");
-                return false;
-            }
             using (var context = new ApplicationDbContext())
             {
-                LearningDay oldDay = getLearningDayById(changedDay.LearningDayId);
-                Debug.WriteLine("Check Opt lock " + oldDay.RowVersion);
-                Debug.WriteLine("Check Opt lock " + changedDay.RowVersion);
-                context.learningDays.AddOrUpdate(changedDay);
-                context.SaveChanges();
-                return true;
+                if (context.topicDay.Where(x => x.LearningDayId == changedDay.LearningDayId).First() == null) 
+                    return false;
+                try
+                {
+                    var update = context.learningDays.Single(x => x.LearningDayId == changedDay.LearningDayId);
+                    update.Date = changedDay.Date;
+                    update.Title = changedDay.Title;
+                    update.Description = changedDay.Description;
+                    context.Entry(update).OriginalValues["RowVersion"] = RowState;
+                    foreach(var topic in changedDay.Topics)
+                    {
+                        context.topicDay.AddOrUpdate(topic);
+                    }
+                    foreach (var reference in changedDay.References)
+                    {
+                        context.lDayReferences.AddOrUpdate(reference);
+                    }
+                    context.learningDays.AddOrUpdate(update);
+                    context.SaveChanges();
+                    return true;
+                }
+                catch(DbUpdateConcurrencyException ex)
+                {
+                    return false;
+                }
+                catch(DbUpdateException ex)
+                {
+                    Debug.WriteLine(ex.InnerException.Message);
+                    return false;
+                }
             }
         }
 
