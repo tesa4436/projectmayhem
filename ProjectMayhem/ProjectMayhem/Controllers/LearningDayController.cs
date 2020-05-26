@@ -59,7 +59,7 @@ namespace ProjectMayhem.Controllers
                         pos--;
                         if (dayList[pos].Remove)
                         {
-                            dayManager.DeleteLearningDay(dayList[pos].Date, User.Identity.GetUserId());
+                            dayManager.deleteLearningDay(dayList[pos].Date, User.Identity.GetUserId());
                             dayList.RemoveAt(pos);
                         }
                     }

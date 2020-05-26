@@ -123,30 +123,69 @@ namespace ProjectMayhem.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditLearningDay(LearningDay learningDay)
+        public ActionResult EditLearningDay(LearningDay learningDay, string command)
         {
+            Debug.WriteLine("Command: " + command);
             Debug.WriteLine("Updating learning day, date: {0}, title: {1}, description: {2}",
                     learningDay.Date, learningDay.Title, learningDay.Description);
-            LearningDay oldDay = dayManager.getLearningDayById(learningDay.LearningDayId);
-            oldDay.Date = learningDay.Date;
-            oldDay.Description = learningDay.Description;
-            oldDay.Title = learningDay.Title;
-            // To do: incorporate topics and references in the edit day form. Currently References and Topics are always null.
-            // oldDay.References = viewModel.References;
-            // oldDay.Topics = viewModel.Topics;
 
-            if (oldDay.User.Id != User.Identity.GetUserId())
+            if (learningDay.User.Id != User.Identity.GetUserId())
                 return View("Error"); // Cannot edit someone elses learning day.
 
-            if (dayManager.updateLearningDay(oldDay))
+            if (command == "Save")
             {
-                return RedirectToAction("Schedule");
-            }
-            else
+                if (dayManager.updateLearningDay(learningDay))
+                {
+                    return RedirectToAction("Schedule");
+                }
+                else return View("Error");
+            } else if (command == "Add Topic")
             {
-                // Update was unauthorized (not the owner editing) or the edit is not allowed (removed all topics)
-                return View("Error");
+                TopicDay topic = new TopicDay() { TopicId = 1, DayId = learningDay.LearningDayId };
+                learningDay.Topics.Add(topic);
+                return View(learningDay);
+            } else if (command == "Add Reference")
+            {
+                LDayReferences reference = new LDayReferences() { LDId = learningDay.LearningDayId, learningDay = learningDay };
+                learningDay.References.Add(reference);
+            } else if (command == "Remove Selected Topics")
+            {
+                int pos = learningDay.Topics.Count();
+                while (pos > 0)
+                {
+                    pos--;
+                    TopicDay topic = learningDay.Topics.ElementAt(pos);
+                    if (topic.Remove)
+                    {
+                        learningDay.Topics.Remove(topic);
+                    }
+                }
+            } else if (command == "Remove Selected References")
+            {
+                int pos = learningDay.References.Count();
+                while (pos > 0)
+                {
+                    pos--;
+                    LDayReferences reference = learningDay.References.ElementAt(pos);
+                    if (reference.Remove)
+                    {
+                        learningDay.References.Remove(reference);
+                    }
+                }
+            } else if (command == "Cancel/Refresh")
+            {
+                learningDay = dayManager.getLearningDayById(learningDay.LearningDayId);
+            } else
+            {
+                // update actual database
+                if (dayManager.updateLearningDay(learningDay))
+                {
+                    // Successful update:
+                    return RedirectToAction("Schedule");
+                }
             }
+
+            return View(learningDay);
         }
 
         public ContentResult GetLearningDays(string id)

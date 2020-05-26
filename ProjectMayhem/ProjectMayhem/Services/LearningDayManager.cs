@@ -66,7 +66,6 @@ namespace ProjectMayhem.Services
             }
             using (var context = new ApplicationDbContext())
             {
-                LearningDay oldDay = getLearningDayById(changedDay.LearningDayId);
                 context.learningDays.AddOrUpdate(changedDay);
                 context.SaveChanges();
                 return true;

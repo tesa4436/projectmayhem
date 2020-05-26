@@ -6,14 +6,14 @@
     ViewBag.Title = "Edit Learning Day";
 }
 
-<h2>Edit learning day</h2>
+<h1>Edit learning day</h1>
 
 @using (Html.BeginForm("EditLearningDay", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
 
 <div class="form-horizontal">
-    <h4>LearningDay</h4>
+    <h2>Day information:</h2>
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(model => model.LearningDayId)
