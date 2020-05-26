@@ -195,7 +195,6 @@
     <Compile Include="Controllers\LearningController.cs" />
     <Compile Include="Controllers\LearningDayController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\PersonListController.cs" />
     <Compile Include="Controllers\TeamController.cs" />
     <Compile Include="DbEntities\LDayReferences.cs" />
     <Compile Include="DbEntities\LearningDay.cs" />
@@ -628,8 +627,6 @@
     <Content Include="Views\Learning\Schedule.cshtml" />
     <Content Include="Views\Learning\AddLearningDay.cshtml" />
     <Content Include="Views\Learning\EditLearningDay.cshtml" />
-    <Content Include="Views\PersonList\EditorTemplates\Person.cshtml" />
-    <Content Include="Views\PersonList\Index.cshtml" />
     <Content Include="Views\LearningDay\EditorTemplates\TopicDay.cshtml" />
     <Content Include="Views\LearningDay\EditorTemplates\LearningDay.cshtml" />
     <Content Include="Views\LearningDay\List.cshtml" />

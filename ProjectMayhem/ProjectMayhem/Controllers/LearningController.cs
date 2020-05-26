@@ -111,26 +111,19 @@ namespace ProjectMayhem.Controllers
         public ActionResult EditLearningDay(int id)
         {
             Debug.WriteLine("Editing day: " + id);
-            EditLearningDayViewModel viewModel = new EditLearningDayViewModel();
             LearningDay editedDay = dayManager.getLearningDayById(id);
-            viewModel.Topics = editedDay.Topics;
-            viewModel.LearningDayId = editedDay.LearningDayId;
-            viewModel.References = editedDay.References;
-            viewModel.Date = editedDay.Date.ToString();
-            viewModel.Description = editedDay.Description;
-            viewModel.Title = editedDay.Title;
-            return View(viewModel);
+            return View(editedDay);
         }
 
         [HttpPost]
-        public ActionResult EditLearningDay(EditLearningDayViewModel viewModel)
+        public ActionResult EditLearningDay(LearningDay learningDay)
         {
             Debug.WriteLine("Updating learning day, date: {0}, title: {1}, description: {2}",
-                    viewModel.Date, viewModel.Title, viewModel.Description);
-            LearningDay oldDay = dayManager.getLearningDayById(viewModel.LearningDayId);
-            oldDay.Date = DateTime.Parse(viewModel.Date);
-            oldDay.Description = viewModel.Description;
-            oldDay.Title = viewModel.Title;
+                    learningDay.Date, learningDay.Title, learningDay.Description);
+            LearningDay oldDay = dayManager.getLearningDayById(learningDay.LearningDayId);
+            oldDay.Date = learningDay.Date;
+            oldDay.Description = learningDay.Description;
+            oldDay.Title = learningDay.Title;
             // To do: incorporate topics and references in the edit day form. Currently References and Topics are always null.
             // oldDay.References = viewModel.References;
             // oldDay.Topics = viewModel.Topics;

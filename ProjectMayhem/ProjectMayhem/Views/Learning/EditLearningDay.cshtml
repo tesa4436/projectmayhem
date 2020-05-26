@@ -1,6 +1,6 @@
-﻿@using ProjectMayhem.Models
+﻿@using ProjectMayhem.DbEntities
 
-@model EditLearningDayViewModel
+@model LearningDay
 
 @{
     ViewBag.Title = "Edit Learning Day";
@@ -30,33 +30,51 @@
             @Html.TextBoxFor(m => m.Date, new { @class = "form-control" })
         </div>
     </div>
-    <h3>Topics:</h3>
-    <ul>
-        @foreach (var topic in Model.Topics)
-        {
-            <li>
-                <div>
-                    @topic.Topic.Title
-                </div>
-            </li>
-        }
-    </ul>
+
+    <h3>Topics List</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Parent topic</th>
+            </tr>
+        </thead>
+        <tbody id="childtable">
+            @Html.EditorFor(model => Model.Topics)
+        </tbody>
+    </table>
+
+    <p>
+        <input name="command" type="submit" value="Add Topic" />
+        <input name="command" type="submit" value="Remove Selected Topics" />
+        <input name="command" type="submit" value="Cancel/Refresh" />
+    </p>
     <h3>References:</h3>
-    <ul>
-        @foreach (var reference in Model.References)
-        {
-            <li>
-                <div>
-                    <a href="@reference.ReferenceUrl">@reference.ReferenceUrl</a>
-                </div>
-            </li>
-        }
-    </ul>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Reference</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody id="childtable">
+            @Html.EditorFor(model => Model.References)
+            <tr><td>Empty</td><td>Empty</td></tr>
+        </tbody>
+    </table>
+    <p>
+        <input name="command" type="submit" value="Add Reference" />
+        <input name="command" type="submit" value="Remove Selected References" />
+        <input name="command" type="submit" value="Cancel/Refresh" />
+    </p>
     <!-- Required to pass learning day ID to the controler method. -->
+
     @Html.HiddenFor(m => m.LearningDayId)
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Edit" />
+            <input type="submit" class="btn btn-primary float-right" value="Save" />
         </div>
     </div>
     <div>
@@ -66,4 +84,5 @@
             @Html.ActionLink("My Schedule", "Schedule", "Learning")
         }
     </div>
+
 }
