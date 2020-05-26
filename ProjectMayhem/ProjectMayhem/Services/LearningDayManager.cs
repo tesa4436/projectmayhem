@@ -87,11 +87,32 @@ namespace ProjectMayhem.Services
                     context.Entry(update).OriginalValues["RowVersion"] = RowState;
                     foreach(var topic in changedDay.Topics)
                     {
-                        context.topicDay.AddOrUpdate(topic);
+                        if (topic.Remove)
+                        {
+                            TopicDay toRemove = context.topicDay.Single(x => x.TopicId == topic.TopicId
+                                && x.LearningDayId == topic.LearningDayId
+                                && x.UserId == topic.UserId);
+                            context.topicDay.Remove(toRemove);
+                        }
+                        else
+                        {
+                            context.topicDay.AddOrUpdate(topic);
+                        }
                     }
                     foreach (var reference in changedDay.References)
                     {
-                        context.lDayReferences.AddOrUpdate(reference);
+                        if (reference.Remove)
+                        {
+                            LDayReferences toRemove = context.lDayReferences.First(x => x.LearningDayId == reference.LearningDayId
+                                && x.UserId == reference.UserId
+                                && x.ReferenceUrl == reference.ReferenceUrl);
+                            context.lDayReferences.Remove(toRemove);
+                        }
+                        else
+                        {
+                            context.lDayReferences.AddOrUpdate(reference);
+                        }
+                        
                     }
                     context.learningDays.AddOrUpdate(update);
                     context.SaveChanges();
@@ -103,7 +124,13 @@ namespace ProjectMayhem.Services
                 }
                 catch(DbUpdateException ex)
                 {
-                    Debug.WriteLine(ex.InnerException.Message);
+                    Exception tempEx = ex;
+                    // Exception may be nested. Might need to go deep for the exception message.
+                    while (tempEx.InnerException != null)
+                    {
+                        tempEx = tempEx.InnerException;
+                    }
+                    Debug.WriteLine(tempEx.Message);
                     return false;
                 }
             }
@@ -172,7 +199,7 @@ namespace ProjectMayhem.Services
         {
             foreach(var day in learningDays)
             {
-                updateLearningDay(day);
+                updateLearningDay(day, day.RowVersion);
             }
             applicationDbContext.SaveChanges();
         }

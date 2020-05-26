@@ -76,5 +76,24 @@ namespace ProjectMayhem.Services
             }
         }
 
+        public TopicDay createTopicDay(int topicId, int learningDayId, string userId)
+        {
+            return new TopicDay()
+            {
+                TopicId = getTopicById(topicId).TopicsId,
+                LearningDayId = learningDayId,
+                UserId = userId
+            };
+        }
+
+        public TopicDay createDayForNewTopic(int dayId, string userId, string topicTitle, string topicDescription, int parentId = -1)
+        {
+            return new TopicDay()
+            {
+                TopicId = createTopic(topicTitle, topicDescription, parentId).TopicsId,
+                LearningDayId = dayId,
+                UserId = userId
+            };
+        }
     }
 }

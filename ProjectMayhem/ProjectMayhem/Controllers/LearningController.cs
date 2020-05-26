@@ -146,71 +146,43 @@ namespace ProjectMayhem.Controllers
             Debug.WriteLine("Command: " + command);
             Debug.WriteLine("Updating learning day, date: {0}, title: {1}, description: {2}",
                     learningDay.Date, learningDay.Title, learningDay.Description);
-
-            if (learningDay.User.Id != User.Identity.GetUserId())
+            string currentUserId = User.Identity.GetUserId();
+            if (learningDay.User.Id != currentUserId) { 
                 return View("Error"); // Cannot edit someone elses learning day.
+            }
 
-            if (command == "Save")
+            if (command == "Add Topic")
             {
-                if (dayManager.updateLearningDay(learningDay))
-                {
-                    return RedirectToAction("Schedule");
-                }
-                else return View("Error");
-            } else if (command == "Add Topic")
-            {
-                TopicDay topic = new TopicDay() { TopicId = 1, DayId = learningDay.LearningDayId };
+                TopicDay topic = topicManager.createTopicDay(1, learningDay.LearningDayId, learningDay.UserId);
                 learningDay.Topics.Add(topic);
-                return View(learningDay);
             } else if (command == "Add Reference")
             {
-                LDayReferences reference = new LDayReferences() { LDId = learningDay.LearningDayId, learningDay = learningDay };
+                LDayReferences reference = new LDayReferences() {
+                    LearningDayId = learningDay.LearningDayId,
+                    UserId = learningDay.UserId
+                };
                 learningDay.References.Add(reference);
-            } else if (command == "Remove Selected Topics")
-            {
-                int pos = learningDay.Topics.Count();
-                while (pos > 0)
-                {
-                    pos--;
-                    TopicDay topic = learningDay.Topics.ElementAt(pos);
-                    if (topic.Remove)
-                    {
-                        learningDay.Topics.Remove(topic);
-                    }
-                }
-            } else if (command == "Remove Selected References")
-            {
-                int pos = learningDay.References.Count();
-                while (pos > 0)
-                {
-                    pos--;
-                    LDayReferences reference = learningDay.References.ElementAt(pos);
-                    if (reference.Remove)
-                    {
-                        learningDay.References.Remove(reference);
-                    }
-                }
+            } else if (command == "Remove Selected Topics" || command == "Remove Selected References")
+            {// Do nothing, as the objects are marked for deletion and remain in learning day until saved.
+
             } else if (command == "Cancel/Refresh")
             {
                 learningDay = dayManager.getLearningDayById(learningDay.LearningDayId);
             } else
             {
-                //TM = new TopicManager();
-
-                //learningDay.Topics.Add(new TopicDay() { TopicId = TM.createTopic("Testas123", "").TopicsId, LearningDayId = learningDay.LearningDayId, UserId = learningDay.UserId });
-                //learningDay.Topics.Add(new TopicDay() { TopicId = TM.getTopicById(21).TopicsId, LearningDayId = learningDay.LearningDayId, UserId = learningDay.UserId });
-
                 if (!dayManager.updateLearningDay(learningDay, learningDay.RowVersion))
                 {
                     TempData["UpdateLD"] = "The day was already modified by another user";
                     //LearningDay newDay = dayManager.getLearningDayById(learningDay.LearningDayId);
                     return RedirectToAction("EditLearningDay", new { id = learningDay.LearningDayId });
                 }
+                return RedirectToAction("Schedule", new { userId = learningDay.UserId });
             }
 
             return View(learningDay);
         }
 
+        [Authorize]
         public ContentResult GetLearningDays(string id)
         {
             List<LearningDay> learningDays = dayManager.getLearningDaysByUserId(id);

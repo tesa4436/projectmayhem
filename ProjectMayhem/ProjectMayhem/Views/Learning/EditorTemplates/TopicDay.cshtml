@@ -4,21 +4,40 @@
     ViewBag.Title = "Topic";
 }
 
-<tr>
-    <td>
-        @Html.HiddenFor(model => model.TopicId)
-        @Html.EditorFor(model => model.Topic.Title)
-        @Html.ValidationMessageFor(model => model.Topic.Title, "", new { @class = "text-danger" })
-    </td>
-    <td>
-        @Html.EditorFor(model => model.Topic.Description)
-        @Html.ValidationMessageFor(model => model.Topic.Description, "", new { @class = "text-danger" })
-    </td>
-    <td>
-        @Html.EditorFor(model => model.Topic.parentTopic)
-        @Html.ValidationMessageFor(model => model.Topic.parentTopic, "", new { @class = "text-danger" })
-    </td>
-    <td>
-        @Html.EditorFor(model => model.Remove)
-    </td>
-</tr>
+@if (!Model.Remove)
+{
+    <tr>
+        <td>
+            @Html.HiddenFor(model => model.TopicId)
+            @Html.HiddenFor(model => model.UserId)
+            @Html.HiddenFor(model => model.LearningDayId)
+            @Html.EditorFor(model => model.Topic.Title)
+            @Html.ValidationMessageFor(model => model.Topic.Title, "", new { @class = "text-danger" })
+        </td>
+        <td>
+            @Html.EditorFor(model => model.Topic.Description)
+            @Html.ValidationMessageFor(model => model.Topic.Description, "", new { @class = "text-danger" })
+        </td>
+        <td>
+            @if (Model.Topic.parentTopic != null)
+            {
+                @Model.Topic.parentTopic.Title
+            }
+            else
+            {
+                <p>None</p>
+            }
+            @Html.ValidationMessageFor(model => model.Topic.parentTopic, "", new { @class = "text-danger" })
+        </td>
+        <td>
+            @Html.EditorFor(model => model.Remove)
+        </td>
+    </tr>
+}
+else
+{
+    @Html.HiddenFor(model => model.TopicId)
+    @Html.HiddenFor(model => model.UserId)
+    @Html.HiddenFor(model => model.LearningDayId)
+    @Html.HiddenFor(model => model.Remove)
+}
