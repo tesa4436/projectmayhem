@@ -73,6 +73,26 @@ namespace ProjectMayhem.Services
             }
         }
 
+        public void deleteLearningDay(DateTime dateTime, string UserId)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var user = context.Users.Where(x => x.Id == UserId).First();
+                context.learningDays.Remove(user.LearningDays.Where(x => x.Date == dateTime).First());
+                context.SaveChanges();
+            }
+        }
+
+        public void deleteLearningDay(int dayId, string UserId)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var user = context.Users.Where(x => x.Id == UserId).First();
+                context.learningDays.Remove(user.LearningDays.Where(x => x.LearningDayId == dayId).First());
+                context.SaveChanges();
+            }
+        }
+
         public void setTopics(LearningDay learningDay, List<Topic> newTopics)
         {
             using (var context = new ApplicationDbContext())
@@ -109,16 +129,6 @@ namespace ProjectMayhem.Services
                     learningDay.References = newReferenceDays;
                     UpdateChanges();
                 }
-            }
-        }
-
-        public void DeleteLearningDay(DateTime dateTime, string UserId)
-        {
-            using(var context = new ApplicationDbContext())
-            {
-                var user = context.Users.Where(x => x.Id == UserId).First();
-                context.learningDays.Remove(user.LearningDays.Where(x => x.Date == dateTime).First());
-                context.SaveChanges();
             }
         }
 

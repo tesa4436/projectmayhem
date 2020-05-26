@@ -37,7 +37,6 @@ namespace ProjectMayhem.Controllers
 
         // Learning schedule of a specific user.
         // GET: Learning/Schedule/123a-10df-...
-        [AllowAnonymous]
         public ActionResult Schedule(string userId)
         {
             if (String.IsNullOrEmpty(userId))
@@ -67,38 +66,46 @@ namespace ProjectMayhem.Controllers
 
         // POST: Learning/Schedule
         [HttpPost]
-        public ActionResult Schedule(ScheduleViewModel viewModel)
+        public ActionResult Schedule(ScheduleViewModel viewModel, string command)
         {
             // User needs to be authorized to create learning days.
-            if (!IsAuthorizedTo(Authorized.Create, viewModel.UserId))
+            Authorized allowedActions = CheckAuthorized(viewModel.UserId);
+            if ((!HasAuthorization(allowedActions, Authorized.Create)))
             {
                 return View("Error", new HandleErrorInfo(
-                    new Exception("You may create learning days only for yourself."),
+                    new Exception("You may create/edit/remove learning days only for yourself."),
                     "Learning Controller",
                     "Schedule - Create learning day."));
             }
-            try
+            if (command == "Add")
             {
-                Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}, topicId: {3}",
-                    viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription, viewModel.NewDayTopicId);
-                Debug.WriteLine("Target user: {0}", viewModel.UserId);
+                try
+                {
+                    Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}, topicId: {3}",
+                        viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription, viewModel.NewDayTopicId);
+                    Debug.WriteLine("Target user: {0}", viewModel.UserId);
 
-                Topic topic = topicManager.getTopicById(viewModel.NewDayTopicId);
-                dayManager.createLearningDay(viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription,
-                    viewModel.UserId, new List<Topic>() { topic });
+                    Topic topic = topicManager.getTopicById(viewModel.NewDayTopicId);
+                    dayManager.createLearningDay(viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription,
+                        viewModel.UserId, new List<Topic>() { topic });
 
-                viewModel.NewDayDate = DateTime.Now;
-                viewModel.NewDayDescription = "";
-                viewModel.NewDayTitle = "";
-                // To do: If there is no topic of a given name, then a new topic should be created.
-                viewModel.NewDayTopicId = 1;
-                return RedirectToAction("Schedule");
+                    return RedirectToAction("Schedule");
+                }
+                catch
+                {
+                    Debug.WriteLine("An error occurred while adding a new Learning day. LearningController");
+                    return View();
+                }
             }
-            catch
+            else if (command == "Delete")
             {
-                Debug.WriteLine("An error occurred while adding a new Learning day");
-                return View();
+                dayManager.deleteLearningDay(int.Parse(viewModel.ViewedDayId), User.Identity.GetUserId());
             }
+            else if (command == "Edit")
+            {
+                return EditLearningDay(int.Parse(viewModel.ViewedDayId));
+            }
+            return RedirectToAction("Schedule");
         }
 
         // Get: /Learning/List/1234-abcd-...
@@ -112,7 +119,7 @@ namespace ProjectMayhem.Controllers
         {
             Debug.WriteLine("Editing day: " + id);
             LearningDay editedDay = dayManager.getLearningDayById(id);
-            return View(editedDay);
+            return View("EditLearningDay", editedDay);
         }
 
         [HttpPost]
@@ -157,35 +164,16 @@ namespace ProjectMayhem.Controllers
             return Content(list, "application/json");
         }
 
-        // GET: Learning/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Learning/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
+        // Checks if the current user can perform actions with given user.
         private Authorized CheckAuthorized(string userId)
         {
             var rights = Authorized.None;
             var currentUserId = User.Identity.GetUserId();
-            var ReqUser = UserManager.FindById(userId);
+            // If the user is editing personal information, grant all access.
             if (userId == currentUserId)
-                rights = Authorized.View | Authorized.Edit | Authorized.Create | Authorized.Delete;
+                return Authorized.View | Authorized.Edit | Authorized.Create | Authorized.Delete;
+            // If the user is editing team members data, grant viewing access.
+            var ReqUser = UserManager.FindById(userId);
             if (teamManager.CheckIfLead(ReqUser, User.Identity.GetUserId()))
                 rights = Authorized.View;
             return rights;
@@ -195,6 +183,13 @@ namespace ProjectMayhem.Controllers
         private bool IsAuthorizedTo(Authorized action, string userId)
         {
             return (CheckAuthorized(userId) & action) != 0;
+        }
+
+        // Returns true if a given flag for authorized actions contains specific authorized action.
+        // (Authorized.View | Authorized.Edit) & Authorized.View == Authorized.View
+        private bool HasAuthorization(Authorized actions, Authorized action)
+        {
+            return (actions & action) == action;
         }
     }
 }
