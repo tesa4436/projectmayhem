@@ -15,6 +15,7 @@ namespace ProjectMayhem.Models
 
         public virtual ApplicationUser teamLead { get; set; }
         public virtual ICollection<LearningDay> LearningDays { get; set; }
+        public virtual ICollection<TopicUser> RecommendedTopics { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -30,6 +31,8 @@ namespace ProjectMayhem.Models
         public DbSet<Topic> topics { get; set; }
         public DbSet<LearningDay> learningDays { get; set; }
         public DbSet<LDayReferences> lDayReferences { get; set; }
+        public DbSet<TopicUser> topicUsers { get; set; }
+        public DbSet<TopicDay> topicDay { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

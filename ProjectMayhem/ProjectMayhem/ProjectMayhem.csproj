@@ -194,11 +194,13 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LearningController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\RecommendationController.cs" />
     <Compile Include="Controllers\TeamController.cs" />
     <Compile Include="DbEntities\LDayReferences.cs" />
     <Compile Include="DbEntities\LearningDay.cs" />
     <Compile Include="DbEntities\Topic.cs" />
     <Compile Include="DbEntities\TopicDay.cs" />
+    <Compile Include="DbEntities\TopicUser.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -226,13 +228,25 @@
     <Compile Include="Migrations\202005192115288_databaseUpdate.designer.cs">
       <DependentUpon>202005192115288_databaseUpdate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005202024147_topicRecomemdations.cs" />
+    <Compile Include="Migrations\202005202024147_topicRecomemdations.designer.cs">
+      <DependentUpon>202005202024147_topicRecomemdations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005221557224_fixingmymess.cs" />
+    <Compile Include="Migrations\202005221557224_fixingmymess.designer.cs">
+      <DependentUpon>202005221557224_fixingmymess.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005242018513_optlockForLD.cs" />
+    <Compile Include="Migrations\202005242018513_optlockForLD.designer.cs">
+      <DependentUpon>202005242018513_optlockForLD.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GroupViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\LearningModels.cs" />
     <Compile Include="Models\LearningViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\RecommendationViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -264,6 +278,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="Content\Images\body-background.jpg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -623,12 +638,14 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Account\AcceptInvite.cshtml" />
     <Content Include="Views\Team\Members.cshtml" />
+    <Content Include="Views\Recommendation\Recommended.cshtml" />
     <Content Include="Views\Learning\Schedule.cshtml" />
     <Content Include="Views\Learning\AddLearningDay.cshtml" />
     <Content Include="Views\Learning\EditLearningDay.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Imgs\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -657,6 +674,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005192115288_databaseUpdate.resx">
       <DependentUpon>202005192115288_databaseUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005202024147_topicRecomemdations.resx">
+      <DependentUpon>202005202024147_topicRecomemdations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005221557224_fixingmymess.resx">
+      <DependentUpon>202005221557224_fixingmymess.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005242018513_optlockForLD.resx">
+      <DependentUpon>202005242018513_optlockForLD.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
