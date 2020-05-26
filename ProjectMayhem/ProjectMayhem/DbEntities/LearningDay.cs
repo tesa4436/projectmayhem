@@ -17,12 +17,18 @@ namespace ProjectMayhem.DbEntities
             Date = DateTime.Now.Date;
         }
 
-        [Key]
+        [Key, Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int LearningDayId { get; set; }
-        
+
+        [Key, Column(Order = 1), ForeignKey("User")]
+        public string UserId { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         public string Title { get; set; }
 
@@ -30,6 +36,7 @@ namespace ProjectMayhem.DbEntities
 
         public virtual ApplicationUser User {get; set;}
 
+        //Does not exist in DB
         public virtual ICollection<TopicDay> Topics { get; set; }
 
         public virtual ICollection<LDayReferences> References { get; set; }

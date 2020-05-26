@@ -4,9 +4,10 @@
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
     @Html.AntiForgeryToken()
-
+        
     <ul class="nav navbar-nav navbar-right">
         <li class="nav-item">@Html.ActionLink("Schedule", "Schedule", "Learning", routeValues: null, htmlAttributes: new { id = "scheduleLink", @class = "nav-link" })</li>
+        <li class="nav-item">@Html.ActionLink("Recommendations", "Recommended", "Recommendation", routeValues: null, htmlAttributes: new { id = "recommendedLink", @class = "nav-link" })</li>
         <li class="nav-item">@Html.ActionLink("Invite", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
         <li class="nav-item">@Html.ActionLink("My Team", "Members", "Team", routeValues: null, htmlAttributes: new { id = "teamLink", @class = "nav-link" })</li>
         <li class="nav-item">

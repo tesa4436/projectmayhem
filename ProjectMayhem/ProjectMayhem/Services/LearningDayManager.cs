@@ -3,7 +3,9 @@ using ProjectMayhem.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Migrations;
+using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
@@ -33,42 +35,77 @@ namespace ProjectMayhem.Services
         public bool createLearningDay(DateTime date, string Title, string Desc, string userId, List<Topic> chosenTopics = null, List<string> references = null)
         {
             using (var context = new ApplicationDbContext()) {
-                var user = context.Users.Where(x => x.Id == userId).First();
-                var LD = new LearningDay();
-                LD.Date = date; LD.Description = Desc; LD.User = user; LD.Title = Title;
-                if (chosenTopics != null)
+                using (var dbContextTransaction = context.Database.BeginTransaction())
                 {
-                    foreach (var topic in chosenTopics)
+                    try
                     {
-                        LD.Topics.Add(new TopicDay() { Day = LD, Topic = context.topics.Where(x => x.TopicsId == topic.TopicsId).First() });
-                    
+                        var user = context.Users.Where(x => x.Id == userId).First();
+                        var LD = new LearningDay();
+                        LD.Date = date; LD.Description = Desc; LD.User = user; LD.Title = Title;
+                        LD = context.learningDays.Add(LD);
+                        context.SaveChanges();
+                        if (chosenTopics != null)
+                        {
+                            foreach (var topic in chosenTopics)
+                            {
+                                context.topicDay.Add(new TopicDay() { Day = LD, Topic = context.topics.Where(x => x.TopicsId == topic.TopicsId).First() });
+                            }
+                        }
+                        if (references != null)
+                        {
+                            foreach (var reference in references)
+                            {
+                                context.lDayReferences.Add(new LDayReferences() { learningDay = LD, ReferenceUrl = reference });
+                            }
+                        }
+
+                        context.SaveChanges();
+                        dbContextTransaction.Commit();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        return false;
                     }
                 }
-                if(references != null)
-                {
-                    foreach(var reference in references)
-                    {
-                        LD.References.Add(new LDayReferences() { learningDay = LD, ReferenceUrl = reference });
-                    }
-                }
-                context.learningDays.Add(LD);
-                context.SaveChanges();
-                return true;
+                
             }
         }
 
-        public bool updateLearningDay(LearningDay changedDay)
+        public bool updateLearningDay(LearningDay changedDay, byte[] RowState)
         {
-            if (changedDay.Topics.Count == 0)
-            {
-                Debug.WriteLine("Failed to update learning day, it has no topics");
-                return false;
-            }
             using (var context = new ApplicationDbContext())
             {
-                context.learningDays.AddOrUpdate(changedDay);
-                context.SaveChanges();
-                return true;
+                if (context.topicDay.Where(x => x.LearningDayId == changedDay.LearningDayId).First() == null) 
+                    return false;
+                try
+                {
+                    var update = context.learningDays.Single(x => x.LearningDayId == changedDay.LearningDayId);
+                    update.Date = changedDay.Date;
+                    update.Title = changedDay.Title;
+                    update.Description = changedDay.Description;
+                    context.Entry(update).OriginalValues["RowVersion"] = RowState;
+                    foreach(var topic in changedDay.Topics)
+                    {
+                        context.topicDay.AddOrUpdate(topic);
+                    }
+                    foreach (var reference in changedDay.References)
+                    {
+                        context.lDayReferences.AddOrUpdate(reference);
+                    }
+                    context.learningDays.AddOrUpdate(update);
+                    context.SaveChanges();
+                    return true;
+                }
+                catch(DbUpdateConcurrencyException ex)
+                {
+                    return false;
+                }
+                catch(DbUpdateException ex)
+                {
+                    Debug.WriteLine(ex.InnerException.Message);
+                    return false;
+                }
             }
         }
 

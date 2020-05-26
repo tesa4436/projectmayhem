@@ -25,5 +25,7 @@ namespace ProjectMayhem.DbEntities
         public virtual Topic parentTopic { get; set; }
 
         public virtual ICollection<TopicDay> Days { get; set; }
+
+        public virtual ICollection<TopicUser> RecommendedTo { get; set; }
     }
 }

@@ -37,10 +37,13 @@ namespace ProjectMayhem.Controllers
 
         // Learning schedule of a specific user.
         // GET: Learning/Schedule/123a-10df-...
+        [Authorize]
         public ActionResult Schedule(string userId)
         {
+
             if (String.IsNullOrEmpty(userId))
                 userId = User.Identity.GetUserId();
+
             else
             {
                 // If a user is not authorized to view the schedule, redirect to error page.
@@ -66,6 +69,8 @@ namespace ProjectMayhem.Controllers
 
         // POST: Learning/Schedule
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Schedule(ScheduleViewModel viewModel, string command)
         {
             // User needs to be authorized to create learning days.
@@ -91,9 +96,9 @@ namespace ProjectMayhem.Controllers
 
                     return RedirectToAction("Schedule");
                 }
-                catch
+                catch (Exception e)
                 {
-                    Debug.WriteLine("An error occurred while adding a new Learning day. LearningController");
+                    Debug.WriteLine("An error occurred while adding a new Learning day. LearningController ");
                     return View();
                 }
             }
@@ -108,6 +113,7 @@ namespace ProjectMayhem.Controllers
             return RedirectToAction("Schedule");
         }
 
+        [Authorize]
         // Get: /Learning/List/1234-abcd-...
         public ActionResult List(string id)
         {
@@ -115,14 +121,26 @@ namespace ProjectMayhem.Controllers
         }
 
         // Get: /Learning/EditLearningDay/1
+        [Authorize]
         public ActionResult EditLearningDay(int id)
         {
+            var error = (string)TempData["UpdateLD"];
+            if (!string.IsNullOrEmpty(error))
+            {
+                ModelState.AddModelError("", error);
+                TempData.Remove("UpdateLD");
+            }
             Debug.WriteLine("Editing day: " + id);
             LearningDay editedDay = dayManager.getLearningDayById(id);
+            Debug.WriteLine("Learning day values: " + " iD = " + editedDay.LearningDayId + " rowVersion = " + editedDay.RowVersion);
             return View("EditLearningDay", editedDay);
         }
 
+        TopicManager TM;
+
         [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
         public ActionResult EditLearningDay(LearningDay learningDay, string command)
         {
             Debug.WriteLine("Command: " + command);
@@ -177,11 +195,16 @@ namespace ProjectMayhem.Controllers
                 learningDay = dayManager.getLearningDayById(learningDay.LearningDayId);
             } else
             {
-                // update actual database
-                if (dayManager.updateLearningDay(learningDay))
+                //TM = new TopicManager();
+
+                //learningDay.Topics.Add(new TopicDay() { TopicId = TM.createTopic("Testas123", "").TopicsId, LearningDayId = learningDay.LearningDayId, UserId = learningDay.UserId });
+                //learningDay.Topics.Add(new TopicDay() { TopicId = TM.getTopicById(21).TopicsId, LearningDayId = learningDay.LearningDayId, UserId = learningDay.UserId });
+
+                if (!dayManager.updateLearningDay(learningDay, learningDay.RowVersion))
                 {
-                    // Successful update:
-                    return RedirectToAction("Schedule");
+                    TempData["UpdateLD"] = "The day was already modified by another user";
+                    //LearningDay newDay = dayManager.getLearningDayById(learningDay.LearningDayId);
+                    return RedirectToAction("EditLearningDay", new { id = learningDay.LearningDayId });
                 }
             }
 
