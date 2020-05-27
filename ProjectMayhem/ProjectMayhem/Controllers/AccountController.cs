@@ -215,10 +215,16 @@ namespace ProjectMayhem.Controllers
         {
             AccountManagementViewModel mymodel = new AccountManagementViewModel();
             var error = (String)TempData["DeleteError"];
+            var confirmation = (string)TempData["DelConfirmation"];
             if (!String.IsNullOrEmpty(error))
             {
                 ModelState.AddModelError("Deletion", error);
                 TempData.Remove("DeleteError");
+            }
+            else if(!string.IsNullOrEmpty(confirmation))
+            {
+                ViewBag.DelConfirmation = confirmation;
+                confirmation = "";
             }
             var currentUser = User.Identity.GetUserId();
             mymodel.TeamMembers = UserManager.Users.Where(x => x.teamLead.Id == currentUser).ToList();
@@ -282,6 +288,7 @@ namespace ProjectMayhem.Controllers
             if (UserManager.Users.Where(x => x.teamLead.Id == deletionUser.Id).ToArray().Length == 0 && deletionUser.teamLead.Id == currentUser && deletionUser != null)
             {
                 await UserManager.DeleteAsync(deletionUser);
+                TempData["DelConfirmation"] = "The user was deleted";
             }
             else if (deletionUser == null)
                 TempData["DeleteError"] = "The Team member does not exist";

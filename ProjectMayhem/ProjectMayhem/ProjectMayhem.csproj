@@ -245,6 +245,10 @@
     <Compile Include="Migrations\202005270559043_ReferenceFix.designer.cs">
       <DependentUpon>202005270559043_ReferenceFix.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005272152264_TopicUpdate2.cs" />
+    <Compile Include="Migrations\202005272152264_TopicUpdate2.designer.cs">
+      <DependentUpon>202005272152264_TopicUpdate2.cs</DependentUpon>
+	</Compile>	
     <Compile Include="Migrations\202005272134301_parentTopicId.cs" />
     <Compile Include="Migrations\202005272134301_parentTopicId.designer.cs">
       <DependentUpon>202005272134301_parentTopicId.cs</DependentUpon>
@@ -708,6 +712,9 @@
     <EmbeddedResource Include="Migrations\202005270559043_ReferenceFix.resx">
       <DependentUpon>202005270559043_ReferenceFix.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005272152264_TopicUpdate2.resx">
+      <DependentUpon>202005272152264_TopicUpdate2.cs</DependentUpon>
+	</EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005272134301_parentTopicId.resx">
       <DependentUpon>202005272134301_parentTopicId.cs</DependentUpon>
     </EmbeddedResource>
