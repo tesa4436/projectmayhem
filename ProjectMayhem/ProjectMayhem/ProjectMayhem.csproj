@@ -248,6 +248,14 @@
     <Compile Include="Migrations\202005272152264_TopicUpdate2.cs" />
     <Compile Include="Migrations\202005272152264_TopicUpdate2.designer.cs">
       <DependentUpon>202005272152264_TopicUpdate2.cs</DependentUpon>
+	</Compile>	
+    <Compile Include="Migrations\202005272134301_parentTopicId.cs" />
+    <Compile Include="Migrations\202005272134301_parentTopicId.designer.cs">
+      <DependentUpon>202005272134301_parentTopicId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005272152045_parentTopicIdd.cs" />
+    <Compile Include="Migrations\202005272152045_parentTopicIdd.designer.cs">
+      <DependentUpon>202005272152045_parentTopicIdd.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -657,6 +665,8 @@
     <Content Include="Views\LearningDay\EditorTemplates\LDayReferences.cshtml" />
     <Content Include="Views\Learning\EditorTemplates\LDayReferences.cshtml" />
     <Content Include="Views\Learning\EditorTemplates\TopicDay.cshtml" />
+    <Content Include="Views\Learning\EditorTemplates\LearningDay.cshtml" />
+    <Content Include="Views\Learning\EditorTemplates\ParentTopic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -704,6 +714,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005272152264_TopicUpdate2.resx">
       <DependentUpon>202005272152264_TopicUpdate2.cs</DependentUpon>
+	</EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005272134301_parentTopicId.resx">
+      <DependentUpon>202005272134301_parentTopicId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005272152045_parentTopicIdd.resx">
+      <DependentUpon>202005272152045_parentTopicIdd.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
