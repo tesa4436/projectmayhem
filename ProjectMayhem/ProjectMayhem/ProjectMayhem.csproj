@@ -245,6 +245,10 @@
     <Compile Include="Migrations\202005270559043_ReferenceFix.designer.cs">
       <DependentUpon>202005270559043_ReferenceFix.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005272152264_TopicUpdate2.cs" />
+    <Compile Include="Migrations\202005272152264_TopicUpdate2.designer.cs">
+      <DependentUpon>202005272152264_TopicUpdate2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GroupViewModels.cs" />
@@ -697,6 +701,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005270559043_ReferenceFix.resx">
       <DependentUpon>202005270559043_ReferenceFix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005272152264_TopicUpdate2.resx">
+      <DependentUpon>202005272152264_TopicUpdate2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

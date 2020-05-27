@@ -30,10 +30,11 @@
     {
         @Html.AntiForgeryToken()
 
-        @Html.ValidationSummary("", new { @class = "text-danger" })
 
         <br />
         <h4>Recommend a Topic</h4>
+        <span style="color:green">@ViewBag.Confirmation</span>
+        @Html.ValidationSummary("", new { @class = "text-danger" })
         <div>
             @Html.DropDownListFor(m => m.selectedTeamMemberId, new SelectList(Model.TeamMembers.Select(x => new { Value = x.Id, Text = x.UserName }), "Value", "Text"))
         </div>
