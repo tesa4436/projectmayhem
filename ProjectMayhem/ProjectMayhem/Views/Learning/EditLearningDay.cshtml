@@ -11,8 +11,6 @@
 @using (Html.BeginForm("EditLearningDay", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(model => model.AllTopics)
-    @Html.HiddenFor(model => model.RecommendedTopics)
 
     @Html.EditorFor(model => model.LearningDay);
 

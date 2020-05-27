@@ -2,6 +2,7 @@
 using ProjectMayhem.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
 
@@ -24,7 +25,7 @@ namespace ProjectMayhem.Services
                 }
                 newT.Description = description;
                 newT.Title = title;
-                context.topics.Add(newT);
+                context.topics.AddOrUpdate(newT);
                 context.SaveChanges();
                 return newT;
             }
@@ -80,7 +81,7 @@ namespace ProjectMayhem.Services
         {
             return new TopicDay()
             {
-                TopicId = getTopicById(topicId).TopicsId,
+                TopicId = topicId,
                 LearningDayId = learningDayId,
                 UserId = userId
             };

@@ -162,7 +162,13 @@ namespace ProjectMayhem.Controllers
             {
                 Topic newTopic = topicManager.createTopic(viewModel.NewTopicTitle, viewModel.NewTopicDescription, viewModel.NewTopicParentId);
                 TopicDay topicDay = topicManager.createTopicDay(newTopic.TopicsId, viewModel.LearningDay.LearningDayId, viewModel.LearningDay.UserId);
-                topicDay.Topic = newTopic;
+                topicDay.Topic = newTopic; // topicManager.getTopicById(newTopic.TopicsId);
+                // Forcefully loading the lazy Topic, so that it can be displayed.
+                //if (newTopic.ParentTopicId != null)
+                //{
+                //    topicDay.Topic.parentTopic = topicManager.getTopicById((int)newTopic.ParentTopicId);
+                //}
+
                 viewModel.LearningDay.Topics.Add(topicDay);
             }
             else if (command == "Add Reference")

@@ -76,7 +76,7 @@ namespace ProjectMayhem.Services
         {
             using (var context = new ApplicationDbContext())
             {
-                if (context.topicDay.Where(x => x.LearningDayId == changedDay.LearningDayId).First() == null) 
+                if (context.topicDay.Where(x => x.LearningDayId == changedDay.LearningDayId).ToArray().Length == 0) 
                     return false;
                 try
                 {

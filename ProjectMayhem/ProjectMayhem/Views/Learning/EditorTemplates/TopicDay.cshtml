@@ -11,8 +11,7 @@
 @Html.HiddenFor(model => model.Topic.Title)
 @Html.HiddenFor(model => model.Topic.TopicsId)
 @Html.HiddenFor(model => model.Topic.Description)
-@Html.HiddenFor(model => model.Topic.parentTopic.TopicsId)
-@Html.HiddenFor(model => model.Topic.parentTopic)
+@Html.HiddenFor(model => model.Topic.ParentTopicId)
 
 @if (!Model.Remove)
 {
@@ -21,9 +20,9 @@
         <td>@Model.Topic.Title</td>
         <td>@Model.Topic.Description</td>
         <td>
-            @if (Model.Topic != null && Model.Topic.parentTopic != null)
+            @if (Model.Topic != null && Model.Topic.ParentTopicId != null)
             {
-                @Model.Topic.parentTopic.Title
+                <p>@Model.Topic.ParentTopicId</p>
             }
             else
             {
