@@ -19,7 +19,7 @@
             @Html.ValidationMessageFor(model => model.Topic.Description, "", new { @class = "text-danger" })
         </td>
         <td>
-            @if (Model.Topic.parentTopic != null)
+            @if (Model.Topic != null && Model.Topic.parentTopic != null)
             {
                 @Model.Topic.parentTopic.Title
             }

@@ -12,46 +12,7 @@
 {
     @Html.AntiForgeryToken()
 
-<div class="form-horizontal">
-    <h2>Day information:</h2>
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model.LearningDayId)
-    @Html.HiddenFor(model => model.UserId)
-    @Html.HiddenFor(m => m.RowVersion)
-    @Html.HiddenFor(model => model.User.Id)
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" class="btn btn-default" />
-        </div>
-    </div>
+    @Html.EditorFor(model => model);
 
     <h3>Topics List</h3>
 
@@ -73,6 +34,7 @@
         <input name="command" type="submit" value="Remove Selected Topics" />
         <input name="command" type="submit" value="Cancel/Refresh" />
     </p>
+
     <h3>References:</h3>
     <table class="table">
         <thead>
@@ -105,5 +67,4 @@
             @Html.ActionLink("My Schedule", "Schedule", "Learning")
         }
     </div>
-</div>
 }

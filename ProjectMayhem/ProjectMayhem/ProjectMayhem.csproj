@@ -653,6 +653,7 @@
     <Content Include="Views\LearningDay\EditorTemplates\LDayReferences.cshtml" />
     <Content Include="Views\Learning\EditorTemplates\LDayReferences.cshtml" />
     <Content Include="Views\Learning\EditorTemplates\TopicDay.cshtml" />
+    <Content Include="Views\Learning\EditorTemplates\LearningDay.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
