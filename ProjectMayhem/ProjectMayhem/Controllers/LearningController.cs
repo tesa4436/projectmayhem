@@ -130,56 +130,66 @@ namespace ProjectMayhem.Controllers
                 ModelState.AddModelError("", error);
                 TempData.Remove("UpdateLD");
             }
-            Debug.WriteLine("Editing day: " + id);
             LearningDay editedDay = dayManager.getLearningDayById(id);
-            Debug.WriteLine("Learning day values: " + " iD = " + editedDay.LearningDayId + " rowVersion = " + editedDay.RowVersion);
-            return View("EditLearningDay", editedDay);
+            EditLearningDayViewModel viewModel = new EditLearningDayViewModel();
+            viewModel = getData(viewModel);
+            viewModel.LearningDay = editedDay;
+            return View("EditLearningDay", viewModel);
         }
-
-        TopicManager TM;
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult EditLearningDay(LearningDay learningDay, string command)
+        public ActionResult EditLearningDay(EditLearningDayViewModel viewModel, string command)
         {
-            Debug.WriteLine("Command: " + command);
-            Debug.WriteLine("Updating learning day, date: {0}, title: {1}, description: {2}",
-                    learningDay.Date, learningDay.Title, learningDay.Description);
+            viewModel = getData(viewModel);
+            Debug.WriteLine("Edit learning day, command: " + command);
+
             string currentUserId = User.Identity.GetUserId();
-            if (learningDay.User.Id != currentUserId) { 
+            if (viewModel.LearningDay.User.Id != currentUserId) { 
                 return View("Error"); // Cannot edit someone elses learning day.
             }
 
             if (command == "Add Topic")
             {
-                TopicDay topic = topicManager.createTopicDay(1, learningDay.LearningDayId, learningDay.UserId);
-                learningDay.Topics.Add(topic);
-            } else if (command == "Add Reference")
+                TopicDay topic = topicManager.createTopicDay(viewModel.AddTopicId, 
+                    viewModel.LearningDay.LearningDayId,
+                    viewModel.LearningDay.UserId);
+                // Forcefully loading the lazy Topic, so that it can be displayed.
+                topic.Topic = topicManager.getTopicById(topic.TopicId);
+                viewModel.LearningDay.Topics.Add(topic);
+            } else if (command == "Add New Topic")
+            {
+                Topic newTopic = topicManager.createTopic(viewModel.NewTopicTitle, viewModel.NewTopicDescription, viewModel.NewTopicParentId);
+                TopicDay topicDay = topicManager.createTopicDay(newTopic.TopicsId, viewModel.LearningDay.LearningDayId, viewModel.LearningDay.UserId);
+                topicDay.Topic = newTopic;
+                viewModel.LearningDay.Topics.Add(topicDay);
+            }
+            else if (command == "Add Reference")
             {
                 LDayReferences reference = new LDayReferences() {
-                    LearningDayId = learningDay.LearningDayId,
-                    UserId = learningDay.UserId
+                    LearningDayId = viewModel.LearningDay.LearningDayId,
+                    UserId = viewModel.LearningDay.UserId
                 };
-                learningDay.References.Add(reference);
+                viewModel.LearningDay.References.Add(reference);
             } else if (command == "Remove Selected Topics" || command == "Remove Selected References")
             {// Do nothing, as the objects are marked for deletion and remain in learning day until saved.
 
             } else if (command == "Cancel/Refresh")
             {
-                learningDay = dayManager.getLearningDayById(learningDay.LearningDayId);
+                viewModel.LearningDay = dayManager.getLearningDayById(viewModel.LearningDay.LearningDayId);
             } else
             {
-                if (!dayManager.updateLearningDay(learningDay, learningDay.RowVersion))
+                if (!dayManager.updateLearningDay(viewModel.LearningDay, viewModel.LearningDay.RowVersion))
                 {
                     TempData["UpdateLD"] = "The day was already modified by another user";
                     //LearningDay newDay = dayManager.getLearningDayById(learningDay.LearningDayId);
-                    return RedirectToAction("EditLearningDay", new { id = learningDay.LearningDayId });
+                    return RedirectToAction("EditLearningDay", new { id = viewModel.LearningDay.LearningDayId });
                 }
-                return RedirectToAction("Schedule", new { userId = learningDay.UserId });
+                return RedirectToAction("Schedule", new { userId = viewModel.LearningDay.UserId });
             }
 
-            return View(learningDay);
+            return View(viewModel);
         }
 
         [Authorize]
@@ -224,6 +234,14 @@ namespace ProjectMayhem.Controllers
         private bool HasAuthorization(Authorized actions, Authorized action)
         {
             return (actions & action) == action;
+        }
+
+        private EditLearningDayViewModel getData(EditLearningDayViewModel model)
+        {
+            model.AllTopics = topicManager.getAllTopics();
+            string currentUserId = User.Identity.GetUserId();
+            model.RecommendedTopics = topicManager.getRecommendedTopics(currentUserId);
+            return model;
         }
     }
 }

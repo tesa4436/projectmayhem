@@ -4,20 +4,22 @@
     ViewBag.Title = "Topic";
 }
 
+@Html.HiddenFor(model => model.TopicId)
+@Html.HiddenFor(model => model.UserId)
+@Html.HiddenFor(model => model.LearningDayId)
+<!-- Saving TopicDay topic fields:-->
+@Html.HiddenFor(model => model.Topic.Title)
+@Html.HiddenFor(model => model.Topic.TopicsId)
+@Html.HiddenFor(model => model.Topic.Description)
+@Html.HiddenFor(model => model.Topic.parentTopic.TopicsId)
+@Html.HiddenFor(model => model.Topic.parentTopic)
+
 @if (!Model.Remove)
 {
+
     <tr>
-        <td>
-            @Html.HiddenFor(model => model.TopicId)
-            @Html.HiddenFor(model => model.UserId)
-            @Html.HiddenFor(model => model.LearningDayId)
-            @Html.EditorFor(model => model.Topic.Title)
-            @Html.ValidationMessageFor(model => model.Topic.Title, "", new { @class = "text-danger" })
-        </td>
-        <td>
-            @Html.EditorFor(model => model.Topic.Description)
-            @Html.ValidationMessageFor(model => model.Topic.Description, "", new { @class = "text-danger" })
-        </td>
+        <td>@Model.Topic.Title</td>
+        <td>@Model.Topic.Description</td>
         <td>
             @if (Model.Topic != null && Model.Topic.parentTopic != null)
             {
@@ -27,7 +29,6 @@
             {
                 <p>None</p>
             }
-            @Html.ValidationMessageFor(model => model.Topic.parentTopic, "", new { @class = "text-danger" })
         </td>
         <td>
             @Html.EditorFor(model => model.Remove)
@@ -36,8 +37,5 @@
 }
 else
 {
-    @Html.HiddenFor(model => model.TopicId)
-    @Html.HiddenFor(model => model.UserId)
-    @Html.HiddenFor(model => model.LearningDayId)
     @Html.HiddenFor(model => model.Remove)
 }

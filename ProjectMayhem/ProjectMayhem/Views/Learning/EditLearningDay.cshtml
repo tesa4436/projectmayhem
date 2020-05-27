@@ -1,6 +1,6 @@
-﻿@using ProjectMayhem.DbEntities
+﻿@using ProjectMayhem.Models
 
-@model LearningDay
+@model EditLearningDayViewModel
 
 @{
     ViewBag.Title = "Edit Learning Day";
@@ -11,8 +11,10 @@
 @using (Html.BeginForm("EditLearningDay", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.AllTopics)
+    @Html.HiddenFor(model => model.RecommendedTopics)
 
-    @Html.EditorFor(model => model);
+    @Html.EditorFor(model => model.LearningDay);
 
     <h3>Topics List</h3>
 
@@ -25,12 +27,51 @@
             </tr>
         </thead>
         <tbody id="childtable">
-            @Html.EditorFor(model => Model.Topics)
+            @Html.EditorFor(model => Model.LearningDay.Topics)
         </tbody>
     </table>
 
+    <div id="AddTopic" style="@(!Model.CreateNewTopic ? "display:block" : "display:none")">
+        <h3>Add topic:</h3>
+        @Html.LabelFor(m => m.AddTopicId)
+        <div id="TopicSelection" style="@(Model.SelectRecommendedTopic == false ? "display:block" : "display:none")">
+            @Html.DropDownListFor(m => m.AddTopicId, new SelectList(Model.AllTopics.Select(x => new { Value = x.TopicsId, Text = x.Title }), "Value", "Text"))
+        </div>
+        <div id="RecommendedTopicSelection" style="@(Model.SelectRecommendedTopic ? "display:block" : "display:none")">
+            @Html.DropDownListFor(m => m.AddTopicId, new SelectList(Model.RecommendedTopics.Select(x => new { Value = x.TopicsId, Text = x.Title }), "Value", "Text"))
+        </div>
+        @Html.LabelFor(m => m.SelectRecommendedTopic) @Html.EditorFor(m => m.SelectRecommendedTopic)
+        <p><input name="command" type="submit" value="Add Topic" /></p>
+    </div>
+
+    <div id="AddNewTopic" style="@(Model.CreateNewTopic ? "display:block" : "display:none")">
+        <h3>Add new topic:</h3>
+        <div class="form-group">
+            @Html.LabelFor(model => model.NewTopicTitle, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NewTopicTitle, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NewTopicTitle, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.NewTopicDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NewTopicDescription, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.NewTopicParentId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.NewTopicParentId, new SelectList(Model.AllTopics.Select(x => new { Value = x.TopicsId, Text = x.Title }), "Value", "Text"), "None")
+            </div>
+        </div>
+        <p><input name="command" type="submit" value="Add New Topic" /></p>
+    </div>
+    @Html.LabelFor(m => m.CreateNewTopic) @Html.EditorFor(m => m.CreateNewTopic)
+
+
     <p>
-        <input name="command" type="submit" value="Add Topic" />
+
         <input name="command" type="submit" value="Remove Selected Topics" />
         <input name="command" type="submit" value="Cancel/Refresh" />
     </p>
@@ -39,12 +80,12 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Reference</th>
+                <th>Reference link</th>
                 <th>Remove</th>
             </tr>
         </thead>
         <tbody id="childtable">
-            @Html.EditorFor(model => Model.References)
+            @Html.EditorFor(model => Model.LearningDay.References)
         </tbody>
     </table>
     <p>
@@ -53,8 +94,6 @@
         <input name="command" type="submit" value="Cancel/Refresh" />
     </p>
     <!-- Required to pass learning day ID to the controler method. -->
-
-    @Html.HiddenFor(m => m.LearningDayId)
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" class="btn btn-primary float-right" value="Save" />
@@ -68,3 +107,35 @@
         }
     </div>
 }
+
+<!-- Functions to hide and show certain options based on checkboxes. Click "Add new topic" - > hide "existing topic" and show "Add new topic"-->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+    $(function () {
+        $("#CreateNewTopic").click(function () {
+            if ($(this).is(':checked')) {
+                $("#AddTopic").hide();
+                $("#AddNewTopic").show();
+            }
+            else {
+                $("#AddTopic").show();
+                $("#AddNewTopic").hide();
+            }
+        });
+    });
+</script>
+
+<script>
+    $(function () {
+        $("#SelectRecommendedTopic").click(function () {
+            if ($(this).is(':checked')) {
+                $("#TopicSelection").hide();
+                $("#RecommendedTopicSelection").show();
+            }
+            else {
+                $("#TopicSelection").show();
+                $("#RecommendedTopicSelection").hide();
+            }
+        });
+    });
+</script>
