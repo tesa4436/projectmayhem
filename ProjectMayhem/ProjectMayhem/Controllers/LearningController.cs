@@ -90,6 +90,7 @@ namespace ProjectMayhem.Controllers
                     Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}, topicId: {3}",
                         viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription, viewModel.NewDayTopicId);
                     Debug.WriteLine("Target user: {0}", viewModel.UserId);
+                    Debug.WriteLine("Days in quarter: {0}", dayManager.getDaysInQuarterCount(viewModel.NewDayDate, viewModel.UserId));
                     Topic topic = new Topic();
                     if (viewModel.NewDayDate.Date < DateTime.Today)
                     {
@@ -100,6 +101,9 @@ namespace ProjectMayhem.Controllers
                     } else if (viewModel.CreateTopic && viewModel.NewDayTitle.IsNullOrWhiteSpace())
                     {
                         ModelState.AddModelError("", "Topic Title cannot be empty.");
+                    } else if (dayManager.getDaysInQuarterCount(viewModel.NewDayDate, viewModel.UserId) >= 3)
+                    {
+                        ModelState.AddModelError("", "Cannot add a day for, " + viewModel.NewDayDate + " - already have 3 learning days in the Quarter.");
                     }
 
                     if (ModelState.IsValid)

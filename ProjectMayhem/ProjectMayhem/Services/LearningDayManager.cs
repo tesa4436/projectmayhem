@@ -156,6 +156,20 @@ namespace ProjectMayhem.Services
             }
         }
 
+        public int getDaysInQuarterCount(DateTime date, string UserId)
+        {
+            // 1st quarter: 1, 2, 3 months, 2nd: 4, 5, 6, 3rd: 7, 8, 9, 4th: 10, 11, 12.
+            int quarter = (date.Month - 1) / 3;
+            DateTime quarterStart = new DateTime(date.Year, 1 + quarter * 3, 1),
+                quarterEnd = new DateTime(date.Year, 4 + quarter * 3, 1);
+
+            Debug.WriteLine("Counting learning days within: {0}-{1}", quarterStart.ToString(), quarterEnd.ToString());
+            using (var context = new ApplicationDbContext())
+            {
+                return context.learningDays.Where(x => x.UserId == UserId && x.Date >= quarterStart && x.Date < quarterEnd).ToList().Count;
+            }
+        }
+
         public void setTopics(LearningDay learningDay, List<Topic> newTopics)
         {
             using (var context = new ApplicationDbContext())
