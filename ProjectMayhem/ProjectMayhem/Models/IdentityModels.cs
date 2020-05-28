@@ -35,6 +35,7 @@ namespace ProjectMayhem.Models
         public DbSet<TopicUser> topicUsers { get; set; }
         public DbSet<TopicDay> topicDay { get; set; }
 
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

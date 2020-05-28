@@ -20,7 +20,7 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort>44343</IISExpressSSLPort>
+    <IISExpressSSLPort>44346</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -195,6 +195,7 @@
     <Compile Include="Controllers\LearningController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\RecommendationController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\TeamController.cs" />
     <Compile Include="DbEntities\LDayReferences.cs" />
     <Compile Include="DbEntities\LearningDay.cs" />
@@ -240,6 +241,10 @@
     <Compile Include="Migrations\202005242018513_optlockForLD.designer.cs">
       <DependentUpon>202005242018513_optlockForLD.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005281352071_AddTopicLearningStatus.cs" />
+    <Compile Include="Migrations\202005281352071_AddTopicLearningStatus.designer.cs">
+      <DependentUpon>202005281352071_AddTopicLearningStatus.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GroupViewModels.cs" />
@@ -247,6 +252,7 @@
     <Compile Include="Models\LearningViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\RecommendationViewModels.cs" />
+    <Compile Include="Models\ReportViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -256,6 +262,7 @@
     <Compile Include="Services\LearningDayManager.cs" />
     <Compile Include="Services\TeamManager.cs" />
     <Compile Include="Services\TopicManager.cs" />
+    <Compile Include="Services\UserManager.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -642,6 +649,8 @@
     <Content Include="Views\Learning\Schedule.cshtml" />
     <Content Include="Views\Learning\AddLearningDay.cshtml" />
     <Content Include="Views\Learning\EditLearningDay.cshtml" />
+    <Content Include="Views\Report\Report.cshtml" />
+    <Content Include="Views\Report\UserList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -683,6 +692,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005242018513_optlockForLD.resx">
       <DependentUpon>202005242018513_optlockForLD.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005281352071_AddTopicLearningStatus.resx">
+      <DependentUpon>202005281352071_AddTopicLearningStatus.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

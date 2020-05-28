@@ -155,6 +155,13 @@ namespace ProjectMayhem.Controllers
             return RedirectToAction("Schedule");
         }
 
+
+        public ActionResult SetTopicStatusToDone()
+        {
+            //TODO: Update TopicUsers table here. Set IsTopicLearned to true
+            return View();
+        }
+
         public ContentResult GetLearningDays(string id)
         {
             List<LearningDay> learningDays = dayManager.getLearningDaysByUserId(id);

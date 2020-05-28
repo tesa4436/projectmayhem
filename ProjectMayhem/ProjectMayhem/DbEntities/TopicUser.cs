@@ -19,6 +19,8 @@ namespace ProjectMayhem.DbEntities
         [ForeignKey("Topic")]
         public int TopicId { get; set; }
 
+        public bool IsTopicLearned { get; set; }
+
         public virtual Topic Topic { get; set; }
 
         public virtual ApplicationUser User { get; set; }

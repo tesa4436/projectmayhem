@@ -1,0 +1,30 @@
+﻿@model ProjectMayhem.Models.ReportViewModel
+@{
+    ViewBag.Title = "Seleact a report";
+}
+
+<h2>Select a report</h2>
+<body>
+    @*@Html.DropDownList(
+        "topicsDropdown",
+        Model.Topics.Select(t => new SelectListItem
+        {
+            Value = t.TopicsId.ToString(),
+            Text = t.Title
+        }),
+        new { @class = "form-control" })*@
+
+    @Html.DropDownListFor(
+    m => m.SelectedTopic,
+    Model.Topics.Select(t => new SelectListItem
+        {
+            Value = t.TopicsId.ToString(),
+            Text = t.Title
+        }),
+    new { @class = "form-control" })
+
+
+
+    @Html.ActionLink("People, who know this topic", "GetPeopleByTopic", "Report", routeValues: null, htmlAttributes: new { id = "reportLink", @class = "nav-link" })
+</body>
+

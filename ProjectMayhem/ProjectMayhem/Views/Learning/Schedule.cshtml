@@ -33,6 +33,10 @@
                     <p id="pDetails"></p>
                     <p id="pTopics"></p>
                     <p id="pReferences"></p>
+                    <p id="topicId"></p>
+                    @Model.
+                    
+                    <input type="button" value="Mark as done" onclick="location.href='@Url.Action("SetTopicStatusToDone", "Learning")'" />
                 </div>
                 <!-- Could add an "if" helper to check whether the person viewing can edit.-->
             </div>
@@ -197,6 +201,8 @@
             $('#viewedLearningDay #pDetails').empty().html($description);
             $('#viewedLearningDay #pTopics').empty().html($topicsDescription);
             $('#viewedLearningDay #pReferences').empty().html($referencesDescription);
+
+
 
             // Displays the modal window.
             $('#viewedLearningDay').modal();

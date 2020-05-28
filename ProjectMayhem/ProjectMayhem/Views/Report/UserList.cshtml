@@ -1,0 +1,19 @@
+﻿@model ProjectMayhem.Models.ReportViewModel
+
+@{
+    ViewBag.Title = "UserList";
+}
+
+
+<ul>
+    @foreach (var Emp in Model.Users)
+    {
+        <li>
+            <div>
+                @Emp.Email
+            </div>
+        </li>
+    }
+</ul>
+
+
