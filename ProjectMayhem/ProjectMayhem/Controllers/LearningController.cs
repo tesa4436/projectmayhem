@@ -203,7 +203,7 @@ namespace ProjectMayhem.Controllers
                 return View("Error"); // Cannot edit someone elses learning day.
             }
 
-            if ((command == "Add Topic" || command == "Add New Topic") && viewModel.LearningDay.Topics.Count >= 4)
+            if ((command == "Add Topic" || command == "Add New Topic") && viewModel.LearningDay.Topics.Where(tp => !tp.Remove).Count() >= 4)
             {
                 ModelState.AddModelError("", "Maximum number (4) of topics per day reached.");
                 return View(viewModel);
@@ -214,6 +214,7 @@ namespace ProjectMayhem.Controllers
                 TopicDay topic = topicManager.createTopicDay(viewModel.AddTopicId, 
                     viewModel.LearningDay.LearningDayId,
                     viewModel.LearningDay.UserId);
+                topic.NewlyCreated = true;
                 // Forcefully loading the lazy Topic, so that it can be displayed.
                 topic.Topic = topicManager.getTopicById(topic.TopicId);
                 if (viewModel.LearningDay.Topics.Any(topicDay => topicDay.TopicId == viewModel.AddTopicId))
@@ -226,6 +227,7 @@ namespace ProjectMayhem.Controllers
             {
                 Topic newTopic = topicManager.createTopic(viewModel.NewTopicTitle, viewModel.NewTopicDescription, viewModel.NewTopicParentId);
                 TopicDay topicDay = topicManager.createTopicDay(newTopic.TopicsId, viewModel.LearningDay.LearningDayId, viewModel.LearningDay.UserId);
+                topicDay.NewlyCreated = true;
                 topicDay.Topic = newTopic; // topicManager.getTopicById(newTopic.TopicsId);
                 // Forcefully loading the lazy Topic, so that it can be displayed.
                 //if (newTopic.ParentTopicId != null)
@@ -250,7 +252,8 @@ namespace ProjectMayhem.Controllers
                 viewModel.LearningDay = dayManager.getLearningDayById(viewModel.LearningDay.LearningDayId);
             } else
             {
-                if (viewModel.LearningDay.Date <= DateTime.Today)
+                LearningDay oldDay = dayManager.getLearningDayById(viewModel.LearningDay.LearningDayId);
+                if (viewModel.LearningDay.Date <= DateTime.Today.Date && viewModel.LearningDay.Date != oldDay.Date)
                 {
                     ModelState.AddModelError("", "Cannot change learning day date to past date or today.");
                     return View(viewModel);

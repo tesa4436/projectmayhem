@@ -28,5 +28,7 @@ namespace ProjectMayhem.DbEntities
 
         [NotMapped]
         public bool Remove { get; set; }
+        [NotMapped]
+        public bool NewlyCreated { get; set; }
     }
 }
