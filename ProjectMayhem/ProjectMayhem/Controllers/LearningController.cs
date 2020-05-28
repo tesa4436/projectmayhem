@@ -200,6 +200,12 @@ namespace ProjectMayhem.Controllers
                 return View("Error"); // Cannot edit someone elses learning day.
             }
 
+            if ((command == "Add Topic" || command == "Add New Topic") && viewModel.LearningDay.Topics.Count >= 4)
+            {
+                ModelState.AddModelError("", "Maximum number (4) of topics per day reached.");
+                return View(viewModel);
+            }
+
             if (command == "Add Topic")
             {
                 TopicDay topic = topicManager.createTopicDay(viewModel.AddTopicId, 
@@ -207,6 +213,11 @@ namespace ProjectMayhem.Controllers
                     viewModel.LearningDay.UserId);
                 // Forcefully loading the lazy Topic, so that it can be displayed.
                 topic.Topic = topicManager.getTopicById(topic.TopicId);
+                if (viewModel.LearningDay.Topics.Any(topicDay => topicDay.TopicId == viewModel.AddTopicId))
+                {
+                    ModelState.AddModelError("", "The learning day already has this topic.");
+                    return View(viewModel);
+                }
                 viewModel.LearningDay.Topics.Add(topic);
             } else if (command == "Add New Topic")
             {
