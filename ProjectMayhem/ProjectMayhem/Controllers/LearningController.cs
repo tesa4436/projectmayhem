@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using Microsoft.Ajax.Utilities;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
 using ProjectMayhem.DbEntities;
@@ -89,12 +90,38 @@ namespace ProjectMayhem.Controllers
                     Debug.WriteLine("Adding a new learning day, date: {0}, title: {1}, description: {2}, topicId: {3}",
                         viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription, viewModel.NewDayTopicId);
                     Debug.WriteLine("Target user: {0}", viewModel.UserId);
+                    Topic topic = new Topic();
+                    if (viewModel.NewDayDate.Date < DateTime.Today)
+                    {
+                        ModelState.AddModelError("", "Cannot add a day to past.");
+                    } else if (viewModel.NewDayTitle.IsNullOrWhiteSpace())
+                    {
+                        ModelState.AddModelError("", "Day title cannot be empty.");
+                    } else if (viewModel.CreateTopic && viewModel.NewDayTitle.IsNullOrWhiteSpace())
+                    {
+                        ModelState.AddModelError("", "Topic Title cannot be empty.");
+                    }
 
-                    Topic topic = topicManager.getTopicById(viewModel.NewDayTopicId);
-                    dayManager.createLearningDay(viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription,
+                    if (ModelState.IsValid)
+                    {
+                        if (viewModel.CreateTopic)
+                        { 
+                            topic = topicManager.createTopic(viewModel.NewTopicTitle, viewModel.NewTopicDescription, viewModel.NewDayTopicId);
+                        }
+                        else
+                        {
+                            topic = topicManager.getTopicById(viewModel.NewDayTopicId);
+                        }
+                        dayManager.createLearningDay(viewModel.NewDayDate, viewModel.NewDayTitle, viewModel.NewDayDescription,
                         viewModel.UserId, new List<Topic>() { topic });
 
-                    return RedirectToAction("Schedule");
+                        return RedirectToAction("Schedule");
+                    } else
+                    {
+                        viewModel = getData(viewModel);
+                        return View(viewModel);
+                    }
+                    
                 }
                 catch (Exception e)
                 {
@@ -102,15 +129,34 @@ namespace ProjectMayhem.Controllers
                     return View();
                 }
             }
-            else if (command == "Delete")
+            else
             {
-                dayManager.deleteLearningDay(int.Parse(viewModel.ViewedDayId), User.Identity.GetUserId());
+                LearningDay day = dayManager.getLearningDayById(int.Parse(viewModel.ViewedDayId));
+                if (command == "Delete")
+                {
+                    if (day.Date.Date <= DateTime.Today.Date)
+                    {
+                        ModelState.AddModelError("", "Cannot delete a learning day that has started or is already over.");
+                    }
+                    else
+                    {
+                        dayManager.deleteLearningDay(day.LearningDayId, User.Identity.GetUserId());
+                    }
+                }
+                else if (command == "Edit")
+                {
+                    if (day.Date.Date < DateTime.Today.Date)
+                    {
+                        ModelState.AddModelError("", "Cannot edit a learning day that is already over.");
+                    }
+                    else
+                    {
+                        return EditLearningDay(day.LearningDayId);
+                    }
+                }
             }
-            else if (command == "Edit")
-            {
-                return EditLearningDay(int.Parse(viewModel.ViewedDayId));
-            }
-            return RedirectToAction("Schedule");
+            
+            return View(getData(viewModel));
         }
 
         [Authorize]
@@ -247,6 +293,13 @@ namespace ProjectMayhem.Controllers
         }
 
         private EditLearningDayViewModel getData(EditLearningDayViewModel model)
+        {
+            model.AllTopics = topicManager.getAllTopics();
+            string currentUserId = User.Identity.GetUserId();
+            model.RecommendedTopics = topicManager.getRecommendedTopics(currentUserId);
+            return model;
+        }
+        private ScheduleViewModel getData(ScheduleViewModel model)
         {
             model.AllTopics = topicManager.getAllTopics();
             string currentUserId = User.Identity.GetUserId();

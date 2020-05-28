@@ -46,12 +46,7 @@ namespace ProjectMayhem.Controllers
         {
             try
             {
-                if (command == "Add Item")
-                {
-                    dayList.Add(new LearningDay() { LearningDayId = -1 });
-                    DayList = dayList;
-                }
-                else if (command == "Remove Selected")
+                if (command == "Remove Selected")
                 {
                     int pos = dayList.Count();
                     while (pos > 0)
@@ -59,7 +54,7 @@ namespace ProjectMayhem.Controllers
                         pos--;
                         if (dayList[pos].Remove)
                         {
-                            dayManager.deleteLearningDay(dayList[pos].Date, User.Identity.GetUserId());
+                            dayManager.deleteLearningDay(dayList[pos].LearningDayId, User.Identity.GetUserId());
                             dayList.RemoveAt(pos);
                         }
                     }
@@ -73,7 +68,10 @@ namespace ProjectMayhem.Controllers
                 else
                 {
                     // update actual database
-                    dayManager.UpdateChanges(dayList);
+                    if (dayList != null && dayList.Count > 0)
+                    {
+                        dayManager.UpdateChanges(dayList);
+                    }
                     // force reload of data from database
                     DayList = null;
                 }
@@ -81,7 +79,7 @@ namespace ProjectMayhem.Controllers
             }
             catch
             {
-                return View();
+                return View(dayList);
             }
         }
     }

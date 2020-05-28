@@ -32,6 +32,7 @@ namespace ProjectMayhem.Models
     public class AddLearningDayViewModel
     {
         public List<Topic> AllTopics { get; set; }
+        public ICollection<Topic> RecommendedTopics { get; set; }
 
         [Display(Name = "Date")]
         [DataType(DataType.Date)]
@@ -71,12 +72,16 @@ namespace ProjectMayhem.Models
 
         [Display(Name = "Choose a recommended topic")]
         public bool SelectRecommendedTopic { get; set; }
+        [Display(Name = "Topic")]
         public int AddTopicId { get; set; }
 
         [Display(Name = "Create and add a new topic")]
         public bool CreateNewTopic { get; set; }
+        [Display(Name = "Title")]
         public string NewTopicTitle { get; set; }
+        [Display(Name = "Description")]
         public string NewTopicDescription { get; set; }
+        [Display(Name = "Parent topic")]
         public int NewTopicParentId { get; set; }
     }
 
