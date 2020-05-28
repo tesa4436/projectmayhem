@@ -16,20 +16,8 @@
 
 @if (!Model.Remove)
 {
-
     <tr>
-        <td>@Model.Topic.Title</td>
-        <td>@Model.Topic.Description</td>
-        <td>
-            @if (Model.Topic != null && Model.Topic.ParentTopicId != null)
-            {
-                <p>@Model.Topic.ParentTopicId</p>
-            }
-            else
-            {
-                <p>None</p>
-            }
-        </td>
+        @Html.EditorFor(model => model.Topic)
         <td>
             @Html.EditorFor(model => model.Remove)
         </td>

@@ -217,9 +217,24 @@ namespace ProjectMayhem.Controllers
                 topic.NewlyCreated = true;
                 // Forcefully loading the lazy Topic, so that it can be displayed.
                 topic.Topic = topicManager.getTopicById(topic.TopicId);
-                if (viewModel.LearningDay.Topics.Any(topicDay => topicDay.TopicId == viewModel.AddTopicId))
+                if (topic.Topic.ParentTopicId == null)
                 {
-                    ModelState.AddModelError("", "The learning day already has this topic.");
+                    topic.Topic.parentTopic = null;
+                }
+                else
+                {
+                    topic.Topic.parentTopic = topicManager.getTopicById((int)topic.Topic.ParentTopicId);
+                }
+
+
+                var duplicateTopicDays = viewModel.LearningDay.Topics.Where(topicDay => topicDay.TopicId == viewModel.AddTopicId);
+                if (duplicateTopicDays.Count() > 0)
+                {
+                    // If the topic was marked for removal and is being added again, then it should just be visible again.
+                    if (duplicateTopicDays.First().Remove)
+                        duplicateTopicDays.First().Remove = false;
+                    else
+                        ModelState.AddModelError("", "The learning day already has this topic.");
                     return View(viewModel);
                 }
                 viewModel.LearningDay.Topics.Add(topic);
