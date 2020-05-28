@@ -7,7 +7,7 @@
 }
 
 <p></p>
-<div class="text-center shadow">
+<div id="page-title">
     <h2>@ViewBag.Title</h2>
 </div>
 
@@ -17,7 +17,6 @@
 
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.EditorFor(model => model.LearningDay);
-    <hr />
 
     <h3 class="text-center">Topics List</h3>
 
