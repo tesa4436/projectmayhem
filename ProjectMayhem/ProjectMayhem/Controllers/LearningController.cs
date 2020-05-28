@@ -104,6 +104,9 @@ namespace ProjectMayhem.Controllers
                     } else if (dayManager.getDaysInQuarterCount(viewModel.NewDayDate, viewModel.UserId) >= 3)
                     {
                         ModelState.AddModelError("", "Cannot add a day for, " + viewModel.NewDayDate + " - already have 3 learning days in the Quarter.");
+                    } else if (dayManager.isDateTaken(viewModel.NewDayDate, viewModel.UserId))
+                    {
+                        ModelState.AddModelError("", "Cannot add a day for, " + viewModel.NewDayDate + " - date already has a learning day.");
                     }
 
                     if (ModelState.IsValid)
@@ -130,7 +133,7 @@ namespace ProjectMayhem.Controllers
                 catch (Exception e)
                 {
                     Debug.WriteLine("An error occurred while adding a new Learning day. LearningController ");
-                    return View();
+                    return View(getData(viewModel));
                 }
             }
             else
@@ -247,6 +250,21 @@ namespace ProjectMayhem.Controllers
                 viewModel.LearningDay = dayManager.getLearningDayById(viewModel.LearningDay.LearningDayId);
             } else
             {
+                if (viewModel.LearningDay.Date <= DateTime.Today)
+                {
+                    ModelState.AddModelError("", "Cannot change learning day date to past date or today.");
+                    return View(viewModel);
+                } else if (!dayManager.canAddOrUpdateDay(viewModel.LearningDay))
+                {
+                    ModelState.AddModelError("", "Cannot change learning day date, maximum days (3) in target quarter reached.");
+                    return View(viewModel);
+                } else if (dayManager.isDateTaken(viewModel.LearningDay))
+                {
+                    ModelState.AddModelError("", "Cannot change learning day date, date already taken by another day.");
+                    return View(viewModel);
+                }
+
+
                 if (!dayManager.updateLearningDay(viewModel.LearningDay, viewModel.LearningDay.RowVersion))
                 {
                     TempData["UpdateLD"] = "The day was already modified by another user";
@@ -314,6 +332,7 @@ namespace ProjectMayhem.Controllers
         {
             model.AllTopics = topicManager.getAllTopics();
             string currentUserId = User.Identity.GetUserId();
+            model.UserId = currentUserId;
             model.RecommendedTopics = topicManager.getRecommendedTopics(currentUserId);
             return model;
         }

@@ -158,7 +158,7 @@ namespace ProjectMayhem.Services
             }
         }
 
-        public int getDaysInQuarterCount(DateTime date, string UserId)
+        public int getDaysInQuarterCount(DateTime date, string userId)
         {
             // 1st quarter: 1, 2, 3 months, 2nd: 4, 5, 6, 3rd: 7, 8, 9, 4th: 10, 11, 12.
             int quarter = (date.Month - 1) / 3;
@@ -168,8 +168,51 @@ namespace ProjectMayhem.Services
             Debug.WriteLine("Counting learning days within: {0}-{1}", quarterStart.ToString(), quarterEnd.ToString());
             using (var context = new ApplicationDbContext())
             {
-                return context.learningDays.Where(x => x.UserId == UserId && x.Date >= quarterStart && x.Date < quarterEnd).ToList().Count;
+                return context.learningDays.Where(x => x.UserId == userId && x.Date >= quarterStart && x.Date < quarterEnd).ToList().Count;
             }
+        }
+
+        public bool isDateTaken(DateTime date, string userId)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                return context.learningDays.Where(x => x.UserId == userId && x.Date == date.Date).Count() > 0;
+            }
+        }
+
+
+        // Checks if the date is taken by an other day.
+        public bool isDateTaken(LearningDay day)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                return context.learningDays.Where(x => x.UserId == day.UserId && x.Date == day.Date && x.LearningDayId != day.LearningDayId).Count() > 0;
+            }
+        }
+
+        public bool canAddOrUpdateDay(LearningDay day)
+        {
+            int maxDays = 3;
+            // If a day is edited and is moved to a new date in the same quarter, then this move should be permitted.
+            if (day.LearningDayId > 0)
+            {
+                LearningDay oldDay = getLearningDayById(day.LearningDayId);
+                int quarter = (day.Date.Month - 1) / 3;
+                DateTime quarterStart = new DateTime(day.Date.Year, 1 + quarter * 3, 1),
+                    quarterEnd = new DateTime(day.Date.Year, 4 + quarter * 3, 1);
+                if (day.Date >= quarterStart && day.Date < quarterEnd)
+                    maxDays++;
+            }
+            else
+            {
+                // Do not allow adding if the date is taken by an other day.
+                if (isDateTaken(day.Date, day.UserId))
+                    return false;
+            }
+            // Never allow creating a day at a date where a user has already got a learning day.
+            
+           
+            return getDaysInQuarterCount(day.Date, day.UserId) < maxDays;
         }
 
         public void setTopics(LearningDay learningDay, List<Topic> newTopics)
