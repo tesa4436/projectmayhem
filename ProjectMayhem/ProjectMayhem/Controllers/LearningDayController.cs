@@ -30,6 +30,7 @@ namespace ProjectMayhem.Controllers
             }
         }
 
+        [Authorize]
         // GET: LearningDay/List/1234-ddas-12dk-ooo...
         public ActionResult List(string id)
         {
@@ -41,6 +42,7 @@ namespace ProjectMayhem.Controllers
             return View(DayList);
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult List(List<LearningDay> dayList, string command)
         {

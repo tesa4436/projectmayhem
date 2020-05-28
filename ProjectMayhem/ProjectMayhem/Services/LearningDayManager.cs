@@ -96,6 +96,8 @@ namespace ProjectMayhem.Services
                         }
                         else
                         {
+                            // A duplicate topic might be created if the virtual topic is not null.
+                            topic.Topic = null;
                             context.topicDay.AddOrUpdate(topic);
                         }
                     }
