@@ -6,7 +6,10 @@
     ViewBag.Title = "Edit Learning Day";
 }
 
-<h1 class="text-center">Edit learning day</h1>
+<p></p>
+<div class="text-center shadow">
+    <h2>@ViewBag.Title</h2>
+</div>
 
 @using (Html.BeginForm("EditLearningDay", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
