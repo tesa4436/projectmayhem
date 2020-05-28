@@ -1,9 +1,14 @@
 Project Mayhem - tai Vilniaus universiteto Programų sistemų 3 kurso studentų grupinio projekto užduotis (2020 m. pavasaris), kurios tikslas  sukurti įmonės darbuotojų mokymosi dienų valdymo sistemą.
 
-Test user:
+Aukščiausio lygio vadovas:
 
 * Email: psk.projectmayhem2020@gmail.com
 * Pass(su tasku gale): Pskpsk1.
+
+Aukščiausio lygio vadovo pavaldinys:
+
+* Email: MemberProjectMayhem@gmail.com
+* pass(su tasku gale): Pskpsk1.
 
 
 Norint, kad veiktu vartotojų pakvietimai, reikia pridėti SendGrid api raktą į "User Environmental Variable" sąrašą. Pridėkite raktą:
