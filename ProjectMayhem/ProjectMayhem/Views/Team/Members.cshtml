@@ -17,7 +17,7 @@
 {
     <p></p>
     <div class="text-center shadow">
-        <h2>@ViewBag.Title</h2>
+        <h2 style="padding:20px">@ViewBag.Title</h2>
     </div>
 
     <ul>
@@ -64,7 +64,7 @@
 }
 else
 {
-    <h2>There are no Team members</h2>
+    <h2 style="padding:40px">There are no Team members</h2>
 }
 <div style="width:400px">
     @if (!string.IsNullOrEmpty(Request.QueryString["retUrl"]))
