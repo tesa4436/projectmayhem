@@ -7,18 +7,22 @@
     ViewBag.Title = "Learning schedule";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<div class="text-center">
+<p></p>
+<div id="page-title">
     <h2>@ViewBag.Title</h2>
 </div>
 @Html.HiddenFor(m => m.UserId)
-@Html.ValidationSummary()
+@Html.ValidationSummary("", new { @class = "text-danger" })
 
 <!-- This holds the generated FullCalendar element for the Learning Schedule.
     Documentation: https://fullcalendar.io/docs -->
 <div id="schedule">
 
 </div>
+
+
+@Html.ActionLink("View Learning days list", "List", new { id = User.Identity.GetUserId() })
+
 
 <!-- Modal dialog to show learning day details. -->
 <div id="viewedLearningDay" class="modal fade" role="dialog">

@@ -2,25 +2,24 @@
 
 <head>
     <style>
-        #Navigation{
+        #Navigation {
             display: inline;
-            margin-right:10px
+            margin-right: 10px
         }
-        #Forms form, #Forms form div{
-            display: inline;
 
+        #Forms form, #Forms form div {
+            display: inline;
         }
     </style>
 </head>
 
 @if (Model.Employees.ToArray().Length > 0)
 {
-    <h2>
-        @{
-            @ViewBag.Title;
-        }
-    </h2>
-
+    <p></p>
+    <div id="page-title">
+        <h2 >@ViewBag.Title</h2>
+    </div>
+    <br />
     <ul>
         @foreach (var Emp in Model.Employees)
         {
@@ -36,7 +35,8 @@
         @using (Html.BeginForm("Members", "Team", new { LeadId = Request.QueryString["LeadId"], retUrl = Request.QueryString["retUrl"] }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
             @Html.AntiForgeryToken()
-            <h4>Assign a new Leader</h4>
+            <hr />
+            <h4>Assign members to other teams</h4>
             <hr />
             @Html.ValidationSummary("", new { @class = "text-danger" })
 
@@ -64,16 +64,16 @@
 }
 else
 {
-    <h2>There are no Team members</h2>
+    <h2 id="page-title">There are no Team members</h2>
 }
-    <div style="width:400px">
-            @if (!string.IsNullOrEmpty(Request.QueryString["retUrl"]))
-            {
-            <div id="Navigation" class="btn btn-dark">
-                <a href=@Request.QueryString["retUrl"]  style="color: white">Back</a>
-            </div>
-            <div id="Navigation" class ="btn btn-secondary">
-                @Html.ActionLink("My team", "Members", "Team", null, new { style="color: white" })
-            </div>
-            }
-    </div>
+<div style="width:400px">
+    @if (!string.IsNullOrEmpty(Request.QueryString["retUrl"]))
+    {
+        <div id="Navigation" class="btn btn-dark">
+            <a href=@Request.QueryString["retUrl"] style="color: white">Back</a>
+        </div>
+        <div id="Navigation" class="btn btn-secondary">
+            @Html.ActionLink("My team", "Members", "Team", null, new { style = "color: white" })
+        </div>
+    }
+</div>

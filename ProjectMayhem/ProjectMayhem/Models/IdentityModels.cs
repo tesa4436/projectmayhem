@@ -44,6 +44,7 @@ namespace ProjectMayhem.Models
         {
             return new ApplicationDbContext();
         }
+
     }
 
     [Flags] public enum Authorized

@@ -1,0 +1,7 @@
+﻿@model ProjectMayhem.DbEntities.Topic
+
+@Html.HiddenFor(model => model.Title)
+@Html.HiddenFor(model => model.Description)
+@Html.HiddenFor(model => model.TopicsId)
+@Html.HiddenFor(model => model.ParentTopicId)
+@Html.EditorFor(model => model.parentTopic, "HiddenTopic")

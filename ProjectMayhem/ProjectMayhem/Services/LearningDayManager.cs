@@ -76,7 +76,7 @@ namespace ProjectMayhem.Services
         {
             using (var context = new ApplicationDbContext())
             {
-                if (context.topicDay.Where(x => x.LearningDayId == changedDay.LearningDayId).First() == null) 
+                if (context.topicDay.Where(x => x.LearningDayId == changedDay.LearningDayId).ToArray().Length == 0) 
                     return false;
                 try
                 {
@@ -87,11 +87,40 @@ namespace ProjectMayhem.Services
                     context.Entry(update).OriginalValues["RowVersion"] = RowState;
                     foreach(var topic in changedDay.Topics)
                     {
-                        context.topicDay.AddOrUpdate(topic);
+                        if (topic.Remove)
+                        {
+                            if (!topic.NewlyCreated)
+                            {
+                                TopicDay toRemove = context.topicDay.Single(x => x.TopicId == topic.TopicId
+                                && x.LearningDayId == topic.LearningDayId
+                                && x.UserId == topic.UserId);
+                                context.topicDay.Remove(toRemove);
+                            }
+                        }
+                        else
+                        {
+                            // A duplicate topic might be created if the virtual topic is not null.
+                            topic.Topic = null;
+                            context.topicDay.AddOrUpdate(topic);
+                        }
                     }
                     foreach (var reference in changedDay.References)
                     {
-                        context.lDayReferences.AddOrUpdate(reference);
+                        if (reference.Remove)
+                        {
+                            if (reference.ReferenceId > 0)
+                            {
+                                LDayReferences toRemove = context.lDayReferences.First(x => x.LearningDayId == reference.LearningDayId
+                                && x.UserId == reference.UserId
+                                && x.ReferenceUrl == reference.ReferenceUrl);
+                                context.lDayReferences.Remove(toRemove);
+                            }
+                        }
+                        else
+                        {
+                            context.lDayReferences.AddOrUpdate(reference);
+                        }
+                        
                     }
                     context.learningDays.AddOrUpdate(update);
                     context.SaveChanges();
@@ -103,7 +132,13 @@ namespace ProjectMayhem.Services
                 }
                 catch(DbUpdateException ex)
                 {
-                    Debug.WriteLine(ex.InnerException.Message);
+                    Exception tempEx = ex;
+                    // Exception may be nested. Might need to go deep for the exception message.
+                    while (tempEx.InnerException != null)
+                    {
+                        tempEx = tempEx.InnerException;
+                    }
+                    Debug.WriteLine(tempEx.Message);
                     return false;
                 }
             }
@@ -127,6 +162,63 @@ namespace ProjectMayhem.Services
                 context.learningDays.Remove(user.LearningDays.Where(x => x.LearningDayId == dayId).First());
                 context.SaveChanges();
             }
+        }
+
+        public int getDaysInQuarterCount(DateTime date, string userId)
+        {
+            // 1st quarter: 1, 2, 3 months, 2nd: 4, 5, 6, 3rd: 7, 8, 9, 4th: 10, 11, 12.
+            int quarter = (date.Month - 1) / 3;
+            DateTime quarterStart = new DateTime(date.Year, 1 + quarter * 3, 1),
+                quarterEnd = new DateTime(date.Year, 4 + quarter * 3, 1);
+
+            Debug.WriteLine("Counting learning days within: {0}-{1}", quarterStart.ToString(), quarterEnd.ToString());
+            using (var context = new ApplicationDbContext())
+            {
+                return context.learningDays.Where(x => x.UserId == userId && x.Date >= quarterStart && x.Date < quarterEnd).ToList().Count;
+            }
+        }
+
+        public bool isDateTaken(DateTime date, string userId)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                return context.learningDays.Where(x => x.UserId == userId && x.Date == date.Date).Count() > 0;
+            }
+        }
+
+
+        // Checks if the date is taken by an other day.
+        public bool isDateTaken(LearningDay day)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                return context.learningDays.Where(x => x.UserId == day.UserId && x.Date == day.Date && x.LearningDayId != day.LearningDayId).Count() > 0;
+            }
+        }
+
+        public bool canAddOrUpdateDay(LearningDay day)
+        {
+            int maxDays = 3;
+            // If a day is edited and is moved to a new date in the same quarter, then this move should be permitted.
+            if (day.LearningDayId > 0)
+            {
+                LearningDay oldDay = getLearningDayById(day.LearningDayId);
+                int quarter = (day.Date.Month - 1) / 3;
+                DateTime quarterStart = new DateTime(day.Date.Year, 1 + quarter * 3, 1),
+                    quarterEnd = new DateTime(day.Date.Year, 4 + quarter * 3, 1);
+                if (day.Date >= quarterStart && day.Date < quarterEnd)
+                    maxDays++;
+            }
+            else
+            {
+                // Do not allow adding if the date is taken by an other day.
+                if (isDateTaken(day.Date, day.UserId))
+                    return false;
+            }
+            // Never allow creating a day at a date where a user has already got a learning day.
+            
+           
+            return getDaysInQuarterCount(day.Date, day.UserId) < maxDays;
         }
 
         public void setTopics(LearningDay learningDay, List<Topic> newTopics)
@@ -166,6 +258,15 @@ namespace ProjectMayhem.Services
                     UpdateChanges();
                 }
             }
+        }
+
+        public void UpdateChanges(List<LearningDay> learningDays)
+        {
+            foreach(var day in learningDays)
+            {
+                updateLearningDay(day, day.RowVersion);
+            }
+            applicationDbContext.SaveChanges();
         }
 
         public void UpdateChanges()

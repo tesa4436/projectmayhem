@@ -25,5 +25,10 @@ namespace ProjectMayhem.DbEntities
 
         [ForeignKey("LearningDayId, UserId")]
         public virtual LearningDay Day { get; set; }
+
+        [NotMapped]
+        public bool Remove { get; set; }
+        [NotMapped]
+        public bool NewlyCreated { get; set; }
     }
 }

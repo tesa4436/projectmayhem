@@ -22,6 +22,9 @@ namespace ProjectMayhem.DbEntities
 
         public string Description { get; set; }
 
+        public int? ParentTopicId { get; set; }
+
+        [ForeignKey("ParentTopicId")]
         public virtual Topic parentTopic { get; set; }
 
         public virtual ICollection<TopicDay> Days { get; set; }
