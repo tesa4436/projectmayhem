@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
-  <Import Project="..\packages\EntityFramework.6.4.0\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.0\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -20,14 +20,14 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort>44346</IISExpressSSLPort>
+    <IISExpressSSLPort>44343</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>3.8</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,10 +49,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.0\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -192,46 +192,70 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LearningController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="DAL\EntityDataContext.cs" />
+    <Compile Include="Controllers\RecommendationController.cs" />
     <Compile Include="Controllers\TeamController.cs" />
+    <Compile Include="DbEntities\LDayReferences.cs" />
+    <Compile Include="DbEntities\LearningDay.cs" />
+    <Compile Include="DbEntities\Topic.cs" />
+    <Compile Include="DbEntities\TopicDay.cs" />
+    <Compile Include="DbEntities\TopicUser.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Migrations\202004011033505_InitialCreate.cs" />
-    <Compile Include="Migrations\202004011033505_InitialCreate.designer.cs">
+    <Compile Include="Migrations\202004011033505_InitialCreate.Designer.cs">
       <DependentUpon>202004011033505_InitialCreate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202004072051246_User_Testing.cs" />
-    <Compile Include="Migrations\202004072051246_User_Testing.designer.cs">
-      <DependentUpon>202004072051246_User_Testing.cs</DependentUpon>
+    <Compile Include="Migrations\202005191456412_UpdateManTM.cs" />
+    <Compile Include="Migrations\202005191456412_UpdateManTM.designer.cs">
+      <DependentUpon>202005191456412_UpdateManTM.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202005090334008_FixingMerge.cs" />
-    <Compile Include="Migrations\202005090334008_FixingMerge.designer.cs">
-      <DependentUpon>202005090334008_FixingMerge.cs</DependentUpon>
+    <Compile Include="Migrations\202005192039087_UpdateTopicMTM.cs" />
+    <Compile Include="Migrations\202005192039087_UpdateTopicMTM.designer.cs">
+      <DependentUpon>202005192039087_UpdateTopicMTM.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202005090337338_AddTopicLearners.cs" />
-    <Compile Include="Migrations\202005090337338_AddTopicLearners.designer.cs">
-      <DependentUpon>202005090337338_AddTopicLearners.cs</DependentUpon>
+    <Compile Include="Migrations\202005192100504_PrimaryKeys.cs" />
+    <Compile Include="Migrations\202005192100504_PrimaryKeys.designer.cs">
+      <DependentUpon>202005192100504_PrimaryKeys.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005192103529_PrimaryKeys1.cs" />
+    <Compile Include="Migrations\202005192103529_PrimaryKeys1.designer.cs">
+      <DependentUpon>202005192103529_PrimaryKeys1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005192115288_databaseUpdate.cs" />
+    <Compile Include="Migrations\202005192115288_databaseUpdate.designer.cs">
+      <DependentUpon>202005192115288_databaseUpdate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005202024147_topicRecomemdations.cs" />
+    <Compile Include="Migrations\202005202024147_topicRecomemdations.designer.cs">
+      <DependentUpon>202005202024147_topicRecomemdations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005221557224_fixingmymess.cs" />
+    <Compile Include="Migrations\202005221557224_fixingmymess.designer.cs">
+      <DependentUpon>202005221557224_fixingmymess.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005242018513_optlockForLD.cs" />
+    <Compile Include="Migrations\202005242018513_optlockForLD.designer.cs">
+      <DependentUpon>202005242018513_optlockForLD.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\TopicLearnersModel.cs" />
-    <Compile Include="Models\Topic.cs" />
-    <Compile Include="Migrations\202004261612123_User_Groups.cs" />
-    <Compile Include="Migrations\202004261612123_User_Groups.designer.cs">
-      <DependentUpon>202004261612123_User_Groups.cs</DependentUpon>
-    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GroupViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\LearningViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\RecommendationViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Services\LearningDayManager.cs" />
     <Compile Include="Services\TeamManager.cs" />
+    <Compile Include="Services\TopicManager.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -254,10 +278,228 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="Content\Images\body-background.jpg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\fullcalendar\bootstrap\main.js.map" />
+    <Content Include="Scripts\fullcalendar\bootstrap\package.json" />
+    <Content Include="Scripts\fullcalendar\bootstrap\README.md" />
+    <Content Include="Scripts\fullcalendar\bundle\google-calendar.js.map" />
+    <Content Include="Scripts\fullcalendar\bundle\luxon.js.map" />
+    <Content Include="Scripts\fullcalendar\bundle\moment-timezone.js.map" />
+    <Content Include="Scripts\fullcalendar\bundle\moment.js.map" />
+    <Content Include="Scripts\fullcalendar\bundle\rrule.js.map" />
+    <Content Include="Scripts\fullcalendar\core\main.js.map" />
+    <Content Include="Scripts\fullcalendar\core\package.json" />
+    <Content Include="Scripts\fullcalendar\core\README.md" />
+    <Content Include="Scripts\fullcalendar\daygrid\main.js.map" />
+    <Content Include="Scripts\fullcalendar\daygrid\package.json" />
+    <Content Include="Scripts\fullcalendar\daygrid\README.md" />
+    <Content Include="Scripts\fullcalendar\google-calendar\main.js.map" />
+    <Content Include="Scripts\fullcalendar\google-calendar\package.json" />
+    <Content Include="Scripts\fullcalendar\google-calendar\README.md" />
+    <Content Include="Scripts\fullcalendar\interaction\main.js.map" />
+    <Content Include="Scripts\fullcalendar\interaction\package.json" />
+    <Content Include="Scripts\fullcalendar\interaction\README.md" />
+    <Content Include="Scripts\fullcalendar\list\main.js.map" />
+    <Content Include="Scripts\fullcalendar\list\package.json" />
+    <Content Include="Scripts\fullcalendar\list\README.md" />
+    <Content Include="Scripts\fullcalendar\rrule\main.js.map" />
+    <Content Include="Scripts\fullcalendar\rrule\package.json" />
+    <Content Include="Scripts\fullcalendar\rrule\README.md" />
+    <Content Include="Scripts\fullcalendar\timegrid\main.js.map" />
+    <Content Include="Scripts\fullcalendar\timegrid\package.json" />
+    <Content Include="Scripts\fullcalendar\timegrid\README.md" />
+    <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\fullcalendar\bootstrap\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\bootstrap\main.css" />
+    <Content Include="Scripts\fullcalendar\bootstrap\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\bootstrap\main.js" />
+    <Content Include="Scripts\fullcalendar\bootstrap\main.min.css" />
+    <Content Include="Scripts\fullcalendar\bootstrap\main.min.js" />
+    <Content Include="Scripts\fullcalendar\bundle\google-calendar.js" />
+    <Content Include="Scripts\fullcalendar\bundle\google-calendar.min.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales-all.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales-all.min.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\af.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar-dz.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar-kw.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar-ly.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar-ma.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar-sa.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar-tn.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ar.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\bg.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\bs.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ca.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\cs.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\da.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\de.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\el.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\en-au.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\en-gb.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\en-nz.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\es-us.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\es.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\et.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\eu.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\fa.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\fi.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\fr-ca.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\fr-ch.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\fr.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\gl.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\he.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\hi.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\hr.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\hu.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\id.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\is.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\it.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ja.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ka.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\kk.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ko.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\lb.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\lt.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\lv.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\mk.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ms.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\nb.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\nl.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\nn.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\pl.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\pt-br.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\pt.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ro.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\ru.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\sk.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\sl.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\sq.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\sr-cyrl.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\sr.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\sv.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\th.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\tr.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\uk.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\vi.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\zh-cn.js" />
+    <Content Include="Scripts\fullcalendar\bundle\locales\zh-tw.js" />
+    <Content Include="Scripts\fullcalendar\bundle\luxon.js" />
+    <Content Include="Scripts\fullcalendar\bundle\luxon.min.js" />
+    <Content Include="Scripts\fullcalendar\bundle\moment-timezone.js" />
+    <Content Include="Scripts\fullcalendar\bundle\moment-timezone.min.js" />
+    <Content Include="Scripts\fullcalendar\bundle\moment.js" />
+    <Content Include="Scripts\fullcalendar\bundle\moment.min.js" />
+    <Content Include="Scripts\fullcalendar\bundle\rrule.js" />
+    <Content Include="Scripts\fullcalendar\bundle\rrule.min.js" />
+    <Content Include="Scripts\fullcalendar\core\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\core\locales-all.js" />
+    <Content Include="Scripts\fullcalendar\core\locales-all.min.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\af.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar-dz.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar-kw.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar-ly.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar-ma.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar-sa.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar-tn.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ar.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\az.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\bg.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\bs.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ca.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\cs.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\da.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\de.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\el.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\en-au.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\en-gb.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\en-nz.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\es-us.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\es.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\et.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\eu.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\fa.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\fi.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\fr-ca.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\fr-ch.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\fr.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\gl.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\he.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\hi.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\hr.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\hu.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\id.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\is.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\it.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ja.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ka.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\kk.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ko.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\lb.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\lt.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\lv.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\mk.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ms.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\nb.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\nl.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\nn.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\pl.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\pt-br.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\pt.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ro.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ru.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\sk.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\sl.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\sq.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\sr-cyrl.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\sr.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\sv.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\th.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\tr.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\ug.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\uk.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\uz.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\vi.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\zh-cn.js" />
+    <Content Include="Scripts\fullcalendar\core\locales\zh-tw.js" />
+    <Content Include="Scripts\fullcalendar\core\main.css" />
+    <Content Include="Scripts\fullcalendar\core\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\core\main.js" />
+    <Content Include="Scripts\fullcalendar\core\main.min.css" />
+    <Content Include="Scripts\fullcalendar\core\main.min.js" />
+    <Content Include="Scripts\fullcalendar\daygrid\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\daygrid\main.css" />
+    <Content Include="Scripts\fullcalendar\daygrid\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\daygrid\main.js" />
+    <Content Include="Scripts\fullcalendar\daygrid\main.min.css" />
+    <Content Include="Scripts\fullcalendar\daygrid\main.min.js" />
+    <Content Include="Scripts\fullcalendar\google-calendar\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\google-calendar\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\google-calendar\main.js" />
+    <Content Include="Scripts\fullcalendar\google-calendar\main.min.js" />
+    <Content Include="Scripts\fullcalendar\interaction\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\interaction\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\interaction\main.js" />
+    <Content Include="Scripts\fullcalendar\interaction\main.min.js" />
+    <Content Include="Scripts\fullcalendar\list\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\list\main.css" />
+    <Content Include="Scripts\fullcalendar\list\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\list\main.js" />
+    <Content Include="Scripts\fullcalendar\list\main.min.css" />
+    <Content Include="Scripts\fullcalendar\list\main.min.js" />
+    <Content Include="Scripts\fullcalendar\rrule\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\rrule\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\rrule\main.js" />
+    <Content Include="Scripts\fullcalendar\rrule\main.min.js" />
+    <Content Include="Scripts\fullcalendar\timegrid\LICENSE.txt" />
+    <Content Include="Scripts\fullcalendar\timegrid\main.css" />
+    <Content Include="Scripts\fullcalendar\timegrid\main.esm.js" />
+    <Content Include="Scripts\fullcalendar\timegrid\main.js" />
+    <Content Include="Scripts\fullcalendar\timegrid\main.min.css" />
+    <Content Include="Scripts\fullcalendar\timegrid\main.min.js" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Scripts\bootstrap.js.map" />
     <Content Include="Scripts\bootstrap.bundle.min.js.map" />
@@ -366,12 +608,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
-    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\ForgotPassword.cshtml" />
     <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
@@ -400,9 +638,14 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Account\AcceptInvite.cshtml" />
     <Content Include="Views\Team\Members.cshtml" />
+    <Content Include="Views\Recommendation\Recommended.cshtml" />
+    <Content Include="Views\Learning\Schedule.cshtml" />
+    <Content Include="Views\Learning\AddLearningDay.cshtml" />
+    <Content Include="Views\Learning\EditLearningDay.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Imgs\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -417,17 +660,29 @@
     <EmbeddedResource Include="Migrations\202004011033505_InitialCreate.resx">
       <DependentUpon>202004011033505_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004072051246_User_Testing.resx">
-      <DependentUpon>202004072051246_User_Testing.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202005191456412_UpdateManTM.resx">
+      <DependentUpon>202005191456412_UpdateManTM.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004261612123_User_Groups.resx">
-      <DependentUpon>202004261612123_User_Groups.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202005192039087_UpdateTopicMTM.resx">
+      <DependentUpon>202005192039087_UpdateTopicMTM.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005090334008_FixingMerge.resx">
-      <DependentUpon>202005090334008_FixingMerge.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202005192100504_PrimaryKeys.resx">
+      <DependentUpon>202005192100504_PrimaryKeys.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005090337338_AddTopicLearners.resx">
-      <DependentUpon>202005090337338_AddTopicLearners.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202005192103529_PrimaryKeys1.resx">
+      <DependentUpon>202005192103529_PrimaryKeys1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005192115288_databaseUpdate.resx">
+      <DependentUpon>202005192115288_databaseUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005202024147_topicRecomemdations.resx">
+      <DependentUpon>202005202024147_topicRecomemdations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005221557224_fixingmymess.resx">
+      <DependentUpon>202005221557224_fixingmymess.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005242018513_optlockForLD.resx">
+      <DependentUpon>202005242018513_optlockForLD.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
@@ -463,11 +718,11 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.0\build\EntityFramework.props'))" />
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.0\build\EntityFramework.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
   </Target>
-  <Import Project="..\packages\EntityFramework.6.4.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.0\build\EntityFramework.targets')" />
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

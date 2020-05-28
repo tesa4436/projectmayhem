@@ -4,20 +4,22 @@
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
     @Html.AntiForgeryToken()
-
-<ul class="nav navbar-nav navbar-right">
-    <li class="nav-item">@Html.ActionLink("Invite", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
-    <li class="nav-item">@Html.ActionLink("My Team", "Members", "Team", routeValues: null, htmlAttributes: new { id = "teamLink", @class = "nav-link" })</li>
-    <li class="nav-item">
-        @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
-    </li>
-    <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-</ul>
+        
+    <ul class="nav navbar-nav navbar-right">
+        <li class="nav-item">@Html.ActionLink("Schedule", "Schedule", "Learning", routeValues: null, htmlAttributes: new { id = "scheduleLink", @class = "nav-link" })</li>
+        <li class="nav-item">@Html.ActionLink("Recommendations", "Recommended", "Recommendation", routeValues: null, htmlAttributes: new { id = "recommendedLink", @class = "nav-link" })</li>
+        <li class="nav-item">@Html.ActionLink("Invite", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
+        <li class="nav-item">@Html.ActionLink("My Team", "Members", "Team", routeValues: null, htmlAttributes: new { id = "teamLink", @class = "nav-link" })</li>
+        <li class="nav-item">
+            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
+        </li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+    </ul>
     }
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right mr-auto">
+    <ul class="nav navbar-nav navbar-right">
         
         <li class="nav-item">@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "nav-link" })</li>
     </ul>

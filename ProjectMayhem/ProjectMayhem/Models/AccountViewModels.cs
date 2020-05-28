@@ -3,18 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ProjectMayhem.Models
 {
-    public class ExternalLoginConfirmationViewModel
-    {
-        [Required]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
-    }
-
-    public class ExternalLoginListViewModel
-    {
-        public string ReturnUrl { get; set; }
-    }
-
     public class SendCodeViewModel
     {
         public string SelectedProvider { get; set; }
@@ -80,9 +68,13 @@ namespace ProjectMayhem.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
-
-    public class RegisterViewModel
+    public class AccountManagementViewModel
     {
+        public List<ApplicationUser> TeamMembers { get; set; }
+
+        [Display(Name ="Select a Team member to delete")]
+        public string EmpId { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

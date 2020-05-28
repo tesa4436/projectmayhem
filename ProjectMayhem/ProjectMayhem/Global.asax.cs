@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectMayhem.DbEntities;
+using ProjectMayhem.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -16,6 +18,20 @@ namespace ProjectMayhem
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+           // AddTopics();
         }
+
+        private void AddTopics()
+        {
+            using(var contxt = ApplicationDbContext.Create())
+            {
+                var topics = new Topic();
+                topics.Title = "Graphical design";
+                topics.Description = "Very good thing";
+                contxt.topics.Add(topics);
+                contxt.SaveChanges();
+            }
+        }
+
     }
 }

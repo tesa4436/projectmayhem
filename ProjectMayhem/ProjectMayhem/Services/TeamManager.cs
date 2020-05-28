@@ -26,17 +26,12 @@ namespace ProjectMayhem.Services
 
         public bool CheckIfLead(ApplicationUser user, string CurrentUserId)
         {
-            try {
+            using (var context = new ApplicationDbContext())
+            {
                 ApplicationUser reqUser;
                 var query = context.Users.Where(s => s.Id == user.Id).Include(u => u.teamLead);
                 reqUser = query.ToArray()[0];
-                
-                System.Diagnostics.Debug.WriteLine("Requested access of: " + reqUser.teamLead.Id);
                 return CheckRecursion(reqUser, CurrentUserId);
-            }
-            catch 
-            {
-                return false;
             }
         }
 
@@ -54,15 +49,12 @@ namespace ProjectMayhem.Services
 
         public string GetEmployeeIdByUsername(string UserName)
         {
-            try {
+            using (var context = new ApplicationDbContext())
+            {
                 var query = context.Users.Where(x => x.UserName == UserName);
                 var user = query.ToArray()[0];
                 System.Diagnostics.Debug.WriteLine("Found " + UserName + " whoose id is: " + user.Id);
                 return user.Id;
-            }
-            catch
-            {
-                return null;
             }
         }
 
