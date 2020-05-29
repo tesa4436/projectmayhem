@@ -76,7 +76,6 @@
     <p>
 
         <input name="command" type="submit" value="Remove Selected Topics" />
-        <input name="command" type="submit" value="Cancel/Refresh" />
     </p>
     <hr />
     <h3 class="text-center">References:</h3>
@@ -94,12 +93,13 @@
     <p>
         <input name="command" type="submit" value="Add Reference" />
         <input name="command" type="submit" value="Remove Selected References" />
-        <input name="command" type="submit" value="Cancel/Refresh" />
     </p>
     <!-- Required to pass learning day ID to the controler method. -->
     <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary float-right" value="Save" />
+        <div >
+            @Html.ActionLink("Back to schedule", "Schedule", "Learning")
+            <input type="submit" class="btn btn-primary float-right" style="width:80px"value="Save" />
+            <input name="command" class="btn btn-secondary float-right" style="margin-right:40px; width:80px" type="submit" value="Refresh" />
         </div>
     </div>
     <div>
