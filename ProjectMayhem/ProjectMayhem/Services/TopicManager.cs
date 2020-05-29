@@ -76,5 +76,15 @@ namespace ProjectMayhem.Services
             }
         }
 
+        public void UpdateTopicUsersStatus(string userId, int topicId, bool status)
+        {
+            using (context = new ApplicationDbContext())
+            {
+                var topicUser = context.topicUsers.Find(new object[] { userId, topicId });
+                topicUser.IsTopicLearned = status;
+                context.SaveChanges();
+            }
+        }
+
     }
 }

@@ -33,10 +33,10 @@
                     <p id="pDetails"></p>
                     <p id="pTopics"></p>
                     <p id="pReferences"></p>
-                    <p id="topicId"></p>
-                    @Model.
+                    <p id="topicIds" hidden></p>
                     
-                    <input type="button" value="Mark as done" onclick="location.href='@Url.Action("SetTopicStatusToDone", "Learning")'" />
+                    
+                    <input type="button" value="Mark as done" onclick="setTopicStatus(true)" />
                 </div>
                 <!-- Could add an "if" helper to check whether the person viewing can edit.-->
             </div>
@@ -185,8 +185,10 @@
             var $topicsDescription = $('<div/>');
             $topicsDescription.append($('<p/>').html('<b>Topics:</b><br/>'));
             var $topics = $('<ol/>');
+            var $topicIds = [];
             for (var topic of topics) {
                 $topics.append($('<li>' + topic.Topic.Title + '</li>'));
+                $topicIds.push(topic.TopicId);
             }
             $topicsDescription.append($topics);
 
@@ -201,11 +203,32 @@
             $('#viewedLearningDay #pDetails').empty().html($description);
             $('#viewedLearningDay #pTopics').empty().html($topicsDescription);
             $('#viewedLearningDay #pReferences').empty().html($referencesDescription);
-
+            $('#viewedLearningDay #topicIds').empty().html(JSON.stringify($topicIds));
 
 
             // Displays the modal window.
             $('#viewedLearningDay').modal();
+        }
+        function setTopicStatus(status) {
+            var ids = document.getElementById("topicIds").innerHTML;
+            var jsonData = JSON.stringify({ ids: ids, status: status, userId: "@Model.UserId" });
+            console.log(jsonData);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SetTopicStatusToDone", "Learning")',
+                data: jsonData,  
+                dataType: "json",  
+                contentType: "application/json; charset=utf-8",  
+                success: function () {  
+                    alert("Data has been added successfully.");  
+                    
+                },  
+                error: function (a, b) {
+                    console.log(a);
+                    console.log(b);
+                    alert("Error while inserting data");  
+                }  
+            }); 
         }
         function formatDate(date) {
             var d = new Date(date),

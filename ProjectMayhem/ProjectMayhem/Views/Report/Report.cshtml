@@ -13,18 +13,19 @@
             Text = t.Title
         }),
         new { @class = "form-control" })*@
+    <h3>Select topic to view people who know it</h3>
+    @using (Html.BeginForm("GetPeopleByTopic", "Report", FormMethod.Post, new { id = "FormUsersByTopic"}))
+    {
+        @Html.DropDownListFor(
+             m => m.SelectedTopic,
+             Model.Topics.Select(t => new SelectListItem
+             {
+                 Value = t.TopicsId.ToString(),
+                 Text = t.Title
+             }), new { onchange = "document.getElementById('FormUsersByTopic').submit();" })
+        
+    }
 
-    @Html.DropDownListFor(
-    m => m.SelectedTopic,
-    Model.Topics.Select(t => new SelectListItem
-        {
-            Value = t.TopicsId.ToString(),
-            Text = t.Title
-        }),
-    new { @class = "form-control" })
 
-
-
-    @Html.ActionLink("People, who know this topic", "GetPeopleByTopic", "Report", routeValues: null, htmlAttributes: new { id = "reportLink", @class = "nav-link" })
 </body>
 

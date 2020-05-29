@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ProjectMayhem.DbEntities;
 using ProjectMayhem.Models;
 using ProjectMayhem.Services;
@@ -155,11 +156,27 @@ namespace ProjectMayhem.Controllers
             return RedirectToAction("Schedule");
         }
 
-
-        public ActionResult SetTopicStatusToDone()
+        //This class is used only for mapping data from ajax response
+        public class StatusResponse
         {
-            //TODO: Update TopicUsers table here. Set IsTopicLearned to true
-            return View();
+            public List<int> ids { get; set; }
+            public bool status { get; set; }
+            public string userId { get; set; }
+        }
+
+        //Updating TopicUsers table here. Setting IsTopicLearned to true
+        [HttpPost]
+        public ActionResult SetTopicStatusToDone(StatusResponse resp)
+        {
+            Debug.WriteLine($"status: {resp.status}");
+            
+            TM = new TopicManager();
+            foreach (var topicId in resp.ids)
+            {
+                TM.UpdateTopicUsersStatus(resp.userId, topicId, resp.status);
+            }
+  
+            return Json(new { success = true, responseText = "Your message successfuly sent!" }, JsonRequestBehavior.AllowGet);
         }
 
         public ContentResult GetLearningDays(string id)

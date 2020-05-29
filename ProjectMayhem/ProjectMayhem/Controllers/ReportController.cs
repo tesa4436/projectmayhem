@@ -44,11 +44,11 @@ namespace ProjectMayhem.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult GetPeopleByTopic(ReportViewModel vm)
+        public ActionResult GetPeopleByTopic(ReportViewModel model)
         {
-            var topicId = vm.SelectedTopic.TopicsId;
+            var topicId = model.SelectedTopic.TopicsId;
 
-            vm.Users = _userDataManager.GetUserByLearnedTopic(topicId);
+            model.Users = _userDataManager.GetUserByLearnedTopic(topicId);
 
             return View("UserList");
         }
