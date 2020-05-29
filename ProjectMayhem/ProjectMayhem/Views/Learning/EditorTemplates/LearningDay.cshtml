@@ -3,13 +3,10 @@
 @model LearningDay
 
 @{
-    ViewBag.Title = "LearningDay";
+    ViewBag.Title = "Learning Day";
 }
 
-<h2>LearningDay</h2>
-
 <div class="form-horizontal">
-    <h2>Day information:</h2>
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(model => model.LearningDayId)

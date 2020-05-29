@@ -6,7 +6,10 @@
     ViewBag.Title = "Learning Day List";
 }
 
-<h2>Learning Day List</h2>
+<p></p>
+<div id="page-title">
+    <h2>@ViewBag.Title</h2>
+</div>
 
 @using (Html.BeginForm("List", "LearningDay", FormMethod.Post))
 {

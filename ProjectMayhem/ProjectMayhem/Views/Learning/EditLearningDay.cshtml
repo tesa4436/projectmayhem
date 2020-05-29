@@ -6,7 +6,10 @@
     ViewBag.Title = "Edit Learning Day";
 }
 
-<h1>Edit learning day</h1>
+<p></p>
+<div id="page-title">
+    <h2>@ViewBag.Title</h2>
+</div>
 
 @using (Html.BeginForm("EditLearningDay", "Learning", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
@@ -15,7 +18,7 @@
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.EditorFor(model => model.LearningDay);
 
-    <h3>Topics List</h3>
+    <h3 class="text-center">Topics List</h3>
 
     <table class="table">
         <thead>
@@ -23,6 +26,7 @@
                 <th>Title</th>
                 <th>Description</th>
                 <th>Parent topic</th>
+                <th>Remove</th>
             </tr>
         </thead>
         <tbody id="childtable">
@@ -74,8 +78,8 @@
         <input name="command" type="submit" value="Remove Selected Topics" />
         <input name="command" type="submit" value="Cancel/Refresh" />
     </p>
-
-    <h3>References:</h3>
+    <hr />
+    <h3 class="text-center">References:</h3>
     <table class="table">
         <thead>
             <tr>

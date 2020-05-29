@@ -89,10 +89,13 @@ namespace ProjectMayhem.Services
                     {
                         if (topic.Remove)
                         {
-                            TopicDay toRemove = context.topicDay.Single(x => x.TopicId == topic.TopicId
+                            if (!topic.NewlyCreated)
+                            {
+                                TopicDay toRemove = context.topicDay.Single(x => x.TopicId == topic.TopicId
                                 && x.LearningDayId == topic.LearningDayId
                                 && x.UserId == topic.UserId);
-                            context.topicDay.Remove(toRemove);
+                                context.topicDay.Remove(toRemove);
+                            }
                         }
                         else
                         {
@@ -105,10 +108,13 @@ namespace ProjectMayhem.Services
                     {
                         if (reference.Remove)
                         {
-                            LDayReferences toRemove = context.lDayReferences.First(x => x.LearningDayId == reference.LearningDayId
+                            if (reference.ReferenceId > 0)
+                            {
+                                LDayReferences toRemove = context.lDayReferences.First(x => x.LearningDayId == reference.LearningDayId
                                 && x.UserId == reference.UserId
                                 && x.ReferenceUrl == reference.ReferenceUrl);
-                            context.lDayReferences.Remove(toRemove);
+                                context.lDayReferences.Remove(toRemove);
+                            }
                         }
                         else
                         {
