@@ -670,6 +670,7 @@
     <Content Include="Views\Learning\EditorTemplates\ParentTopic.cshtml" />
     <Content Include="Views\Learning\EditorTemplates\Topic.cshtml" />
     <Content Include="Views\Learning\EditorTemplates\HiddenTopic.cshtml" />
+    <Content Include="Views\Learning\EditorTemplates\HiddenParentTopic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

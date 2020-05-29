@@ -245,10 +245,10 @@ namespace ProjectMayhem.Controllers
                 topicDay.NewlyCreated = true;
                 topicDay.Topic = newTopic; // topicManager.getTopicById(newTopic.TopicsId);
                 // Forcefully loading the lazy Topic, so that it can be displayed.
-                //if (newTopic.ParentTopicId != null)
-                //{
-                //    topicDay.Topic.parentTopic = topicManager.getTopicById((int)newTopic.ParentTopicId);
-                //}
+                if (newTopic.ParentTopicId != null)
+                {
+                    topicDay.Topic.parentTopic = topicManager.getTopicById((int)newTopic.ParentTopicId);
+                }
 
                 viewModel.LearningDay.Topics.Add(topicDay);
             }
@@ -280,12 +280,20 @@ namespace ProjectMayhem.Controllers
                 {
                     ModelState.AddModelError("", "Cannot change learning day date, date already taken by another day.");
                     return View(viewModel);
+                } else if (viewModel.LearningDay.Title.IsNullOrWhiteSpace())
+                {
+                    ModelState.AddModelError("", "Learning day title is required and may not be empty.");
+                    return View(viewModel);
+                } else if (viewModel.LearningDay.Topics.All(topicDay => topicDay.Remove))
+                {
+                    ModelState.AddModelError("", "Learning day must have at least one topic assigned. Cannot delete all topics.");
+                    viewModel.LearningDay.Topics.ForEach(topic => topic.Remove = false);
+                    return View(viewModel);
                 }
-
 
                 if (!dayManager.updateLearningDay(viewModel.LearningDay, viewModel.LearningDay.RowVersion))
                 {
-                    TempData["UpdateLD"] = "The day was already modified by another user";
+                    TempData["UpdateLD"] = "The day was already modified by another user. If this message persists, click 'Refresh'.";
                     //LearningDay newDay = dayManager.getLearningDayById(learningDay.LearningDayId);
                     return RedirectToAction("EditLearningDay", new { id = viewModel.LearningDay.LearningDayId });
                 }
