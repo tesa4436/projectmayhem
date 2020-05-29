@@ -101,12 +101,12 @@ namespace ProjectMayhem.Controllers
             if (UserName.IndexOf('@') > -1)
             {
                 user = await UserManager.FindByEmailAsync(model.Username);
-                UserName = user.UserName;
             }
             else
                 user = await UserManager.FindByNameAsync(model.Username);
             if (user != null)
             {
+                UserName = user.UserName;
                 if (!await UserManager.IsEmailConfirmedAsync(user.Id))
                 {
                     ModelState.AddModelError("", "You must have a confirmed email to log on.");
