@@ -722,10 +722,8 @@
     <EmbeddedResource Include="Migrations\202005242018513_optlockForLD.resx">
       <DependentUpon>202005242018513_optlockForLD.cs</DependentUpon>
     </EmbeddedResource>
-<<<<<<< HEAD
     <EmbeddedResource Include="Migrations\202005281352071_AddTopicLearningStatus.resx">
       <DependentUpon>202005281352071_AddTopicLearningStatus.cs</DependentUpon>
-=======
     <EmbeddedResource Include="Migrations\202005270559043_ReferenceFix.resx">
       <DependentUpon>202005270559043_ReferenceFix.cs</DependentUpon>
     </EmbeddedResource>
@@ -737,7 +735,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005272152045_parentTopicIdd.resx">
       <DependentUpon>202005272152045_parentTopicIdd.cs</DependentUpon>
->>>>>>> master
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
