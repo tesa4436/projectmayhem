@@ -242,11 +242,9 @@
     <Compile Include="Migrations\202005242018513_optlockForLD.designer.cs">
       <DependentUpon>202005242018513_optlockForLD.cs</DependentUpon>
     </Compile>
-<<<<<<< HEAD
     <Compile Include="Migrations\202005281352071_AddTopicLearningStatus.cs" />
     <Compile Include="Migrations\202005281352071_AddTopicLearningStatus.designer.cs">
       <DependentUpon>202005281352071_AddTopicLearningStatus.cs</DependentUpon>
-=======
     <Compile Include="Migrations\202005270559043_ReferenceFix.cs" />
     <Compile Include="Migrations\202005270559043_ReferenceFix.designer.cs">
       <DependentUpon>202005270559043_ReferenceFix.cs</DependentUpon>
@@ -262,7 +260,6 @@
     <Compile Include="Migrations\202005272152045_parentTopicIdd.cs" />
     <Compile Include="Migrations\202005272152045_parentTopicIdd.designer.cs">
       <DependentUpon>202005272152045_parentTopicIdd.cs</DependentUpon>
->>>>>>> master
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
