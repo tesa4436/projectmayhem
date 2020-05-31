@@ -667,11 +667,9 @@
     <Content Include="Views\Learning\Schedule.cshtml" />
     <Content Include="Views\Learning\AddLearningDay.cshtml" />
     <Content Include="Views\Learning\EditLearningDay.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\Report\Report.cshtml" />
     <Content Include="Views\Report\UserList.cshtml" />
     <Content Include="Views\Report\TeamTopics.cshtml" />
-=======
     <Content Include="Views\LearningDay\EditorTemplates\TopicDay.cshtml" />
     <Content Include="Views\LearningDay\EditorTemplates\LearningDay.cshtml" />
     <Content Include="Views\LearningDay\List.cshtml" />
@@ -682,7 +680,6 @@
     <Content Include="Views\Learning\EditorTemplates\ParentTopic.cshtml" />
     <Content Include="Views\Learning\EditorTemplates\Topic.cshtml" />
     <Content Include="Views\Learning\EditorTemplates\HiddenTopic.cshtml" />
->>>>>>> master
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
