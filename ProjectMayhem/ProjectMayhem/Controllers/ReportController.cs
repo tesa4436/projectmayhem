@@ -42,15 +42,15 @@ namespace ProjectMayhem.Controllers
             return View("Report", data);
         }
 
-        [Authorize]
+        
         [HttpPost]
-        public ActionResult GetPeopleByTopic(ReportViewModel model)
+        public ActionResult GetPeopleByTopic(ReportViewModel model, string topicSelect)
         {
-            var topicId = model.SelectedTopic.TopicsId;
+            var topicId = model.SelectedTopicId;
 
-            model.Users = _userDataManager.GetUserByLearnedTopic(topicId);
+            model.Users = _userDataManager.GetUserByLearnedTopic(Int32.Parse(topicId));
 
-            return View("UserList");
+            return View("UserList", model);
         }
     }
 }

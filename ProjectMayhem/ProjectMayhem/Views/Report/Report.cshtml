@@ -17,13 +17,13 @@
     @using (Html.BeginForm("GetPeopleByTopic", "Report", FormMethod.Post, new { id = "FormUsersByTopic"}))
     {
         @Html.DropDownListFor(
-             m => m.SelectedTopic,
+             m => m.SelectedTopicId,
              Model.Topics.Select(t => new SelectListItem
              {
                  Value = t.TopicsId.ToString(),
                  Text = t.Title
-             }), new { onchange = "document.getElementById('FormUsersByTopic').submit();" })
-        
+             }), new { id = "topicSelect"})
+        <input type="submit" value="Submit"/>
     }
 
 

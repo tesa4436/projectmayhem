@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace ProjectMayhem.Models
 {
@@ -10,7 +11,7 @@ namespace ProjectMayhem.Models
     {
         public List<Topic> Topics { get; set; }
 
-        public Topic SelectedTopic { get; set; }
+        public string SelectedTopicId { get; set; }
 
         public List<ApplicationUser> Users { get; set; }
     }
