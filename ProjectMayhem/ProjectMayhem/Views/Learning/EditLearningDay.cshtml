@@ -94,20 +94,14 @@
         <input name="command" type="submit" value="Add Reference" />
         <input name="command" type="submit" value="Remove Selected References" />
     </p>
+    <br />
     <!-- Required to pass learning day ID to the controler method. -->
     <div class="form-group">
         <div >
             @Html.ActionLink("Back to schedule", "Schedule", "Learning")
-            <input type="submit" class="btn btn-primary float-right" style="width:80px"value="Save" />
-            <input name="command" class="btn btn-secondary float-right" style="margin-right:40px; width:80px" type="submit" value="Refresh" />
+            <input type="submit" class="float-right" style="width: 100px; margin-left:40px;" value="Save" />
+            <input name="command" class="float-right" type="submit" style="width: 100px;" value="Refresh" />
         </div>
-    </div>
-    <div>
-        @if (!string.IsNullOrEmpty(Request.QueryString["retUrl"]))
-        {
-            <a href=@Request.QueryString["retUrl"]>Back</a><br>
-            @Html.ActionLink("My Schedule", "Schedule", "Learning")
-        }
     </div>
 }
 

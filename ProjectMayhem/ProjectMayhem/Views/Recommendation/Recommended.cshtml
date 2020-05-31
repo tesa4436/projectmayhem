@@ -30,13 +30,13 @@
 
 @if (Model.TeamMembers.ToArray().Length > 0)
 {
-    using (Html.BeginForm("Recommended", "Recommendation", new { }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    using (Html.BeginForm("Recommended", "Recommendation", new { }, FormMethod.Post, new { @class = "form-horizontal create-form", role = "form" }))
     {
         @Html.AntiForgeryToken()
 
 
         <br />
-        <h4>Recommend a Topic</h4>
+        <h1>Recommend a Topic</h1>
         <span style="color:green">@ViewBag.Confirmation</span>
         @Html.ValidationSummary("", new { @class = "text-danger" })
         <div>
