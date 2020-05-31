@@ -1,0 +1,21 @@
+﻿@model ProjectMayhem.Models.ReportViewModel
+
+@{
+    ViewBag.Title = "TeamTopics";
+}
+
+
+<ul>
+    @foreach (var tp in Model.Topics)
+    {
+        <li>
+            <div>
+                @tp.Title
+                <br>
+                @tp.Description
+            </div>
+        </li>
+    }
+</ul>
+
+

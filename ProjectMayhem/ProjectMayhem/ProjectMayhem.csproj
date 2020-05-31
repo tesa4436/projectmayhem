@@ -250,6 +250,7 @@
     <Compile Include="Models\GroupViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LearningViewModels.cs" />
+    <Compile Include="Models\List.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\RecommendationViewModels.cs" />
     <Compile Include="Models\ReportViewModel.cs" />
@@ -651,6 +652,7 @@
     <Content Include="Views\Learning\EditLearningDay.cshtml" />
     <Content Include="Views\Report\Report.cshtml" />
     <Content Include="Views\Report\UserList.cshtml" />
+    <Content Include="Views\Report\TeamTopics.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

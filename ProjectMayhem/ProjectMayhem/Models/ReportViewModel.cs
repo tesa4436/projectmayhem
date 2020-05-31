@@ -13,6 +13,10 @@ namespace ProjectMayhem.Models
 
         public string SelectedTopicId { get; set; }
 
+        public List<ApplicationUser> TeamLeaders { get; set; }
+
+        public string TeamLeadId { get; set; }
+
         public List<ApplicationUser> Users { get; set; }
     }
 }

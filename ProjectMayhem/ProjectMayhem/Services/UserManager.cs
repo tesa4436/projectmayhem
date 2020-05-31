@@ -36,5 +36,17 @@ namespace ProjectMayhem.Services
                 return users;
             }
         }
+
+        public List<ApplicationUser> GetAllTeamLeaders()
+        {
+            using (context = new ApplicationDbContext())
+            {
+                var users = (from user in context.Users
+                             where user.teamLead == null
+                             select user).ToList();
+
+                return users;
+            }
+        }
     }
 }

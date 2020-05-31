@@ -5,16 +5,8 @@
 
 <h2>Select a report</h2>
 <body>
-    @*@Html.DropDownList(
-        "topicsDropdown",
-        Model.Topics.Select(t => new SelectListItem
-        {
-            Value = t.TopicsId.ToString(),
-            Text = t.Title
-        }),
-        new { @class = "form-control" })*@
     <h3>Select topic to view people who know it</h3>
-    @using (Html.BeginForm("GetPeopleByTopic", "Report", FormMethod.Post, new { id = "FormUsersByTopic"}))
+    @using (Html.BeginForm("GetPeopleByTopic", "Report", FormMethod.Post, new { id = "FormUsersByTopic" }))
     {
         @Html.DropDownListFor(
              m => m.SelectedTopicId,
@@ -22,8 +14,20 @@
              {
                  Value = t.TopicsId.ToString(),
                  Text = t.Title
-             }), new { id = "topicSelect"})
-        <input type="submit" value="Submit"/>
+             }))
+        <input type="submit" value="Serach" />
+    }
+    <h3>Select team to view learned topics</h3>
+    @using (Html.BeginForm("GetTopicsByTeam", "Report", FormMethod.Post, new { id = "TopicsByTeam" }))
+    {
+        @Html.DropDownListFor(
+             m => m.TeamLeadId,
+             Model.TeamLeaders.Select(t => new SelectListItem
+             {
+                 Value = t.Id.ToString(),
+                 Text = $"{t.Email}'s team"
+             }))
+        <input type="submit" value="Serach" />
     }
 
 

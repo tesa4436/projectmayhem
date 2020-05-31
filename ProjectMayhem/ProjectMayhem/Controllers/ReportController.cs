@@ -37,14 +37,15 @@ namespace ProjectMayhem.Controllers
         {
             var data = new ReportViewModel
             {
-                Topics = _topicManager.getAllTopics()
+                Topics = _topicManager.getAllTopics(),
+                TeamLeaders = _userDataManager.GetAllTeamLeaders()
             };
             return View("Report", data);
         }
 
         
         [HttpPost]
-        public ActionResult GetPeopleByTopic(ReportViewModel model, string topicSelect)
+        public ActionResult GetPeopleByTopic(ReportViewModel model)
         {
             var topicId = model.SelectedTopicId;
 
@@ -52,5 +53,14 @@ namespace ProjectMayhem.Controllers
 
             return View("UserList", model);
         }
+
+        [HttpPost]
+        public ActionResult GetTopicsByTeam(ReportViewModel model)
+        {
+            model.Topics = _topicManager.GetTopicsByTeam(model.TeamLeadId);
+
+            return View("TeamTopics", model);
+        }
+        
     }
 }

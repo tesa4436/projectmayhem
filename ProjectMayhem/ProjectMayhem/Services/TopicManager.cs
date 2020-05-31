@@ -86,5 +86,23 @@ namespace ProjectMayhem.Services
             }
         }
 
+        public List<Topic> GetTopicsByTeam(string teamLeadId)
+        {
+            using (context = new ApplicationDbContext())
+            {
+                var topics = (from topic in context.topics
+                              join tDay in context.topicDay on topic.TopicsId equals tDay.TopicId
+                              join user in context.Users on tDay.UserId equals user.Id
+                              where user.teamLead.Id == teamLeadId
+                              select topic).ToList();
+                /*var topics = (from user in context.Users
+                             join learningDay in context.learningDays on user.Id equals learningDay.UserId
+                             join topicDay in context.topicDay on learningDay.LearningDayId equals topicDay.LearningDayId
+                              where user.teamLead.Id == teamLeadId
+                              select topicDay.Topic).ToList();*/
+                return topics;
+            }
+        }
+
     }
 }
