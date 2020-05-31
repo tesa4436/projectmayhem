@@ -310,7 +310,7 @@ namespace ProjectMayhem.Controllers
         {
             Debug.WriteLine($"status: {resp.status}");
             
-            TM = new TopicManager();
+            var TM = new TopicManager();
             foreach (var topicId in resp.ids)
             {
                 TM.UpdateTopicUsersStatus(resp.userId, topicId, resp.status);
