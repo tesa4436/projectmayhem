@@ -1,0 +1,19 @@
+﻿@model ProjectMayhem.DbEntities.Topic
+
+@Html.HiddenFor(model => model.TopicsId)
+@Html.HiddenFor(model => model.ParentTopicId)
+
+<td>@Model.Title</td>
+<td>@Model.Description</td>
+<td>
+    @if (Model.ParentTopicId != null && Model.parentTopic != null)
+    {
+        <p>@Model.parentTopic.Title</p>
+
+        @Html.EditorFor(model => model.parentTopic, "HiddenTopic")
+    }
+    else
+    {
+        <p>None</p>
+    }
+</td>

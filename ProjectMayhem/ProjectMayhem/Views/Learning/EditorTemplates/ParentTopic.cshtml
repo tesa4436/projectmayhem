@@ -1,0 +1,10 @@
+﻿@model ProjectMayhem.DbEntities.Topic
+
+@{
+    ViewBag.Title = "Topic";
+}
+
+<p>@Model.Title</p>
+@Html.HiddenFor(model => model.TopicsId)
+@Html.HiddenFor(model => model.Title)
+@Html.HiddenFor(model => model.Description)

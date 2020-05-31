@@ -14,6 +14,7 @@ namespace ProjectMayhem.DbEntities
         {
             Topics = new List<TopicDay>();
             References = new List<LDayReferences>();
+            Date = DateTime.Now.Date;
         }
 
         [Key, Column(Order = 0)]
@@ -39,5 +40,8 @@ namespace ProjectMayhem.DbEntities
         public virtual ICollection<TopicDay> Topics { get; set; }
 
         public virtual ICollection<LDayReferences> References { get; set; }
+
+        [NotMapped]
+        public bool Remove { get; set; }
     }
 }

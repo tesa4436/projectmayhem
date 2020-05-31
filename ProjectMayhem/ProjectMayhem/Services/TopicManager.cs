@@ -2,6 +2,10 @@
 using ProjectMayhem.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Migrations;
+using System.Diagnostics;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
 
@@ -24,25 +28,34 @@ namespace ProjectMayhem.Services
                 }
                 newT.Description = description;
                 newT.Title = title;
-                context.topics.Add(newT);
+                context.topics.AddOrUpdate(newT);
                 context.SaveChanges();
                 return newT;
             }
         }
 
-        public void recommendTopic(int TopicId, string UserId)
+        public bool recommendTopic(int TopicId, string UserId)
         {
             using (context = new ApplicationDbContext())
             {
-                var newTU = new TopicUser();
-                var user = context.Users.Where(x => x.Id == UserId).First();
-                if (user.RecommendedTopics.Where(x => x.TopicId == TopicId).ToArray().Length > 0)
-                    return;
-                var topic = context.topics.Where(x => x.TopicsId == TopicId).First();
-                newTU.Topic = topic;
-                newTU.User = user;
-                context.topicUsers.Add(newTU);
-                context.SaveChanges();
+                try
+                {
+                    var newTU = new TopicUser();
+                    var user = context.Users.Where(x => x.Id == UserId).First();
+                    //if (user.RecommendedTopics.Where(x => x.TopicId == TopicId).ToArray().Length > 0)
+                    //    return false;
+                    var topic = context.topics.Where(x => x.TopicsId == TopicId).First();
+                    newTU.Topic = topic;
+                    newTU.User = user;
+                    context.topicUsers.AddOrUpdate(newTU);
+                    context.SaveChanges();
+                    return true;
+                }
+                catch (DbUpdateException ex)
+                {
+                    Debug.WriteLine("Recommendation failed: Data Duplication");
+                    return false;
+                }
             }
         }
 
@@ -104,5 +117,24 @@ namespace ProjectMayhem.Services
             }
         }
 
+        public TopicDay createTopicDay(int topicId, int learningDayId, string userId)
+        {
+            return new TopicDay()
+            {
+                TopicId = topicId,
+                LearningDayId = learningDayId,
+                UserId = userId
+            };
+        }
+
+        public TopicDay createDayForNewTopic(int dayId, string userId, string topicTitle, string topicDescription, int parentId = -1)
+        {
+            return new TopicDay()
+            {
+                TopicId = createTopic(topicTitle, topicDescription, parentId).TopicsId,
+                LearningDayId = dayId,
+                UserId = userId
+            };
+        }
     }
 }

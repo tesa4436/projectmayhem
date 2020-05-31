@@ -1,0 +1,9 @@
+﻿@model ProjectMayhem.DbEntities.LDayReferences
+@{
+    ViewBag.Title = "LDReferenceUI";
+}
+
+@Html.HiddenFor(model => model.LearningDayId)
+@Html.HiddenFor(model => model.ReferenceUrl)
+@Html.HiddenFor(model => model.ReferenceId)
+@Html.HiddenFor(model => model.UserId)

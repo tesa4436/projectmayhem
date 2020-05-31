@@ -1,10 +1,14 @@
 ﻿@model ProjectMayhem.Models.RecommendationViewModel
 @{
-    ViewBag.Title = "Recommended";
+    ViewBag.Title = "Recommended topics";
 }
 
+<p></p>
+<div id="page-title">
+    <h2>@ViewBag.Title</h2>
+</div>
 
-<h2>Recommended to me:</h2>
+<h3>Recommended to me</h3>
 
 <ul>
     @if (Model.myRecommendedTopics.ToArray().Length > 0)
@@ -30,10 +34,11 @@
     {
         @Html.AntiForgeryToken()
 
-        @Html.ValidationSummary("", new { @class = "text-danger" })
 
         <br />
         <h4>Recommend a Topic</h4>
+        <span style="color:green">@ViewBag.Confirmation</span>
+        @Html.ValidationSummary("", new { @class = "text-danger" })
         <div>
             @Html.DropDownListFor(m => m.selectedTeamMemberId, new SelectList(Model.TeamMembers.Select(x => new { Value = x.Id, Text = x.UserName }), "Value", "Text"))
         </div>

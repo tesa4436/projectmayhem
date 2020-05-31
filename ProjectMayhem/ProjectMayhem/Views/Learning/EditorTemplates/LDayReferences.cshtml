@@ -1,0 +1,30 @@
+﻿@model ProjectMayhem.DbEntities.LDayReferences
+@{
+    ViewBag.Title = "LDReferenceUI";
+}
+
+@if (!Model.Remove)
+{
+    <tr>
+        <td>
+            @Html.HiddenFor(model => model.LearningDayId)
+            @Html.HiddenFor(model => model.ReferenceId)
+            @Html.HiddenFor(model => model.UserId)
+            @Html.EditorFor(model => model.ReferenceUrl)
+            @Html.ValidationMessageFor(model => model.ReferenceUrl, "", new { @class = "text-danger" })
+        </td>
+        <td>
+            @Html.EditorFor(model => model.Remove)
+        </td>
+    </tr>
+}
+else
+{
+    @Html.HiddenFor(model => model.LearningDayId)
+    @Html.HiddenFor(model => model.ReferenceId)
+    @Html.HiddenFor(model => model.UserId)
+    @Html.HiddenFor(model => model.Remove)
+    @Html.HiddenFor(model => model.ReferenceUrl)
+}
+
+

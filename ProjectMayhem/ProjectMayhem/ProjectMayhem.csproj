@@ -193,6 +193,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LearningController.cs" />
+    <Compile Include="Controllers\LearningDayController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\RecommendationController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
@@ -241,9 +242,27 @@
     <Compile Include="Migrations\202005242018513_optlockForLD.designer.cs">
       <DependentUpon>202005242018513_optlockForLD.cs</DependentUpon>
     </Compile>
+<<<<<<< HEAD
     <Compile Include="Migrations\202005281352071_AddTopicLearningStatus.cs" />
     <Compile Include="Migrations\202005281352071_AddTopicLearningStatus.designer.cs">
       <DependentUpon>202005281352071_AddTopicLearningStatus.cs</DependentUpon>
+=======
+    <Compile Include="Migrations\202005270559043_ReferenceFix.cs" />
+    <Compile Include="Migrations\202005270559043_ReferenceFix.designer.cs">
+      <DependentUpon>202005270559043_ReferenceFix.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005272152264_TopicUpdate2.cs" />
+    <Compile Include="Migrations\202005272152264_TopicUpdate2.designer.cs">
+      <DependentUpon>202005272152264_TopicUpdate2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005272134301_parentTopicId.cs" />
+    <Compile Include="Migrations\202005272134301_parentTopicId.designer.cs">
+      <DependentUpon>202005272134301_parentTopicId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005272152045_parentTopicIdd.cs" />
+    <Compile Include="Migrations\202005272152045_parentTopicIdd.designer.cs">
+      <DependentUpon>202005272152045_parentTopicIdd.cs</DependentUpon>
+>>>>>>> master
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -273,6 +292,7 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\logo.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -650,9 +670,22 @@
     <Content Include="Views\Learning\Schedule.cshtml" />
     <Content Include="Views\Learning\AddLearningDay.cshtml" />
     <Content Include="Views\Learning\EditLearningDay.cshtml" />
+<<<<<<< HEAD
     <Content Include="Views\Report\Report.cshtml" />
     <Content Include="Views\Report\UserList.cshtml" />
     <Content Include="Views\Report\TeamTopics.cshtml" />
+=======
+    <Content Include="Views\LearningDay\EditorTemplates\TopicDay.cshtml" />
+    <Content Include="Views\LearningDay\EditorTemplates\LearningDay.cshtml" />
+    <Content Include="Views\LearningDay\List.cshtml" />
+    <Content Include="Views\LearningDay\EditorTemplates\LDayReferences.cshtml" />
+    <Content Include="Views\Learning\EditorTemplates\LDayReferences.cshtml" />
+    <Content Include="Views\Learning\EditorTemplates\TopicDay.cshtml" />
+    <Content Include="Views\Learning\EditorTemplates\LearningDay.cshtml" />
+    <Content Include="Views\Learning\EditorTemplates\ParentTopic.cshtml" />
+    <Content Include="Views\Learning\EditorTemplates\Topic.cshtml" />
+    <Content Include="Views\Learning\EditorTemplates\HiddenTopic.cshtml" />
+>>>>>>> master
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -695,8 +728,22 @@
     <EmbeddedResource Include="Migrations\202005242018513_optlockForLD.resx">
       <DependentUpon>202005242018513_optlockForLD.cs</DependentUpon>
     </EmbeddedResource>
+<<<<<<< HEAD
     <EmbeddedResource Include="Migrations\202005281352071_AddTopicLearningStatus.resx">
       <DependentUpon>202005281352071_AddTopicLearningStatus.cs</DependentUpon>
+=======
+    <EmbeddedResource Include="Migrations\202005270559043_ReferenceFix.resx">
+      <DependentUpon>202005270559043_ReferenceFix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005272152264_TopicUpdate2.resx">
+      <DependentUpon>202005272152264_TopicUpdate2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005272134301_parentTopicId.resx">
+      <DependentUpon>202005272134301_parentTopicId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005272152045_parentTopicIdd.resx">
+      <DependentUpon>202005272152045_parentTopicIdd.cs</DependentUpon>
+>>>>>>> master
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

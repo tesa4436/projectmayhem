@@ -1,0 +1,51 @@
+﻿@* Goes in Views\LearningDay *@
+@using ProjectMayhem.DbEntities
+@model IEnumerable<LearningDay>
+
+@{
+    ViewBag.Title = "Learning Day List";
+}
+
+<p></p>
+<div id="page-title">
+    <h2>@ViewBag.Title</h2>
+</div>
+
+@using (Html.BeginForm("List", "LearningDay", FormMethod.Post))
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Topics)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.References)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Remove)
+                </th>
+            </tr>
+        </thead>
+        <tbody id="childtable">
+            @Html.EditorFor(model => Model)
+        </tbody>
+    </table>
+    <p>
+        <input name="command" type="submit" value="Remove Selected" />
+        <input name="command" type="submit" value="Cancel/Refresh" />
+    </p>
+    <p>
+        @Html.ValidationSummary()
+        <input name="command" type="submit" value="Save" />
+    </p>
+}

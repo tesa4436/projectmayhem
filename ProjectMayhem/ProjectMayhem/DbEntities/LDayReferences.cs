@@ -21,6 +21,12 @@ namespace ProjectMayhem.DbEntities
 
         [Key]
         [Column(Order = 2)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ReferenceId { get; set; }
+
         public string ReferenceUrl { get; set; }
+
+        [NotMapped]
+        public bool Remove { get; set; }
     }
 }

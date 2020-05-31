@@ -66,16 +66,24 @@ namespace ProjectMayhem.Controllers
                 if (model.selectFromList == true)
                 {
                     Debug.WriteLine("Testing recommend " + model.recommendedTopicId);
-                    TopM.recommendTopic(model.recommendedTopicId, model.selectedTeamMemberId);
+                    if (TopM.recommendTopic(model.recommendedTopicId, model.selectedTeamMemberId))
+                        ViewBag.Confirmation = "The Topic was successfuly recommended";
+                    else
+                        ModelState.AddModelError("", "Topic recommendation failed, try again");
                 }
                 else
                 {
                     Topic topic;
                     topic = TopM.createTopic(model.newTopicTitle, model.newTopicDescription, model.newTopicParentId);
-                    TopM.recommendTopic(topic.TopicsId, model.selectedTeamMemberId);
+                    if(TopM.recommendTopic(topic.TopicsId, model.selectedTeamMemberId))
+                        ViewBag.Confirmation = "The Topic was successfuly recommended";
+                    else
+                        ModelState.AddModelError("", "The user already has this Topic in his recommendations");
+
                 }
                 return View(model);
             }
+            ViewBag.Confirmation = "";
             return View(model);
         }
     }
