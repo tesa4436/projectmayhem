@@ -245,6 +245,7 @@
     <Compile Include="Migrations\202005281352071_AddTopicLearningStatus.cs" />
     <Compile Include="Migrations\202005281352071_AddTopicLearningStatus.designer.cs">
       <DependentUpon>202005281352071_AddTopicLearningStatus.cs</DependentUpon>
+    </Compile> 
     <Compile Include="Migrations\202005270559043_ReferenceFix.cs" />
     <Compile Include="Migrations\202005270559043_ReferenceFix.designer.cs">
       <DependentUpon>202005270559043_ReferenceFix.cs</DependentUpon>
@@ -724,6 +725,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005281352071_AddTopicLearningStatus.resx">
       <DependentUpon>202005281352071_AddTopicLearningStatus.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005270559043_ReferenceFix.resx">
       <DependentUpon>202005270559043_ReferenceFix.cs</DependentUpon>
     </EmbeddedResource>
