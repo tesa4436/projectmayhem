@@ -106,7 +106,7 @@ namespace ProjectMayhem.Services
                 var topics = (from topic in context.topics
                               join tDay in context.topicDay on topic.TopicsId equals tDay.TopicId
                               join user in context.Users on tDay.UserId equals user.Id
-                              where user.teamLead.Id == teamLeadId
+                              where user.teamLead.Id == teamLeadId || user.Id == teamLeadId
                               select topic).ToList();
                 /*var topics = (from user in context.Users
                              join learningDay in context.learningDays on user.Id equals learningDay.UserId

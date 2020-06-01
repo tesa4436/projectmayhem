@@ -206,61 +206,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202004011033505_InitialCreate.cs" />
-    <Compile Include="Migrations\202004011033505_InitialCreate.Designer.cs">
-      <DependentUpon>202004011033505_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005191456412_UpdateManTM.cs" />
-    <Compile Include="Migrations\202005191456412_UpdateManTM.designer.cs">
-      <DependentUpon>202005191456412_UpdateManTM.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005192039087_UpdateTopicMTM.cs" />
-    <Compile Include="Migrations\202005192039087_UpdateTopicMTM.designer.cs">
-      <DependentUpon>202005192039087_UpdateTopicMTM.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005192100504_PrimaryKeys.cs" />
-    <Compile Include="Migrations\202005192100504_PrimaryKeys.designer.cs">
-      <DependentUpon>202005192100504_PrimaryKeys.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005192103529_PrimaryKeys1.cs" />
-    <Compile Include="Migrations\202005192103529_PrimaryKeys1.designer.cs">
-      <DependentUpon>202005192103529_PrimaryKeys1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005192115288_databaseUpdate.cs" />
-    <Compile Include="Migrations\202005192115288_databaseUpdate.designer.cs">
-      <DependentUpon>202005192115288_databaseUpdate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005202024147_topicRecomemdations.cs" />
-    <Compile Include="Migrations\202005202024147_topicRecomemdations.designer.cs">
-      <DependentUpon>202005202024147_topicRecomemdations.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005221557224_fixingmymess.cs" />
-    <Compile Include="Migrations\202005221557224_fixingmymess.designer.cs">
-      <DependentUpon>202005221557224_fixingmymess.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005242018513_optlockForLD.cs" />
-    <Compile Include="Migrations\202005242018513_optlockForLD.designer.cs">
-      <DependentUpon>202005242018513_optlockForLD.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005281352071_AddTopicLearningStatus.cs" />
-    <Compile Include="Migrations\202005281352071_AddTopicLearningStatus.designer.cs">
-      <DependentUpon>202005281352071_AddTopicLearningStatus.cs</DependentUpon>
-    </Compile> 
-    <Compile Include="Migrations\202005270559043_ReferenceFix.cs" />
-    <Compile Include="Migrations\202005270559043_ReferenceFix.designer.cs">
-      <DependentUpon>202005270559043_ReferenceFix.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005272152264_TopicUpdate2.cs" />
-    <Compile Include="Migrations\202005272152264_TopicUpdate2.designer.cs">
-      <DependentUpon>202005272152264_TopicUpdate2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005272134301_parentTopicId.cs" />
-    <Compile Include="Migrations\202005272134301_parentTopicId.designer.cs">
-      <DependentUpon>202005272134301_parentTopicId.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005272152045_parentTopicIdd.cs" />
-    <Compile Include="Migrations\202005272152045_parentTopicIdd.designer.cs">
-      <DependentUpon>202005272152045_parentTopicIdd.cs</DependentUpon>
+    <Compile Include="Migrations\202005312203575_completeRedo.cs" />
+    <Compile Include="Migrations\202005312203575_completeRedo.designer.cs">
+      <DependentUpon>202005312203575_completeRedo.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -696,47 +644,8 @@
     <TypeScriptCompile Include="Scripts\index.d.ts" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202004011033505_InitialCreate.resx">
-      <DependentUpon>202004011033505_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005191456412_UpdateManTM.resx">
-      <DependentUpon>202005191456412_UpdateManTM.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005192039087_UpdateTopicMTM.resx">
-      <DependentUpon>202005192039087_UpdateTopicMTM.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005192100504_PrimaryKeys.resx">
-      <DependentUpon>202005192100504_PrimaryKeys.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005192103529_PrimaryKeys1.resx">
-      <DependentUpon>202005192103529_PrimaryKeys1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005192115288_databaseUpdate.resx">
-      <DependentUpon>202005192115288_databaseUpdate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005202024147_topicRecomemdations.resx">
-      <DependentUpon>202005202024147_topicRecomemdations.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005221557224_fixingmymess.resx">
-      <DependentUpon>202005221557224_fixingmymess.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005242018513_optlockForLD.resx">
-      <DependentUpon>202005242018513_optlockForLD.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005281352071_AddTopicLearningStatus.resx">
-      <DependentUpon>202005281352071_AddTopicLearningStatus.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005270559043_ReferenceFix.resx">
-      <DependentUpon>202005270559043_ReferenceFix.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005272152264_TopicUpdate2.resx">
-      <DependentUpon>202005272152264_TopicUpdate2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005272134301_parentTopicId.resx">
-      <DependentUpon>202005272134301_parentTopicId.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005272152045_parentTopicIdd.resx">
-      <DependentUpon>202005272152045_parentTopicIdd.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202005312203575_completeRedo.resx">
+      <DependentUpon>202005312203575_completeRedo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
