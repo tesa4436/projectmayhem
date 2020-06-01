@@ -50,13 +50,13 @@
                             @Html.AntiForgeryToken()
                             @Html.HiddenFor(m => m.ViewedDayId)
                             @Html.HiddenFor(m => m.UserId)
-                            <input name="command" class="fc-button-active" type="submit" value="Delete" />
-                            <input name="command" class="fc-button-active" type="submit" value="Edit" />
+                            <input name="command" class="fc-button-active modal-button" type="submit" value="Delete" />
+                            <input name="command" class="fc-button-active modal-button" type="submit" value="Edit" />
                         }
                     }
                 </div>
                 <div style="float:right;width:100px;">
-                    <button type="button" class="fc-button-active" data-dismiss="modal">Close</button>
+                    <button type="button" class="fc-button-active modal-button" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

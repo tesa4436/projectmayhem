@@ -658,7 +658,6 @@
     <Content Include="Views\Team\Members.cshtml" />
     <Content Include="Views\Recommendation\Recommended.cshtml" />
     <Content Include="Views\Learning\Schedule.cshtml" />
-    <Content Include="Views\Learning\AddLearningDay.cshtml" />
     <Content Include="Views\Learning\EditLearningDay.cshtml" />
     <Content Include="Views\LearningDay\EditorTemplates\TopicDay.cshtml" />
     <Content Include="Views\LearningDay\EditorTemplates\LearningDay.cshtml" />
@@ -670,6 +669,7 @@
     <Content Include="Views\Learning\EditorTemplates\ParentTopic.cshtml" />
     <Content Include="Views\Learning\EditorTemplates\Topic.cshtml" />
     <Content Include="Views\Learning\EditorTemplates\HiddenTopic.cshtml" />
+    <Content Include="Views\Learning\EditorTemplates\HiddenParentTopic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

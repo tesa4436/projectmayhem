@@ -76,7 +76,8 @@ namespace ProjectMayhem.Services
         {
             using (var context = new ApplicationDbContext())
             {
-                if (context.topicDay.Where(x => x.LearningDayId == changedDay.LearningDayId).ToArray().Length == 0) 
+                // Don't update if the new day has no topics assigned. Learning days must have at least 1 topic.
+                if (changedDay.Topics.Count == 0) 
                     return false;
                 try
                 {
