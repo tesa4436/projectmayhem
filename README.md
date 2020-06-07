@@ -13,7 +13,7 @@ Aukščiausio lygio vadovo pavaldinys:
 
 Norint, kad veiktu vartotojų pakvietimai, reikia pridėti SendGrid api raktą į "User Environmental Variable" sąrašą. Pridėkite raktą:
 * Variable Name: SENDGRID_API_KEY
-* Variable Value: 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
+* Variable Value: 
 
 **Raktas yra privatus, gali būti, kad paviešinus jį šioje repozitorijoje, jis bus užblokuotas ir neveiks laiškų siuntimas.**
 
