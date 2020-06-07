@@ -139,6 +139,8 @@ namespace ProjectMayhem.Controllers
             else
             {
                 LearningDay day = dayManager.getLearningDayById(int.Parse(viewModel.ViewedDayId));
+                if (day == null)
+                    return View(getData(viewModel));
                 if (command == "Delete")
                 {
                     if (day.Date.Date <= DateTime.Today.Date)

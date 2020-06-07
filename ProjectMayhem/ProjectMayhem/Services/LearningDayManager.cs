@@ -29,7 +29,14 @@ namespace ProjectMayhem.Services
 
         public LearningDay getLearningDayById(int dayId)
         {
-            return applicationDbContext.learningDays.Where(x => x.LearningDayId == dayId).First();
+            try
+            {
+                return applicationDbContext.learningDays.Where(x => x.LearningDayId == dayId).First();
+            } catch (InvalidOperationException ex)
+            {
+                // Day not found. Were trying to get the first element of an empty list.
+                return null;
+            }
         }
 
         public bool createLearningDay(DateTime date, string Title, string Desc, string userId, List<Topic> chosenTopics = null, List<string> references = null)

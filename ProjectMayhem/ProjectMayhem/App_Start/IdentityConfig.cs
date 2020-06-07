@@ -28,7 +28,7 @@ namespace ProjectMayhem
         {
             var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
             var client = new SendGridClient(apiKey);
-            var from = new EmailAddress("ProjectMayhem@gmail.com");
+            var from = new EmailAddress("psk.projectmayhem2020@gmail.com");
             var subject = message.Subject;
             var to = new EmailAddress(message.Destination);
             var plainTextContent = message.Body;
